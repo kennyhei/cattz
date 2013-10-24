@@ -1,0 +1,12 @@
+# OS X
+
+.DS_Store
+
+# Temporary files
+
+*~
+
+# Project
+
+build/
+nbproject/

@@ -2,6 +2,7 @@ package game;
 
 import com.jme3.app.SimpleApplication;
 import com.jme3.bullet.BulletAppState;
+import com.jme3.font.BitmapText;
 import com.jme3.input.ChaseCamera;
 import com.jme3.light.AmbientLight;
 import com.jme3.light.DirectionalLight;
@@ -19,6 +20,10 @@ public class GameApp extends SimpleApplication {
 
         app.start();
     }
+
+    /* Clock */
+    private Clock clock;
+    private BitmapText clockText;
 
     /* Physics */
     private BulletAppState bulletAppState;
@@ -47,8 +52,6 @@ public class GameApp extends SimpleApplication {
         bulletAppState = new BulletAppState();
         stateManager.attach(bulletAppState);
 
-        viewPort.setBackgroundColor(new ColorRGBA(0.7f, 0.8f, 1f, 1f));
-
         // Add input handling
         inputHandler = new InputHandler();
         inputHandler.init(inputManager);
@@ -58,6 +61,7 @@ public class GameApp extends SimpleApplication {
         initCharacter();
         initChaseCamera();
         initFloor();
+        initClock();
     }
 
     private void setUpLight() {
@@ -74,6 +78,9 @@ public class GameApp extends SimpleApplication {
 
     @Override
     public void simpleUpdate(float tpf) {
+
+        // Update clock time
+        clockText.setText(clock.toString());
 
         this.camDir.set(this.cam.getDirection().multLocal(0.6f));
         this.camLeft.set(this.cam.getLeft().multLocal(0.6f));
@@ -132,5 +139,19 @@ public class GameApp extends SimpleApplication {
         chaseCam.setDefaultDistance(30f);
         chaseCam.setLookAtOffset(new Vector3f(0f, 3f, 0f));
         chaseCam.setInvertVerticalAxis(true);
+    }
+
+    private void initClock() {
+        // Display clock with a default font
+        clock = new Clock();
+
+        guiNode.detachAllChildren();
+        guiFont = assetManager.loadFont("Interface/Fonts/Default.fnt");
+        clockText = new BitmapText(guiFont, false);
+        clockText.setSize(guiFont.getCharSet().getRenderedSize());
+        clockText.setText(clock.toString());
+        clockText.setLocalTranslation(10, settings.getHeight() - 10, 0);
+
+        guiNode.attachChild(clockText);
     }
 }

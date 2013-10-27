@@ -7,7 +7,7 @@ import com.jme3.input.controls.KeyTrigger;
 
 public class InputHandler implements ActionListener {
     
-    /* Input */
+    /* Input keys */
     public boolean LEFT = false, RIGHT = false, UP = false, DOWN = false, SPACE = false;
     
     public void init(InputManager inputManager) {

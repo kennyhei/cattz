@@ -40,9 +40,8 @@ public class GameApp extends SimpleApplication {
     /* Input */
     InputHandler inputHandler;
     
-    /* Geometries and physical bodies */
-    private Box floorBox;
-    private RigidBodyControl floorPhysics;
+     /* Floor */
+    private Floor floor;
     
     /* Player */
     private CharacterControl player;
@@ -97,19 +96,19 @@ public class GameApp extends SimpleApplication {
         walkDirection.set(0f, 0f, 0f);
         
         if (inputHandler.LEFT) {
-            walkDirection.set(camLeft);
+            walkDirection.addLocal(camLeft);
         }
         
         if (inputHandler.RIGHT) {
-            walkDirection.set(camLeft.negate());
+            walkDirection.addLocal(camLeft.negate());
         }
         
         if (inputHandler.UP) {
-            walkDirection.set(camDir);
+            walkDirection.addLocal(camDir);
         }
         
         if (inputHandler.DOWN) {
-            walkDirection.set(camDir.negate());
+            walkDirection.addLocal(camDir.negate());
         }
         
         if (inputHandler.SPACE) {
@@ -121,31 +120,13 @@ public class GameApp extends SimpleApplication {
     }
     
     private void initFloor() {
-        // Create floor
-        floorBox = new Box(300f, 0.1f, 200f);
-        floorBox.scaleTextureCoordinates(new Vector2f(15, 30));
-        Geometry floor = new Geometry("Floor", floorBox);
-        floor.setLocalTranslation(0, -6f, 0);
-        Material mat = new Material(assetManager, "Common/MatDefs/Misc/Unshaded.j3md");
-        
-        // Set up texture to floor material
-        TextureKey key3 = new TextureKey("Textures/Terrain/Pond/Pond.jpg");
-        key3.setGenerateMips(true);
-        Texture tex3 = assetManager.loadTexture(key3);
-        tex3.setWrap(WrapMode.Repeat);
-        mat.setTexture("ColorMap", tex3);
-        
-        floor.setMaterial(mat);
-        
-        // Make the floor physical
-        floorPhysics = new RigidBodyControl(0f);
-        floor.addControl(floorPhysics);
+        floor = new Floor(assetManager);
         
         // Register solid floor to PhysicsSpace
-        bulletAppState.getPhysicsSpace().add(floorPhysics);
+        bulletAppState.getPhysicsSpace().add(floor.getPhysics());
         
         // Add floor to the scene
-        rootNode.attachChild(floor);
+        rootNode.attachChild(floor.getGeometry());
     }
 
     private void initCharacter() {

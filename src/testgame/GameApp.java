@@ -83,13 +83,8 @@ public class GameApp extends SimpleApplication {
     }
     
     private void handleInput(float secondsFromLastTick) {
-        Vector3f nykvektor = player.getLocation();
-        
         if (inputHandler.UP) {
-            
-            nykvektor.setZ(nykvektor.getZ()-0.1f);
-            player.setLocation(nykvektor);
-            //player.changeLinearVelocityTowards(cam.getDirection(), secondsFromLastTick * 1.5f);
+            player.changeLinearVelocityTowards(cam.getDirection(), secondsFromLastTick * 1.5f);
         }
         
         if (inputHandler.RIGHT) {
@@ -151,9 +146,9 @@ public class GameApp extends SimpleApplication {
         chaseCam.setChasingSensitivity(150f);
         chaseCam.setRotationSensitivity(255f);
         chaseCam.setTrailingSensitivity(255f);
-        chaseCam.setDefaultDistance(100f);
-        chaseCam.setMaxDistance(100f);
-        chaseCam.setMinDistance(100f);
+        chaseCam.setDefaultDistance(8f);
+        chaseCam.setMaxDistance(10f);
+        chaseCam.setMinDistance(7f);
         chaseCam.setLookAtOffset(new Vector3f(0f, 0.5f, 0f));
     }
     

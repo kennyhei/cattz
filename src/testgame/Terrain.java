@@ -22,9 +22,9 @@ public class Terrain {
     public static final String NAME = "terrain";
 
     public Terrain(AssetManager assetManager) {
-        Texture heightmapTexture = assetManager.loadTexture("Textures/mazemap.png");
+        Texture heightmapTexture = assetManager.loadTexture("Textures/heightmap.png");
         ImageBasedHeightMap heightmap = new ImageBasedHeightMap(heightmapTexture.getImage());
-        heightmap.setHeightScale(0.00025f);
+        heightmap.setHeightScale(24f);
         heightmap.load();
 
         Material terrainMaterial = new Material(assetManager,
@@ -35,7 +35,7 @@ public class Terrain {
 
         terrain.setMaterial(terrainMaterial);
         terrain.setLocalTranslation(0, -100, 0);
-        terrain.setLocalScale(0.1f);
+        terrain.setLocalScale(1f);
 
         terrain.addControl(new RigidBodyControl(0));
 

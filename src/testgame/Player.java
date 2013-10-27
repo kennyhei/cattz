@@ -13,8 +13,8 @@ public class Player {
 
     private RigidBodyControl ballPhysics;
     private Geometry ballGeometry;
-    private final float defaultFriction = 0f;
-    private final float boostFriction = 0f;
+    private final float defaultFriction = 2.5f;
+    private final float boostFriction = 0.8f;
     public static final String NAME = "player";
 
     public Player(AssetManager assetManager, Vector3f location) {
@@ -30,7 +30,7 @@ public class Player {
         ballGeometry.setLocalTranslation(location);
         ballPhysics = new RigidBodyControl(1f);
         ballGeometry.addControl(ballPhysics);
-        ballPhysics.setPhysicsLocation(new Vector3f(-10f, -10f, 0f));
+        ballPhysics.setPhysicsLocation(new Vector3f(0f, 0f, 0f));
         ballPhysics.setFriction(defaultFriction);
     }
     

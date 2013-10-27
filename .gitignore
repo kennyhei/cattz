@@ -5,8 +5,3 @@
 # Temporary files
 
 *~
-
-# Project
-
-build/
-nbproject/

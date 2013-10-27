@@ -33,11 +33,11 @@ public class Player {
         ballPhysics.setPhysicsLocation(new Vector3f(0f, 0f, 0f));
         ballPhysics.setFriction(defaultFriction);
     }
-    
+
     public Vector3f getLocation() {
         return ballPhysics.getPhysicsLocation();
     }
-    
+
     public void setLocation(Vector3f location) {
         ballPhysics.setPhysicsLocation(location);
     }

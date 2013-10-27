@@ -2,14 +2,11 @@ package game;
 
 import com.jme3.app.SimpleApplication;
 import com.jme3.bullet.BulletAppState;
-import com.jme3.bullet.collision.shapes.CapsuleCollisionShape;
-import com.jme3.bullet.control.CharacterControl;
 import com.jme3.input.ChaseCamera;
 import com.jme3.light.AmbientLight;
 import com.jme3.light.DirectionalLight;
 import com.jme3.math.ColorRGBA;
 import com.jme3.math.Vector3f;
-import com.jme3.scene.Node;
 import com.jme3.system.AppSettings;
 
 public class GameApp extends SimpleApplication {
@@ -33,8 +30,7 @@ public class GameApp extends SimpleApplication {
     private Floor floor;
 
     /* Player */
-    private CharacterControl player;
-    private Node playerModel;
+    private Player player;
 
     /* Camera */
     private ChaseCamera chaseCam;
@@ -81,6 +77,8 @@ public class GameApp extends SimpleApplication {
 
         this.camDir.set(this.cam.getDirection().multLocal(0.6f));
         this.camLeft.set(this.cam.getLeft().multLocal(0.6f));
+
+        // Nothing was pressed, do not walk anywhere
         walkDirection.set(0f, 0f, 0f);
 
         if (inputHandler.LEFT) {
@@ -100,11 +98,11 @@ public class GameApp extends SimpleApplication {
         }
 
         if (inputHandler.SPACE) {
-            player.jump();
+            player.getPhysics().jump();
         }
 
-        player.setWalkDirection(walkDirection);
-        cam.setLocation(player.getPhysicsLocation());
+        player.getPhysics().setWalkDirection(walkDirection);
+        cam.setLocation(player.getPhysics().getPhysicsLocation());
     }
 
     private void initFloor() {
@@ -118,22 +116,21 @@ public class GameApp extends SimpleApplication {
     }
 
     private void initCharacter() {
-        CapsuleCollisionShape capsule = new CapsuleCollisionShape(3f, 4f);
-        player = new CharacterControl(capsule, 0.01f);
-        playerModel = (Node) assetManager.loadModel("Models/Oto/Oto.mesh.xml");
-        playerModel.addControl(player);
-        player.setPhysicsLocation(new Vector3f(0f, 0f, -10f));
+        player = new Player(assetManager, new Vector3f(0, 0f, -10f));
 
         // Register solid player to PhysicsSpace
-        bulletAppState.getPhysicsSpace().add(player);
+        bulletAppState.getPhysicsSpace().add(player.getPhysics());
 
-        rootNode.attachChild(playerModel);
+        // Add player to the scene
+        rootNode.attachChild(player.getModel());
     }
 
     private void initChaseCamera() {
         flyCam.setEnabled(false);
-        chaseCam = new ChaseCamera(cam, playerModel, inputManager);
+        chaseCam = new ChaseCamera(cam, player.getModel(), inputManager);
+        chaseCam.setDefaultHorizontalRotation(-1.5f);
         chaseCam.setDefaultDistance(30f);
+        chaseCam.setLookAtOffset(new Vector3f(0f, 3f, 0f));
         chaseCam.setInvertVerticalAxis(true);
     }
 }

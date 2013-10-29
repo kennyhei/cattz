@@ -23,9 +23,9 @@ public class GameApp extends SimpleApplication {
         app.start();
     }
 
-    /* Clock */
-    private Clock clock;
-    private BitmapText clockText;
+    /* Time */
+    private Clock time;
+    private BitmapText timeText;
 
     /* Physics */
     private BulletAppState bulletAppState;
@@ -82,7 +82,7 @@ public class GameApp extends SimpleApplication {
     public void simpleUpdate(float tpf) {
 
         // Update clock time
-        clockText.setText(clock.toString());
+        timeText.setText(time.toString());
 
         this.camDir.set(this.cam.getDirection().multLocal(0.6f));
         this.camLeft.set(this.cam.getLeft().multLocal(0.6f));
@@ -145,15 +145,15 @@ public class GameApp extends SimpleApplication {
 
     private void initClock() {
         // Display clock with a default font
-        clock = new Clock();
+        time = new Clock();
 
         guiNode.detachAllChildren();
         guiFont = assetManager.loadFont("Interface/Fonts/Default.fnt");
-        clockText = new BitmapText(guiFont, false);
-        clockText.setSize(guiFont.getCharSet().getRenderedSize());
-        clockText.setText(clock.toString());
-        clockText.setLocalTranslation(10, settings.getHeight() - 10, 0);
+        timeText = new BitmapText(guiFont, false);
+        timeText.setSize(guiFont.getCharSet().getRenderedSize());
+        timeText.setText(time.toString());
+        timeText.setLocalTranslation(10, settings.getHeight() - 10, 0);
 
-        guiNode.attachChild(clockText);
+        guiNode.attachChild(timeText);
     }
 }

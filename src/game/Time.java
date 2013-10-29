@@ -3,14 +3,14 @@ package game;
 import java.util.Timer;
 import java.util.TimerTask;
 
-public class Clock extends TimerTask {
+public class Time extends TimerTask {
 
     private Timer timer;
 
     private int minutes;
     private int seconds;
 
-    public Clock() {
+    public Time() {
         this.minutes = 0;
         this.seconds = 0;
 

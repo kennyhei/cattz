@@ -8,6 +8,8 @@ import com.jme3.light.AmbientLight;
 import com.jme3.light.DirectionalLight;
 import com.jme3.math.ColorRGBA;
 import com.jme3.math.Vector3f;
+import com.jme3.scene.Node;
+import com.jme3.scene.Spatial;
 import com.jme3.system.AppSettings;
 
 public class GameApp extends SimpleApplication {
@@ -24,7 +26,7 @@ public class GameApp extends SimpleApplication {
     }
 
     /* Time */
-    private Clock time;
+    private Time time;
     private BitmapText timeText;
 
     /* Physics */
@@ -41,6 +43,10 @@ public class GameApp extends SimpleApplication {
 
     /* Camera */
     private ChaseCamera chaseCam;
+    
+    /* Kubus block */
+    // Node contains blocks
+    private Node blockNode;
 
     // Temporary vectors used on each frame.
     // They are here to avoid instantiating new vectors on each frame
@@ -63,7 +69,8 @@ public class GameApp extends SimpleApplication {
         initCharacter();
         initChaseCamera();
         initFloor();
-        initClock();
+        initBlocks();
+        initTime();
     }
 
     private void setUpLight() {
@@ -112,6 +119,11 @@ public class GameApp extends SimpleApplication {
 
         player.getPhysics().setWalkDirection(walkDirection);
         cam.setLocation(player.getPhysics().getPhysicsLocation());
+        
+        // Rotate blocks
+        for (Spatial block : blockNode.getChildren()) {
+            block.rotate(0f, 2 * tpf, 0f);
+        }
     }
 
     private void initFloor() {
@@ -125,7 +137,7 @@ public class GameApp extends SimpleApplication {
     }
 
     private void initCharacter() {
-        player = new Player(assetManager, new Vector3f(0, 0f, -10f));
+        player = new Player(assetManager, new Vector3f(0f, 0f, -10f));
 
         // Register solid player to PhysicsSpace
         bulletAppState.getPhysicsSpace().add(player.getPhysics());
@@ -143,9 +155,30 @@ public class GameApp extends SimpleApplication {
         chaseCam.setInvertVerticalAxis(true);
     }
 
-    private void initClock() {
+    private void initBlocks() {
+        
+        blockNode = new Node("BlockNode");
+        
+        // Create 6 blocks
+        for (int i = 0; i < 6; ++i) {
+            Block kubusBlock = new Block(assetManager,
+                                         ColorRGBA.randomColor(),
+                                         new Vector3f(i * 10, -1f, 0f));
+            
+            blockNode.attachChild(kubusBlock.getBlockGeometry());
+        }
+
+        rootNode.attachChild(blockNode);
+        
+        // Rotate blocks
+        for (Spatial block : blockNode.getChildren()) {
+            block.rotate(.4f, .4f, 0f);
+        }
+    }
+    
+    private void initTime() {
         // Display clock with a default font
-        time = new Clock();
+        time = new Time();
 
         guiNode.detachAllChildren();
         guiFont = assetManager.loadFont("Interface/Fonts/Default.fnt");

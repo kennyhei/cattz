@@ -2,11 +2,13 @@ package game;
 
 import com.jme3.app.SimpleApplication;
 import com.jme3.bullet.BulletAppState;
+import com.jme3.collision.CollisionResults;
 import com.jme3.font.BitmapText;
 import com.jme3.input.ChaseCamera;
 import com.jme3.light.AmbientLight;
 import com.jme3.light.DirectionalLight;
 import com.jme3.math.ColorRGBA;
+import com.jme3.math.Ray;
 import com.jme3.math.Vector3f;
 import com.jme3.scene.Node;
 import com.jme3.scene.Spatial;
@@ -120,9 +122,32 @@ public class GameApp extends SimpleApplication {
         player.getPhysics().setWalkDirection(walkDirection);
         cam.setLocation(player.getPhysics().getPhysicsLocation());
         
+        collisionLogic();
+        
         // Rotate blocks
         for (Spatial block : blockNode.getChildren()) {
             block.rotate(0f, 2 * tpf, 0f);
+        }
+    }
+    
+    // Check whether the player has collided with blocks
+    private void collisionLogic() {
+        
+        CollisionResults results = new CollisionResults();
+        
+        // Ray points up
+        Ray ray = new Ray(player.getPhysics().getPhysicsLocation(), new Vector3f( 0, -1, 0 ));
+        
+        blockNode.collideWith(ray, results);
+
+        System.out.println("----- Collisions? " + results.size() + "-----");
+        for (int i = 0; i < results.size(); i++) {
+            // For each hit, we know distance, impact point, name of geometry.
+            float dist = results.getCollision(i).getDistance();
+            Vector3f pt = results.getCollision(i).getContactPoint();
+            String hit = results.getCollision(i).getGeometry().getName();
+            System.out.println("* Collision #" + i);
+            System.out.println("  You hit " + hit + " at " + pt + ", " + dist + " wu away.");
         }
     }
 

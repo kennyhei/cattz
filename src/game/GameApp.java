@@ -2,6 +2,9 @@ package game;
 
 import com.jme3.app.SimpleApplication;
 import com.jme3.bullet.BulletAppState;
+import com.jme3.bullet.collision.PhysicsCollisionEvent;
+import com.jme3.bullet.collision.PhysicsCollisionListener;
+import com.jme3.bullet.control.RigidBodyControl;
 import com.jme3.collision.CollisionResults;
 import com.jme3.font.BitmapText;
 import com.jme3.input.ChaseCamera;
@@ -14,7 +17,7 @@ import com.jme3.scene.Node;
 import com.jme3.scene.Spatial;
 import com.jme3.system.AppSettings;
 
-public class GameApp extends SimpleApplication {
+public class GameApp extends SimpleApplication implements PhysicsCollisionListener {
 
     public static void main(String[] args) {
         GameApp app = new GameApp();
@@ -73,6 +76,8 @@ public class GameApp extends SimpleApplication {
         initFloor();
         initBlocks();
         initTime();
+        
+        bulletAppState.getPhysicsSpace().addCollisionListener(this);
     }
 
     private void setUpLight() {
@@ -122,27 +127,9 @@ public class GameApp extends SimpleApplication {
         player.getPhysics().setWalkDirection(walkDirection);
         cam.setLocation(player.getPhysics().getPhysicsLocation());
         
-        collisionLogic();
-        
         // Rotate blocks
         for (Spatial block : blockNode.getChildren()) {
             block.rotate(0f, 2 * tpf, 0f);
-        }
-    }
-    
-    // Check whether the player has collided with blocks
-    private void collisionLogic() {
-        
-        CollisionResults results = new CollisionResults();
-        
-        // Ray points up
-        Ray ray = new Ray(player.getPhysics().getPhysicsLocation(), new Vector3f( 0, -1, 0 ));
-        
-        blockNode.collideWith(ray, results);
-
-        // Remove blocks that were hit by the player
-        for (int i = 0; i < results.size(); i++) {
-            blockNode.detachChild(results.getCollision(i).getGeometry());
         }
     }
 
@@ -157,7 +144,7 @@ public class GameApp extends SimpleApplication {
     }
 
     private void initCharacter() {
-        player = new Player(assetManager, new Vector3f(0f, 0f, -10f));
+        player = new Player(assetManager, new Vector3f(0f, 20f, -10f));
 
         // Register solid player to PhysicsSpace
         bulletAppState.getPhysicsSpace().add(player.getPhysics());
@@ -185,6 +172,7 @@ public class GameApp extends SimpleApplication {
                                          ColorRGBA.randomColor(),
                                          new Vector3f(i * 10, -1f, 0f));
             
+            bulletAppState.getPhysicsSpace().add(kubusBlock.getPhysics());
             blockNode.attachChild(kubusBlock.getBlockGeometry());
         }
 
@@ -208,5 +196,21 @@ public class GameApp extends SimpleApplication {
         timeText.setLocalTranslation(10, settings.getHeight() - 10, 0);
 
         guiNode.attachChild(timeText);
+    }
+
+    // Remove blocks they were hit by the player
+    public void collision(PhysicsCollisionEvent event) {
+        Spatial a = event.getNodeA();
+        Spatial b = event.getNodeB();
+        
+        if (a.getName().equals("Block")) {
+            blockNode.detachChild(a);
+            bulletAppState.getPhysicsSpace().remove(a);
+        }
+        
+        if (b.getName().equals("Block")) {
+            blockNode.detachChild(b);
+            bulletAppState.getPhysicsSpace().remove(b);
+        }
     }
 }

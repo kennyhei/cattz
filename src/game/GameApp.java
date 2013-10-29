@@ -15,7 +15,9 @@ public class GameApp extends SimpleApplication {
     public static void main(String[] args) {
         GameApp app = new GameApp();
         AppSettings settings = new AppSettings(true);
+        settings.setAudioRenderer(null);
         settings.setFrameRate(100);
+        app.showSettings = false;
         app.setSettings(settings);
 
         app.start();

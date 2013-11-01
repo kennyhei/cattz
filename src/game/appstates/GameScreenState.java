@@ -1,7 +1,3 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
 package game.appstates;
 
 import com.jme3.app.Application;
@@ -114,7 +110,6 @@ public class GameScreenState extends AbstractAppState implements PhysicsCollisio
         bulletAppState.getPhysicsSpace().addCollisionListener(this);
     }
 
-
     private void setUpLight() {
         // We add light so we see the scene
         AmbientLight al = new AmbientLight();
@@ -175,6 +170,7 @@ public class GameScreenState extends AbstractAppState implements PhysicsCollisio
 
     // Remove blocks if they were hit by the player
     public void collision(PhysicsCollisionEvent event) {
+
         Spatial a = event.getNodeA();
         Spatial b = event.getNodeB();
 
@@ -252,7 +248,7 @@ public class GameScreenState extends AbstractAppState implements PhysicsCollisio
     }
 
     private void initTime() {
-        // Display clock with a default font
+        // Display time
         time = new Time();
 
         BitmapFont guiFont = assetManager.loadFont("Interface/Fonts/Default.fnt");
@@ -283,6 +279,5 @@ public class GameScreenState extends AbstractAppState implements PhysicsCollisio
     public void stateDetached(AppStateManager stateManager) {
         rootNode.detachChild(localRootNode);
         guiNode.detachChild(localGuiNode);
-
     }
 }

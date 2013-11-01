@@ -25,24 +25,24 @@ public class InputHandler implements ActionListener {
     }
 
     public void onAction(String name, boolean isPressed, float tpf) {
-            if (name.equals("Left")) {
-                LEFT = isPressed;
-            }
+        if (name.equals("Left")) {
+            LEFT = isPressed;
+        }
 
-            if (name.equals("Right")) {
-                RIGHT = isPressed;
-            }
+        if (name.equals("Right")) {
+            RIGHT = isPressed;
+        }
 
-            if (name.equals("Up")) {
-                UP = isPressed;
-            }
+        if (name.equals("Up")) {
+            UP = isPressed;
+        }
 
-            if (name.equals("Down")) {
-                DOWN = isPressed;
-            }
+        if (name.equals("Down")) {
+            DOWN = isPressed;
+        }
 
-            if (name.equals("Jump")) {
-                SPACE = isPressed;
-            }
+        if (name.equals("Jump")) {
+            SPACE = isPressed;
+        }
     }
 }

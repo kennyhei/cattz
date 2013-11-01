@@ -1,7 +1,5 @@
 package game.models;
 
-// Kubus block
-
 import com.jme3.asset.AssetManager;
 import com.jme3.bullet.collision.shapes.BoxCollisionShape;
 import com.jme3.bullet.control.GhostControl;
@@ -12,6 +10,7 @@ import com.jme3.scene.Geometry;
 import com.jme3.scene.shape.Box;
 import game.controllers.BlockControl;
 
+// Kubus block
 public class Block {
 
     private Box blockBox;

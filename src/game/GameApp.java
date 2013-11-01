@@ -8,13 +8,10 @@ import com.jme3.font.BitmapText;
 import com.jme3.input.ChaseCamera;
 import com.jme3.light.AmbientLight;
 import com.jme3.light.DirectionalLight;
-import com.jme3.material.Material;
 import com.jme3.math.ColorRGBA;
 import com.jme3.math.Vector3f;
-import com.jme3.scene.Geometry;
 import com.jme3.scene.Node;
 import com.jme3.scene.Spatial;
-import com.jme3.scene.shape.Box;
 import com.jme3.system.AppSettings;
 
 public class GameApp extends SimpleApplication implements PhysicsCollisionListener {
@@ -33,6 +30,9 @@ public class GameApp extends SimpleApplication implements PhysicsCollisionListen
     /* Time */
     private Time time;
     private BitmapText timeText;
+
+    /* Text */
+    private BitmapText text;
 
     /* Physics */
     private BulletAppState bulletAppState;
@@ -75,6 +75,7 @@ public class GameApp extends SimpleApplication implements PhysicsCollisionListen
         initChaseCamera();
         initFloor();
         initTime();
+        initText();
         initBlocks();
 
         bulletAppState.getPhysicsSpace().addCollisionListener(this);
@@ -94,6 +95,11 @@ public class GameApp extends SimpleApplication implements PhysicsCollisionListen
 
     @Override
     public void simpleUpdate(float tpf) {
+
+        // Blocks have been collected
+        if (blockNode.getChildren().isEmpty()) {
+            guiNode.attachChild(text);
+        }
 
         // Update clock time
         timeText.setText(time.toString());
@@ -224,5 +230,13 @@ public class GameApp extends SimpleApplication implements PhysicsCollisionListen
             blockNode.detachChild(b);
             bulletAppState.getPhysicsSpace().remove(b);
         }
+    }
+
+    private void initText() {
+        guiFont = assetManager.loadFont("Interface/Fonts/Default.fnt");
+        text = new BitmapText(guiFont, false);
+        text.setSize(25.5f);
+        text.setText("Press Enter to continue.");
+        text.setLocalTranslation(settings.getWidth() / 2 - text.getLineWidth() / 2, settings.getHeight() / 2 + text.getLineHeight(), 0);
     }
 }

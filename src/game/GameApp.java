@@ -4,17 +4,17 @@ import com.jme3.app.SimpleApplication;
 import com.jme3.bullet.BulletAppState;
 import com.jme3.bullet.collision.PhysicsCollisionEvent;
 import com.jme3.bullet.collision.PhysicsCollisionListener;
-import com.jme3.bullet.control.RigidBodyControl;
-import com.jme3.collision.CollisionResults;
 import com.jme3.font.BitmapText;
 import com.jme3.input.ChaseCamera;
 import com.jme3.light.AmbientLight;
 import com.jme3.light.DirectionalLight;
+import com.jme3.material.Material;
 import com.jme3.math.ColorRGBA;
-import com.jme3.math.Ray;
 import com.jme3.math.Vector3f;
+import com.jme3.scene.Geometry;
 import com.jme3.scene.Node;
 import com.jme3.scene.Spatial;
+import com.jme3.scene.shape.Box;
 import com.jme3.system.AppSettings;
 
 public class GameApp extends SimpleApplication implements PhysicsCollisionListener {
@@ -48,7 +48,7 @@ public class GameApp extends SimpleApplication implements PhysicsCollisionListen
 
     /* Camera */
     private ChaseCamera chaseCam;
-    
+
     /* Kubus block */
     // Node contains blocks
     private Node blockNode;
@@ -74,9 +74,9 @@ public class GameApp extends SimpleApplication implements PhysicsCollisionListen
         initCharacter();
         initChaseCamera();
         initFloor();
-        initBlocks();
         initTime();
-        
+        initBlocks();
+
         bulletAppState.getPhysicsSpace().addCollisionListener(this);
     }
 
@@ -126,7 +126,7 @@ public class GameApp extends SimpleApplication implements PhysicsCollisionListen
 
         player.getPhysics().setWalkDirection(walkDirection);
         cam.setLocation(player.getPhysics().getPhysicsLocation());
-        
+
         // Rotate blocks
         for (Spatial block : blockNode.getChildren()) {
             block.rotate(0f, 2 * tpf, 0f);
@@ -163,27 +163,37 @@ public class GameApp extends SimpleApplication implements PhysicsCollisionListen
     }
 
     private void initBlocks() {
-        
+
         blockNode = new Node("BlockNode");
-        
-        // Create 6 blocks
+
+        // Create 6 blocks and hud blocks
         for (int i = 0; i < 6; ++i) {
             Block kubusBlock = new Block(assetManager,
                                          ColorRGBA.randomColor(),
                                          new Vector3f(i * 10, -1f, 0f));
-            
+
+            BlockControl c = kubusBlock.getBlockGeometry().getControl(BlockControl.class);
+
+            System.out.println(c.getColor());
+            HudBlock hudBlock = new HudBlock(assetManager,
+                                             c.getColor(),
+                                             new Vector3f(80 + i * 30, settings.getHeight() - 25, 0));
+
+            c.setHudBlock(hudBlock);
+            guiNode.attachChild(hudBlock.getGeometry());
+
             bulletAppState.getPhysicsSpace().add(kubusBlock.getPhysics());
             blockNode.attachChild(kubusBlock.getBlockGeometry());
         }
 
         rootNode.attachChild(blockNode);
-        
+
         // Rotate blocks
         for (Spatial block : blockNode.getChildren()) {
             block.rotate(.4f, .4f, 0f);
         }
     }
-    
+
     private void initTime() {
         // Display clock with a default font
         time = new Time();
@@ -198,17 +208,19 @@ public class GameApp extends SimpleApplication implements PhysicsCollisionListen
         guiNode.attachChild(timeText);
     }
 
-    // Remove blocks they were hit by the player
+    // Remove blocks if they were hit by the player
     public void collision(PhysicsCollisionEvent event) {
         Spatial a = event.getNodeA();
         Spatial b = event.getNodeB();
-        
+
         if (a.getName().equals("Block")) {
+            a.getControl(BlockControl.class).getHudBlock().colour();
             blockNode.detachChild(a);
             bulletAppState.getPhysicsSpace().remove(a);
         }
-        
+
         if (b.getName().equals("Block")) {
+            b.getControl(BlockControl.class).getHudBlock().colour();
             blockNode.detachChild(b);
             bulletAppState.getPhysicsSpace().remove(b);
         }

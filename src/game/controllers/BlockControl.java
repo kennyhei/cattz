@@ -1,5 +1,6 @@
-package game;
+package game.controllers;
 
+import game.models.HudBlock;
 import com.jme3.math.ColorRGBA;
 import com.jme3.renderer.RenderManager;
 import com.jme3.renderer.ViewPort;

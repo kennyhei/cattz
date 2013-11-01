@@ -1,4 +1,4 @@
-package game;
+package game.controllers;
 
 import com.jme3.input.InputManager;
 import com.jme3.input.KeyInput;

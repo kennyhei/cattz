@@ -1,4 +1,4 @@
-package game;
+package game.models;
 
 import com.jme3.asset.AssetManager;
 import com.jme3.bullet.collision.shapes.CapsuleCollisionShape;

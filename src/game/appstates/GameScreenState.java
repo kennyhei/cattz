@@ -21,6 +21,7 @@ import com.jme3.renderer.Camera;
 import com.jme3.scene.Node;
 import com.jme3.scene.Spatial;
 import com.jme3.system.AppSettings;
+import game.Main;
 import game.models.Block;
 import game.controllers.BlockControl;
 import game.models.Floor;
@@ -31,7 +32,7 @@ import game.models.Time;
 
 public class GameScreenState extends AbstractAppState implements PhysicsCollisionListener {
 
-    private SimpleApplication app;
+    private Main app;
     private Node rootNode;
     private Node guiNode;
     private AssetManager assetManager;
@@ -41,7 +42,7 @@ public class GameScreenState extends AbstractAppState implements PhysicsCollisio
     private FlyByCamera flyCam;
 
     public GameScreenState(SimpleApplication app) {
-        this.app = app;
+        this.app = (Main) app;
         this.rootNode = this.app.getRootNode();
         this.guiNode = this.app.getGuiNode();
         this.assetManager = this.app.getAssetManager();
@@ -128,6 +129,9 @@ public class GameScreenState extends AbstractAppState implements PhysicsCollisio
         // Blocks have been collected
         if (blockNode.getChildren().isEmpty()) {
             localGuiNode.attachChild(text);
+
+            // Switching to kubus world ok
+            this.app.setSwitch(true);
         }
 
         // Update clock time
@@ -277,6 +281,7 @@ public class GameScreenState extends AbstractAppState implements PhysicsCollisio
 
     @Override
     public void stateDetached(AppStateManager stateManager) {
+        chaseCam.setInvertVerticalAxis(false);
         rootNode.detachChild(localRootNode);
         guiNode.detachChild(localGuiNode);
     }

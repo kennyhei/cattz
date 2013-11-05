@@ -83,9 +83,7 @@ public class Main extends SimpleApplication {
                     gameRunningState.setEnabled(true);
                     System.out.println("Trying to run again...");
                 }
-
-        }
-            
+            }
         }
     };
 }

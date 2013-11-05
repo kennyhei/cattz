@@ -38,7 +38,7 @@ public class Main extends SimpleApplication {
         gameRunningState = new GameScreenState(this);
         startScreenState = new StartScreenState(this);
         kubusScreenState = new KubusScreenState(this);
-        //pauseScreenState = new PauseScreenState(this);
+        pauseScreenState = new PauseScreenState(this);
 
         stateManager.attach(startScreenState);
 

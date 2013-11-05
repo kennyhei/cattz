@@ -51,7 +51,7 @@ public class KubusScreenState extends AbstractAppState {
     /* Physics */
     private BulletAppState bulletAppState;
     
-        /* Input */
+    /* Input */
     InputHandler inputHandler;
 
     /* Random box */
@@ -138,18 +138,21 @@ public class KubusScreenState extends AbstractAppState {
         public void onAction(String name, boolean keyPressed, float tpf) {
             
             if (name.equals("1st camera") && !keyPressed) {
+                
                 // Switch to 1st camera view
                 cam.setLocation(new Vector3f(0f, 0f, 10f));
                 cam.lookAt(new Vector3f(0f, 0f, -1f), Vector3f.UNIT_Y);
             }
             
             if (name.equals("2nd camera") && !keyPressed) {
+                
                 // Switch to 2nd camera view
                 cam.setLocation(new Vector3f(0f, 0f, -10f));
                 cam.lookAt(new Vector3f(0f, 0f, -1f), Vector3f.UNIT_Y);
             }
             
             if (name.equals("3rd camera") && !keyPressed) {
+                
                 // Switch to 3rd camera view
                 cam.setLocation(new Vector3f(0f, 10f, 0f));
                 cam.lookAt(new Vector3f(0f, 0f, -1f), Vector3f.UNIT_Y);

@@ -72,13 +72,16 @@ public class Main extends SimpleApplication {
             
 
             if(name.equals("Pause") && !isPressed) {
-                if(stateManager.hasState(gameRunningState) && gameRunningState.isEnabled()) {
+                
+                if (stateManager.hasState(gameRunningState) && gameRunningState.isEnabled()) {
                     gameRunningState.setEnabled(paused);
                     stateManager.attach(pauseScreenState);
-                } else if(stateManager.hasState(pauseScreenState)) {
+                    System.out.println("Pausing game...");
+                    
+                } else if (stateManager.hasState(pauseScreenState)) {
                     stateManager.detach(pauseScreenState);
                     gameRunningState.setEnabled(true);
-                    System.out.println("Trying to run again");
+                    System.out.println("Trying to run again...");
                 }
 
         }

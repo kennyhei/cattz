@@ -1,5 +1,15 @@
 package game.appstates;
 
+import com.cubes.BlockManager;
+import com.cubes.BlockSkin;
+import com.cubes.BlockSkin_TextureLocation;
+import com.cubes.BlockTerrainControl;
+import com.cubes.CubesSettings;
+import com.cubes.Vector3Int;
+import com.cubes.test.CubesTestAssets;
+import com.cubes.test.blocks.Block_Grass;
+import com.cubes.test.blocks.Block_Stone;
+import com.cubes.test.blocks.Block_Wood;
 import com.jme3.app.Application;
 import com.jme3.app.SimpleApplication;
 import com.jme3.app.state.AbstractAppState;
@@ -11,13 +21,9 @@ import com.jme3.input.InputManager;
 import com.jme3.input.KeyInput;
 import com.jme3.input.controls.ActionListener;
 import com.jme3.input.controls.KeyTrigger;
-import com.jme3.material.Material;
-import com.jme3.math.ColorRGBA;
 import com.jme3.math.Vector3f;
 import com.jme3.renderer.Camera;
-import com.jme3.scene.Geometry;
 import com.jme3.scene.Node;
-import com.jme3.scene.shape.Box;
 import com.jme3.system.AppSettings;
 import game.controllers.InputHandler;
 
@@ -53,18 +59,9 @@ public class KubusScreenState extends AbstractAppState {
     
     /* Input */
     InputHandler inputHandler;
-
-    /* Random box */
-    private Box box;
-    private Geometry boxGeom;
     
-    /* Directions to show the Kubus puzzle */
-        
-    // From above
-    private Vector3f above;
-    
-    // From left
-    private Vector3f left;
+    /* Block node */
+    private Node terrainNode;
     
     // Rotate
     private boolean canRotate = true;
@@ -73,35 +70,21 @@ public class KubusScreenState extends AbstractAppState {
     public void initialize(AppStateManager stateManager, Application app) {
         super.initialize(stateManager, app);
 
-        // Directions setup
-        above = new Vector3f(0f, 0f, 0f);
-
         // Default camera settings
         flyCam.setEnabled(true);
         flyCam.setDragToRotate(true);
         cam.setLocation(new Vector3f(0f, 0f, 10f));
         cam.lookAt(new Vector3f(0f, 0f, -1f), Vector3f.UNIT_Y);
+        
+        flyCam.setMoveSpeed(10);
 
         // Add input handling
         inputHandler = new InputHandler();
         inputHandler.init(inputManager);
         
-        this.box = new Box(1f, 1f, 1f);
-        this.boxGeom = new Geometry("Box", box);
-        Material mat = new Material(assetManager, "Common/MatDefs/Misc/Unshaded.j3md");
-        mat.setColor("Color", ColorRGBA.Blue);
-        boxGeom.setMaterial(mat);
-        boxGeom.setLocalTranslation(0f, 1f, 1f);
-        
-        Box second = new Box(1f, 2f, 1f);
-        Geometry secondBox = new Geometry("Box", second);
-        Material secondMat = new Material(assetManager, "Common/MatDefs/Misc/Unshaded.j3md");
-        secondBox.setMaterial(secondMat);
-        secondBox.setLocalTranslation(-1f, 0f, 0f);
+        registerBlocks();
+        createWorld();
 
-        localRootNode.attachChild(boxGeom);
-        localRootNode.attachChild(secondBox);
-        
         // Custom keybindings for switching camera views
         initCameraKeys();
     }
@@ -110,7 +93,7 @@ public class KubusScreenState extends AbstractAppState {
     public void update(float tpf) {
 
         if (canRotate) {
-             boxGeom.rotate(0f, 2 * tpf, 0f);
+            terrainNode.rotate(1 * tpf, 2 * tpf, 0f);
         }
 
         if (inputHandler.LEFT) {
@@ -160,6 +143,39 @@ public class KubusScreenState extends AbstractAppState {
         }
     };
 
+    private void createWorld() {
+        
+        BlockTerrainControl blockTerrain = new BlockTerrainControl(CubesTestAssets.getSettings(this.app), new Vector3Int(1, 1, 1));
+
+        blockTerrain.setBlock(new Vector3Int(0, 0, 0), Block_Wood.class);
+        blockTerrain.setBlock(new Vector3Int(0, 0, 1), Block_Wood.class);
+        blockTerrain.setBlock(new Vector3Int(1, 0, 0), Block_Wood.class);
+        blockTerrain.setBlock(new Vector3Int(1, 0, 1), Block_Stone.class);
+        blockTerrain.setBlock(0, 0, 0, Block_Grass.class);
+        
+        this.terrainNode = new Node();
+        terrainNode.addControl(blockTerrain);
+        
+        localRootNode.setLocalScale(0.2f);
+        localRootNode.attachChild(terrainNode);
+    }
+
+    private void registerBlocks() {
+        
+        // Register blocks to make them available for use
+        BlockManager.register(Block_Grass.class, new BlockSkin(new BlockSkin_TextureLocation(0, 0), false));
+        BlockManager.register(Block_Stone.class, new BlockSkin(new BlockSkin_TextureLocation(9, 0), false));
+        
+        BlockManager.register(Block_Wood.class, new BlockSkin(new BlockSkin_TextureLocation[]{
+            new BlockSkin_TextureLocation(4, 0),
+            new BlockSkin_TextureLocation(4, 0),
+            new BlockSkin_TextureLocation(3, 0),
+            new BlockSkin_TextureLocation(3, 0),
+            new BlockSkin_TextureLocation(3, 0),
+            new BlockSkin_TextureLocation(3, 0)
+        }, false));
+    }
+    
     @Override
     public void stateAttached(AppStateManager stateManager) {
         rootNode.attachChild(localRootNode);
@@ -171,5 +187,4 @@ public class KubusScreenState extends AbstractAppState {
         rootNode.detachChild(localRootNode);
         guiNode.detachChild(localGuiNode);
     }
-
 }

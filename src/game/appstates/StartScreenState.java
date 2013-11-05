@@ -27,6 +27,7 @@ public class StartScreenState extends AbstractAppState {
     private Node localRootNode = new Node("Start Screen RootNode");
     private Node localGuiNode = new Node("Start Screen GuiNode");
     private final ColorRGBA backgroundColor = ColorRGBA.Black;
+    private Tonegod tonegod;
 
     public StartScreenState(SimpleApplication app) {
         this.app = app;
@@ -42,18 +43,9 @@ public class StartScreenState extends AbstractAppState {
         viewPort.setBackgroundColor(backgroundColor);
         
         // tonegod gui start
-        Tonegod tonegod = new Tonegod(this.app);
+        tonegod = new Tonegod(this.app);
         tonegod.drawGui();
         
-        
-//        Screen screen = new Screen(app);
-//        guiNode.addControl(screen);
-//        
-//        Window win = new Window(screen, "win", new Vector2f(15,15));
-//        screen.addElement(win);
-        
-        
-
         // Menu message
         BitmapFont guiFont = assetManager.loadFont("Interface/Fonts/Default.fnt");
         BitmapText displaytext = new BitmapText(guiFont);
@@ -75,6 +67,7 @@ public class StartScreenState extends AbstractAppState {
 
     @Override
     public void stateDetached(AppStateManager stateManager) {
+        tonegod.destroyGui();
         rootNode.detachChild(localRootNode);
         guiNode.detachChild(localGuiNode);
     }

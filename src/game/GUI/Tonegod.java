@@ -22,6 +22,7 @@ public class Tonegod {
     private SimpleApplication app;
     private Node guiNode;
     private int winCount = 0;
+    private Window win;
     
     
     public Tonegod(SimpleApplication app) {
@@ -44,7 +45,7 @@ public class Tonegod {
         this.screen = new Screen(app);
         guiNode.addControl(screen);
         
-        Window win = new Window(screen, "win", new Vector2f(15,15));
+        win = new Window(screen, "win", new Vector2f(15,15));
         screen.addElement(win);
         
          ButtonAdapter makeWindow = new ButtonAdapter(screen, "Btn1", new Vector2f(15, 55)) {
@@ -58,6 +59,11 @@ public class Tonegod {
         };
         
         win.addChild(makeWindow);
+    }
+    
+    
+    public void destroyGui(){
+        screen.removeElement(win);
     }
     
    

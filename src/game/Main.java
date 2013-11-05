@@ -7,6 +7,7 @@ import com.jme3.input.controls.KeyTrigger;
 import com.jme3.system.AppSettings;
 import game.appstates.GameScreenState;
 import game.appstates.KubusScreenState;
+import game.appstates.PauseScreenState;
 import game.appstates.StartScreenState;
 
 public class Main extends SimpleApplication {
@@ -15,6 +16,7 @@ public class Main extends SimpleApplication {
     private GameScreenState gameRunningState;
     private StartScreenState startScreenState;
     private KubusScreenState kubusScreenState;
+    private PauseScreenState pauseScreenState;
 
     private boolean switchToKubus = false;
 
@@ -36,13 +38,16 @@ public class Main extends SimpleApplication {
         gameRunningState = new GameScreenState(this);
         startScreenState = new StartScreenState(this);
         kubusScreenState = new KubusScreenState(this);
+        //pauseScreenState = new PauseScreenState(this);
 
         stateManager.attach(startScreenState);
 
         inputManager.addMapping("Start", new KeyTrigger(KeyInput.KEY_BACK));
         inputManager.addMapping("Continue", new KeyTrigger(KeyInput.KEY_RETURN));
+        inputManager.addMapping("Pause", new KeyTrigger(KeyInput.KEY_ESCAPE));
         inputManager.addListener(actionListener, "Start");
         inputManager.addListener(actionListener, "Continue");
+        inputManager.addListener(actionListener, "Pause");
     }
 
     public void setSwitch(boolean switchOk) {
@@ -63,6 +68,11 @@ public class Main extends SimpleApplication {
                 stateManager.attach(kubusScreenState);
                 System.out.println("Switching to kubus world...");
             }
+            
+//            if(name.equals("Pause") && !isPressed) {
+//                stateManager.detach(gameRunningState);
+//                stateManager.attach(pauseScreenState);
+//            }
         }
     };
 }

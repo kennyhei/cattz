@@ -16,6 +16,7 @@ import com.jme3.scene.Geometry;
 import com.jme3.scene.Node;
 import com.jme3.scene.shape.Box;
 import com.jme3.system.AppSettings;
+import game.controllers.InputHandler;
 
 public class KubusScreenState extends AbstractAppState {
 
@@ -46,21 +47,43 @@ public class KubusScreenState extends AbstractAppState {
 
     /* Physics */
     private BulletAppState bulletAppState;
+    
+        /* Input */
+    InputHandler inputHandler;
 
     /* Random box */
     private Box box;
     private Geometry boxGeom;
+    
+    /* Directions to show the Kubus puzzle */
+        
+    // From above
+    private Vector3f above;
+    
+    // From left
+    private Vector3f left;
+    
+    // Rotate
+    private boolean canRotate = true;
 
     @Override
     public void initialize(AppStateManager stateManager, Application app) {
         super.initialize(stateManager, app);
 
+        // Directions setup
+        above = new Vector3f(0f, 0f, 0f);
+        
         // Back to default camera settings
         flyCam.setEnabled(true);
         flyCam.setDragToRotate(true);
         cam.setLocation(new Vector3f(0f, 0f, 10f));
         cam.lookAt(new Vector3f(0f, 0f, -1f), Vector3f.UNIT_Y);
 
+        
+        // Add input handling
+        inputHandler = new InputHandler();
+        inputHandler.init(inputManager);
+        
         this.box = new Box(1f, 1f, 1f);
         this.boxGeom = new Geometry("Box", box);
         Material mat = new Material(assetManager, "Common/MatDefs/Misc/Unshaded.j3md");
@@ -73,7 +96,34 @@ public class KubusScreenState extends AbstractAppState {
 
     @Override
     public void update(float tpf) {
-        boxGeom.rotate(0f, 2 * tpf, 0f);
+
+     
+        
+        if(canRotate) {
+             boxGeom.rotate(0f, 2 * tpf, 0f);
+        }
+       
+        
+        
+        if (inputHandler.LEFT) {
+            cam.lookAt(new Vector3f(0f, 0f, -1f), Vector3f.UNIT_XYZ);
+            System.out.println("");
+            canRotate = false;
+        }
+
+        if (inputHandler.RIGHT) {
+            canRotate = true;
+        } /*
+
+        if (inputHandler.UP) {
+            walkDirection.addLocal(camDir);
+        }
+
+        if (inputHandler.DOWN) {
+            walkDirection.addLocal(camDir.negate());
+        } */
+        
+        
     }
 
     @Override

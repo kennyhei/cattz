@@ -69,15 +69,14 @@ public class Main extends SimpleApplication {
                 stateManager.attach(kubusScreenState);
                 System.out.println("Switching to kubus world...");
             }
-            
 
             if(name.equals("Pause") && !isPressed) {
-                
+
                 if (stateManager.hasState(gameRunningState) && gameRunningState.isEnabled()) {
                     gameRunningState.setEnabled(paused);
                     stateManager.attach(pauseScreenState);
                     System.out.println("Pausing game...");
-                    
+
                 } else if (stateManager.hasState(pauseScreenState)) {
                     stateManager.detach(pauseScreenState);
                     gameRunningState.setEnabled(true);
@@ -87,5 +86,4 @@ public class Main extends SimpleApplication {
         }
     };
 }
-            
-            
+

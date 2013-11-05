@@ -8,14 +8,9 @@ import com.jme3.asset.AssetManager;
 import com.jme3.font.BitmapFont;
 import com.jme3.font.BitmapText;
 import com.jme3.math.ColorRGBA;
-import com.jme3.math.Vector2f;
 import com.jme3.renderer.ViewPort;
 import com.jme3.scene.Node;
 import game.GUI.Tonegod;
-import tonegod.gui.controls.windows.Window;
-import tonegod.gui.core.Screen;
-
-
 
 public class StartScreenState extends AbstractAppState {
 
@@ -41,11 +36,11 @@ public class StartScreenState extends AbstractAppState {
     public void initialize(AppStateManager stateManager, Application app) {
         super.initialize(stateManager, app);
         viewPort.setBackgroundColor(backgroundColor);
-        
+
         // tonegod gui start
         tonegod = new Tonegod(this.app);
         tonegod.drawGui();
-        
+
         // Menu message
         BitmapFont guiFont = assetManager.loadFont("Interface/Fonts/Default.fnt");
         BitmapText displaytext = new BitmapText(guiFont);

@@ -44,7 +44,7 @@ public class Main extends SimpleApplication {
 
         inputManager.addMapping("Start", new KeyTrigger(KeyInput.KEY_BACK));
         inputManager.addMapping("Continue", new KeyTrigger(KeyInput.KEY_RETURN));
-        inputManager.addMapping("Pause", new KeyTrigger(KeyInput.KEY_ESCAPE));
+        inputManager.addMapping("Pause", new KeyTrigger(KeyInput.KEY_F1));
         inputManager.addListener(actionListener, "Start");
         inputManager.addListener(actionListener, "Continue");
         inputManager.addListener(actionListener, "Pause");
@@ -60,6 +60,7 @@ public class Main extends SimpleApplication {
             if (name.equals("Start") && !isPressed) {
                 stateManager.detach(startScreenState);
                 stateManager.attach(gameRunningState);
+                gameRunningState.setEnabled(true);
                 System.out.println("Starting game...");
             }
 
@@ -70,8 +71,31 @@ public class Main extends SimpleApplication {
             }
             
             if(name.equals("Pause") && !isPressed) {
-                stateManager.detach(gameRunningState);
-                stateManager.attach(pauseScreenState);
+                if(stateManager.hasState(gameRunningState) && gameRunningState.isEnabled()) {
+                    gameRunningState.setEnabled(paused);
+                    stateManager.attach(pauseScreenState);
+                } else if(stateManager.hasState(pauseScreenState)) {
+                    stateManager.detach(pauseScreenState);
+                    gameRunningState.setEnabled(true);
+                    System.out.println("Trying to run again");
+                }
+                
+                
+                
+//                if(stateManager.hasState(gameRunningState)) {
+//                    //stateManager.detach(gameRunningState);
+//                    gameRunningState.setEnabled(paused);
+//                    stateManager.detach(gameRunningState);
+//                    stateManager.attach(pauseScreenState);
+//                    System.out.println("Game is paused...");
+//                }
+//                if(pauseScreenState.isEnabled()) {
+//                    stateManager.detach(pauseScreenState);
+//                    stateManager.attach(gameRunningState);
+//                    
+//                    //gameRunningState.setEnabled(true);
+//                }
+                
             }
         }
     };

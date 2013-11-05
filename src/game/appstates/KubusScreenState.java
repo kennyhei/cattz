@@ -8,6 +8,9 @@ import com.jme3.asset.AssetManager;
 import com.jme3.bullet.BulletAppState;
 import com.jme3.input.FlyByCamera;
 import com.jme3.input.InputManager;
+import com.jme3.input.KeyInput;
+import com.jme3.input.controls.ActionListener;
+import com.jme3.input.controls.KeyTrigger;
 import com.jme3.material.Material;
 import com.jme3.math.ColorRGBA;
 import com.jme3.math.Vector3f;
@@ -55,7 +58,7 @@ public class KubusScreenState extends AbstractAppState {
     public void initialize(AppStateManager stateManager, Application app) {
         super.initialize(stateManager, app);
 
-        // Back to default camera settings
+        // Default camera settings
         flyCam.setEnabled(true);
         flyCam.setDragToRotate(true);
         cam.setLocation(new Vector3f(0f, 0f, 10f));
@@ -67,14 +70,57 @@ public class KubusScreenState extends AbstractAppState {
         mat.setColor("Color", ColorRGBA.Blue);
         boxGeom.setMaterial(mat);
         boxGeom.setLocalTranslation(0f, 1f, 1f);
+        
+        Box second = new Box(1f, 2f, 1f);
+        Geometry secondBox = new Geometry("Box", second);
+        Material secondMat = new Material(assetManager, "Common/MatDefs/Misc/Unshaded.j3md");
+        secondBox.setMaterial(secondMat);
+        secondBox.setLocalTranslation(-1f, 0f, 0f);
 
         localRootNode.attachChild(boxGeom);
+        localRootNode.attachChild(secondBox);
+        
+        // Custom keybindings for switching camera views
+        initCameraKeys();
     }
 
     @Override
     public void update(float tpf) {
         boxGeom.rotate(0f, 2 * tpf, 0f);
     }
+    
+    private void initCameraKeys() {
+        inputManager.addMapping("1st camera", new KeyTrigger(KeyInput.KEY_1));
+        inputManager.addMapping("2nd camera", new KeyTrigger(KeyInput.KEY_2));
+        inputManager.addMapping("3rd camera", new KeyTrigger(KeyInput.KEY_3));
+        
+        inputManager.addListener(actionListener, "1st camera");
+        inputManager.addListener(actionListener, "2nd camera");
+        inputManager.addListener(actionListener, "3rd camera");
+    }
+    
+    private ActionListener actionListener = new ActionListener() {
+        
+        @Override
+        public void onAction(String name, boolean keyPressed, float tpf) {
+            
+            if (name.equals("1st camera") && !keyPressed) {
+                // Switch to 1st camera view
+                cam.setLocation(new Vector3f(0f, 0f, 10f));
+                cam.lookAt(new Vector3f(0f, 0f, -1f), Vector3f.UNIT_Y);
+            }
+            
+            if (name.equals("2nd camera") && !keyPressed) {
+                // Switch to 2nd camera view
+                cam.setLocation(new Vector3f(0f, 0f, -10f));
+                cam.lookAt(new Vector3f(0f, 0f, -1f), Vector3f.UNIT_Y);
+            }
+            
+            if (name.equals("3rd camera") && !keyPressed) {
+                // Switch to 3rd camera view
+            }
+        }
+    };
 
     @Override
     public void stateAttached(AppStateManager stateManager) {

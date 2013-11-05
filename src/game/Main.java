@@ -70,7 +70,7 @@ public class Main extends SimpleApplication {
                 System.out.println("Switching to kubus world...");
             }
             
-<<<<<<< HEAD
+
             if(name.equals("Pause") && !isPressed) {
                 if(stateManager.hasState(gameRunningState) && gameRunningState.isEnabled()) {
                     gameRunningState.setEnabled(paused);
@@ -80,30 +80,11 @@ public class Main extends SimpleApplication {
                     gameRunningState.setEnabled(true);
                     System.out.println("Trying to run again");
                 }
-                
-                
-                
-//                if(stateManager.hasState(gameRunningState)) {
-//                    //stateManager.detach(gameRunningState);
-//                    gameRunningState.setEnabled(paused);
-//                    stateManager.detach(gameRunningState);
-//                    stateManager.attach(pauseScreenState);
-//                    System.out.println("Game is paused...");
-//                }
-//                if(pauseScreenState.isEnabled()) {
-//                    stateManager.detach(pauseScreenState);
-//                    stateManager.attach(gameRunningState);
-//                    
-//                    //gameRunningState.setEnabled(true);
-//                }
-                
-            }
-=======
-//            if(name.equals("Pause") && !isPressed) {
-//                stateManager.detach(gameRunningState);
-//                stateManager.attach(pauseScreenState);
-//            }
->>>>>>> dbf1d51bdef98d1b8a8be58f7db485810745b762
+
+        }
+            
         }
     };
 }
+            
+            

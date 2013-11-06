@@ -21,17 +21,18 @@ public class Main extends SimpleApplication {
     private KubusScreenState kubusScreenState;
     private PauseScreenState pauseScreenState;
     private Tonegod tonegod;
-    
 
     private boolean switchToKubus = false;
 
     public static void main(String[] args) {
         Main app = new Main();
+
         AppSettings settings = new AppSettings(true);
         settings.setAudioRenderer(null);
         settings.setFrameRate(100);
         app.showSettings = false;
         app.setSettings(settings);
+
         app.start();
     }
 
@@ -39,7 +40,7 @@ public class Main extends SimpleApplication {
     @Override
     public void simpleInitApp() {
         flyCam.setEnabled(false);
-        
+
         // creating the GUI
         tonegod = new Tonegod(this);
 
@@ -56,10 +57,10 @@ public class Main extends SimpleApplication {
         inputManager.addListener(actionListener, "Start");
         inputManager.addListener(actionListener, "Continue");
         inputManager.addListener(actionListener, "Pause");
-        // tonegodgui click listener
+
+        // Tonegodgui click listener
         inputManager.addMapping("click", new MouseButtonTrigger(MouseInput.BUTTON_LEFT));
         inputManager.addListener(actionListener, "click");
-        
     }
 
     public void setSwitch(boolean switchOk) {
@@ -69,8 +70,8 @@ public class Main extends SimpleApplication {
     private ActionListener actionListener = new ActionListener() {
 
         public void onAction(String name, boolean isPressed, float tpf) {
-           
-// this is a tonegod-related listener that does not work as it is 
+
+// this is a tonegod-related listener that does not work as it is
 //            if (name.equals("click") && !isPressed) {
 //               // we know something has been clicked
 //                System.out.println("KLIKKKK");
@@ -80,8 +81,8 @@ public class Main extends SimpleApplication {
 //                   gameRunningState.setEnabled(true);
 //                   System.out.println("level 1");
 //               }
-//            } 
-            
+//            }
+
             if (name.equals("Start") && !isPressed) {
                 stateManager.detach(startScreenState);
                 stateManager.attach(gameRunningState);
@@ -110,6 +111,5 @@ public class Main extends SimpleApplication {
             }
         }
     };
-    
 }
 

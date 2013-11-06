@@ -16,7 +16,6 @@ public class Tonegod {
     private int winCount = 0;
     private Window win;
     boolean buttonPressed;
-    
 
     public Tonegod(Main app) {
         this.app = app;
@@ -41,16 +40,14 @@ public class Tonegod {
         screen.addElement(win);
 
         ButtonAdapter clickLevel = new ButtonAdapter(screen, "Btn1", new Vector2f(15, 55)) {
-        
 
             @Override
             public void onButtonMouseLeftUp(MouseButtonEvent evt, boolean toggled) {
                 createNewWindow("New Window " + winCount);
                 buttonPressed = true;
-                
             }
-
         };
+
         clickLevel.setText("Level 1");
         win.addChild(clickLevel);
     }
@@ -58,7 +55,7 @@ public class Tonegod {
     public void destroyGui() {
         screen.removeElement(win);
     }
-    
+
     public boolean buttonPressed(){
         return buttonPressed;
     }

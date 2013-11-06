@@ -111,5 +111,10 @@ public class Main extends SimpleApplication {
             }
         }
     };
+
+    @Override
+    public void destroy() {
+        System.exit(0);
+    }
 }
 

@@ -24,12 +24,13 @@ public class StartScreenState extends AbstractAppState {
     private final ColorRGBA backgroundColor = ColorRGBA.Black;
     private Tonegod tonegod;
 
-    public StartScreenState(SimpleApplication app) {
+    public StartScreenState(SimpleApplication app, Tonegod tonegod) {
         this.app = app;
         this.rootNode = app.getRootNode();
         this.viewPort = app.getViewPort();
         this.guiNode = app.getGuiNode();
         this.assetManager = app.getAssetManager();
+        this.tonegod = tonegod;
     }
 
     @Override
@@ -38,8 +39,8 @@ public class StartScreenState extends AbstractAppState {
         viewPort.setBackgroundColor(backgroundColor);
 
         // tonegod gui start
-        tonegod = new Tonegod(this.app);
-        tonegod.drawGui();
+//        below commented out because of shaky functionality --Emilia
+//        tonegod.drawGui();
 
         // Menu message
         BitmapFont guiFont = assetManager.loadFont("Interface/Fonts/Default.fnt");
@@ -62,7 +63,8 @@ public class StartScreenState extends AbstractAppState {
 
     @Override
     public void stateDetached(AppStateManager stateManager) {
-        tonegod.destroyGui();
+        // below commented out because of shaky functionality --Emilia
+        //tonegod.destroyGui();
         rootNode.detachChild(localRootNode);
         guiNode.detachChild(localGuiNode);
     }

@@ -1,9 +1,9 @@
 package game.GUI;
 
-import com.jme3.app.SimpleApplication;
 import com.jme3.input.event.MouseButtonEvent;
 import com.jme3.math.Vector2f;
 import com.jme3.scene.Node;
+import game.Main;
 import tonegod.gui.controls.buttons.ButtonAdapter;
 import tonegod.gui.controls.windows.Window;
 import tonegod.gui.core.Screen;
@@ -11,14 +11,17 @@ import tonegod.gui.core.Screen;
 public class Tonegod {
 
     private Screen screen;
-    private SimpleApplication app;
+    private Main app;
     private Node guiNode;
     private int winCount = 0;
     private Window win;
+    boolean buttonPressed;
+    
 
-    public Tonegod(SimpleApplication app) {
+    public Tonegod(Main app) {
         this.app = app;
         this.guiNode = app.getGuiNode();
+        this.buttonPressed = false;
     }
 
     public final void createNewWindow(String someWindowTitle) {
@@ -37,19 +40,26 @@ public class Tonegod {
         win = new Window(screen, "win", new Vector2f(15, 15));
         screen.addElement(win);
 
-        ButtonAdapter makeWindow = new ButtonAdapter(screen, "Btn1", new Vector2f(15, 55)) {
+        ButtonAdapter clickLevel = new ButtonAdapter(screen, "Btn1", new Vector2f(15, 55)) {
+        
 
             @Override
             public void onButtonMouseLeftUp(MouseButtonEvent evt, boolean toggled) {
                 createNewWindow("New Window " + winCount);
+                buttonPressed = true;
+                
             }
 
         };
-
-        win.addChild(makeWindow);
+        clickLevel.setText("Level 1");
+        win.addChild(clickLevel);
     }
 
     public void destroyGui() {
         screen.removeElement(win);
+    }
+    
+    public boolean buttonPressed(){
+        return buttonPressed;
     }
 }

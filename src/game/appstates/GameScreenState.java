@@ -1,5 +1,18 @@
 package game.appstates;
 
+import static com.cubes.Block.Face.Bottom;
+import static com.cubes.Block.Face.Top;
+import com.cubes.BlockChunkControl;
+import com.cubes.BlockChunkListener;
+import com.cubes.BlockManager;
+import com.cubes.BlockSkin;
+import com.cubes.BlockSkin_TextureLocation;
+import com.cubes.BlockTerrainControl;
+import com.cubes.Vector3Int;
+import com.cubes.test.CubesTestAssets;
+import com.cubes.test.blocks.Block_Grass;
+import com.cubes.test.blocks.Block_Stone;
+import com.cubes.test.blocks.Block_Wood;
 import com.jme3.app.Application;
 import com.jme3.app.SimpleApplication;
 import com.jme3.app.state.AbstractAppState;
@@ -8,6 +21,8 @@ import com.jme3.asset.AssetManager;
 import com.jme3.bullet.BulletAppState;
 import com.jme3.bullet.collision.PhysicsCollisionEvent;
 import com.jme3.bullet.collision.PhysicsCollisionListener;
+import com.jme3.bullet.collision.shapes.MeshCollisionShape;
+import com.jme3.bullet.control.RigidBodyControl;
 import com.jme3.font.BitmapFont;
 import com.jme3.font.BitmapText;
 import com.jme3.input.ChaseCamera;
@@ -17,9 +32,15 @@ import com.jme3.light.AmbientLight;
 import com.jme3.light.DirectionalLight;
 import com.jme3.math.ColorRGBA;
 import com.jme3.math.Vector3f;
+import com.jme3.post.FilterPostProcessor;
 import com.jme3.renderer.Camera;
+import com.jme3.renderer.ViewPort;
+import com.jme3.renderer.queue.RenderQueue;
+import com.jme3.scene.Geometry;
 import com.jme3.scene.Node;
 import com.jme3.scene.Spatial;
+import com.jme3.shadow.DirectionalLightShadowFilter;
+import com.jme3.shadow.DirectionalLightShadowRenderer;
 import com.jme3.system.AppSettings;
 import game.Main;
 import game.models.Block;
@@ -40,6 +61,7 @@ public class GameScreenState extends AbstractAppState implements PhysicsCollisio
     private InputManager inputManager;
     private Camera cam;
     private FlyByCamera flyCam;
+    private ViewPort viewPort;
 
     public GameScreenState(SimpleApplication app) {
         this.app = (Main) app;
@@ -50,6 +72,7 @@ public class GameScreenState extends AbstractAppState implements PhysicsCollisio
         this.cam = this.app.getCamera();
         this.flyCam = this.app.getFlyByCamera();
         this.settings = this.app.getContext().getSettings();
+        this.viewPort = this.app.getViewPort();
     }
 
     /* Local root and gui nodes */
@@ -69,8 +92,8 @@ public class GameScreenState extends AbstractAppState implements PhysicsCollisio
     /* Input */
     InputHandler inputHandler;
 
-     /* Floor */
-    private Floor floor;
+    /* Terrain */
+    private Node terrainNode;
 
     /* Player */
     private Player player;
@@ -103,7 +126,8 @@ public class GameScreenState extends AbstractAppState implements PhysicsCollisio
 
         initCharacter();
         initChaseCamera();
-        initFloor();
+        registerBlocks();
+        initWorld();
         initBlocks();
         initTime();
         initText();
@@ -112,15 +136,24 @@ public class GameScreenState extends AbstractAppState implements PhysicsCollisio
     }
 
     private void setUpLight() {
-        // We add light so we see the scene
-        AmbientLight al = new AmbientLight();
-        al.setColor(ColorRGBA.White.mult(1.3f));
-        localRootNode.addLight(al);
-
         DirectionalLight dl = new DirectionalLight();
         dl.setColor(ColorRGBA.White);
-        dl.setDirection(new Vector3f(2.8f, -2.8f, -2.8f).normalizeLocal());
+        dl.setDirection(new Vector3f(-.5f, -.5f, -.5f).normalizeLocal());
         localRootNode.addLight(dl);
+
+        /* Drop shadows */
+        final int SHADOWMAP_SIZE=1024;
+        DirectionalLightShadowRenderer dlsr = new DirectionalLightShadowRenderer(assetManager, SHADOWMAP_SIZE, 3);
+        dlsr.setLight(dl);
+        dlsr.setShadowIntensity(0.7f);
+        viewPort.addProcessor(dlsr);
+
+        DirectionalLightShadowFilter dlsf = new DirectionalLightShadowFilter(assetManager, SHADOWMAP_SIZE, 3);
+        dlsf.setLight(dl);
+        dlsf.setEnabled(true);
+        FilterPostProcessor fpp = new FilterPostProcessor(assetManager);
+        fpp.addFilter(dlsf);
+        viewPort.addProcessor(fpp);
     }
 
     @Override
@@ -191,18 +224,8 @@ public class GameScreenState extends AbstractAppState implements PhysicsCollisio
         }
     }
 
-    private void initFloor() {
-        floor = new Floor(assetManager);
-
-        // Register solid floor to PhysicsSpace
-        bulletAppState.getPhysicsSpace().add(floor.getPhysics());
-
-        // Add floor to the scene
-        localRootNode.attachChild(floor.getGeometry());
-    }
-
     private void initCharacter() {
-        player = new Player(assetManager, new Vector3f(0f, 20f, -10f));
+        player = new Player(assetManager, new Vector3f(10f, 40f, 15f));
 
         // Register solid player to PhysicsSpace
         bulletAppState.getPhysicsSpace().add(player.getPhysics());
@@ -220,6 +243,68 @@ public class GameScreenState extends AbstractAppState implements PhysicsCollisio
         chaseCam.setInvertVerticalAxis(true);
     }
 
+    private void registerBlocks() {
+
+        // Register blocks to make them available for use
+        BlockManager.register(Block_Grass.class, new BlockSkin(new BlockSkin_TextureLocation[]{
+
+            // We specify the 3 textures we need:
+            // Grass, Earth-Grass-Transition and Earth
+            new BlockSkin_TextureLocation(0, 0),
+            new BlockSkin_TextureLocation(1, 0),
+            new BlockSkin_TextureLocation(2, 0),}, false) {
+
+                // The number that's being returned specified the index
+            // of the texture in the previous declared TextureLocation array
+            @Override
+            protected int getTextureLocationIndex(BlockChunkControl chunk, Vector3Int blockLocation, com.cubes.Block.Face face) {
+
+                if (chunk.isBlockOnSurface(blockLocation)) {
+                    switch (face) {
+                        case Top:
+                            return 0;
+
+                        case Bottom:
+                            return 2;
+                    }
+                    return 1;
+                }
+                return 2;
+            }
+        });
+    }
+
+    private void initWorld() {
+
+        BlockTerrainControl blockTerrain = new BlockTerrainControl(CubesTestAssets.getSettings(this.app), new Vector3Int(14, 1, 14));
+        blockTerrain.setBlocksFromHeightmap(new Vector3Int(0, -5, -5), "Textures/maze2.png", 15, Block_Grass.class);
+
+        this.terrainNode = new Node();
+        terrainNode.addControl(blockTerrain);
+        terrainNode.setShadowMode(RenderQueue.ShadowMode.CastAndReceive);
+
+        // Make blocks solid
+        blockTerrain.addChunkListener(new BlockChunkListener() {
+
+            @Override
+            public void onSpatialUpdated(BlockChunkControl blockChunk) {
+
+                Geometry optimizedGeometry = blockChunk.getOptimizedGeometry_Opaque();
+                RigidBodyControl rigidBodyControl = optimizedGeometry.getControl(RigidBodyControl.class);
+
+                if (rigidBodyControl == null) {
+                    rigidBodyControl = new RigidBodyControl(0);
+                    optimizedGeometry.addControl(rigidBodyControl);
+                    bulletAppState.getPhysicsSpace().add(rigidBodyControl);
+                }
+
+                rigidBodyControl.setCollisionShape(new MeshCollisionShape(optimizedGeometry.getMesh()));
+            }
+        });
+
+        localRootNode.attachChild(terrainNode);
+    }
+
     private void initBlocks() {
 
         blockNode = new Node("BlockNode");
@@ -228,7 +313,7 @@ public class GameScreenState extends AbstractAppState implements PhysicsCollisio
         for (int i = 0; i < 6; ++i) {
             Block kubusBlock = new Block(assetManager,
                                          ColorRGBA.randomColor(),
-                                         new Vector3f(i * 10, -1f, 0f));
+                                         new Vector3f(i * 10, 20f, -5f));
 
             BlockControl c = kubusBlock.getBlockGeometry().getControl(BlockControl.class);
 

@@ -56,13 +56,13 @@ public class KubusScreenState extends AbstractAppState {
 
     /* Physics */
     private BulletAppState bulletAppState;
-    
+
     /* Input */
     InputHandler inputHandler;
-    
+
     /* Block node */
     private Node terrainNode;
-    
+
     // Rotate
     private boolean canRotate = true;
 
@@ -75,13 +75,13 @@ public class KubusScreenState extends AbstractAppState {
         flyCam.setDragToRotate(true);
         cam.setLocation(new Vector3f(0f, 0f, 10f));
         cam.lookAt(new Vector3f(0f, 0f, -1f), Vector3f.UNIT_Y);
-        
+
         flyCam.setMoveSpeed(10);
 
         // Add input handling
         inputHandler = new InputHandler();
         inputHandler.init(inputManager);
-        
+
         registerBlocks();
         createWorld();
 
@@ -104,38 +104,38 @@ public class KubusScreenState extends AbstractAppState {
             canRotate = true;
         }
     }
-    
+
     private void initCameraKeys() {
         inputManager.addMapping("1st camera", new KeyTrigger(KeyInput.KEY_1));
         inputManager.addMapping("2nd camera", new KeyTrigger(KeyInput.KEY_2));
         inputManager.addMapping("3rd camera", new KeyTrigger(KeyInput.KEY_3));
-        
+
         inputManager.addListener(actionListener, "1st camera");
         inputManager.addListener(actionListener, "2nd camera");
         inputManager.addListener(actionListener, "3rd camera");
     }
-    
+
     private ActionListener actionListener = new ActionListener() {
-        
+
         @Override
         public void onAction(String name, boolean keyPressed, float tpf) {
-            
+
             if (name.equals("1st camera") && !keyPressed) {
-                
+
                 // Switch to 1st camera view
                 cam.setLocation(new Vector3f(0f, 0f, 10f));
                 cam.lookAt(new Vector3f(0f, 0f, -1f), Vector3f.UNIT_Y);
             }
-            
+
             if (name.equals("2nd camera") && !keyPressed) {
-                
+
                 // Switch to 2nd camera view
                 cam.setLocation(new Vector3f(0f, 0f, -10f));
                 cam.lookAt(new Vector3f(0f, 0f, -1f), Vector3f.UNIT_Y);
             }
-            
+
             if (name.equals("3rd camera") && !keyPressed) {
-                
+
                 // Switch to 3rd camera view
                 cam.setLocation(new Vector3f(0f, 10f, 0f));
                 cam.lookAt(new Vector3f(0f, 0f, -1f), Vector3f.UNIT_Y);
@@ -144,7 +144,7 @@ public class KubusScreenState extends AbstractAppState {
     };
 
     private void createWorld() {
-        
+
         BlockTerrainControl blockTerrain = new BlockTerrainControl(CubesTestAssets.getSettings(this.app), new Vector3Int(1, 1, 1));
 
         blockTerrain.setBlock(new Vector3Int(0, 0, 0), Block_Wood.class);
@@ -152,20 +152,20 @@ public class KubusScreenState extends AbstractAppState {
         blockTerrain.setBlock(new Vector3Int(1, 0, 0), Block_Wood.class);
         blockTerrain.setBlock(new Vector3Int(1, 0, 1), Block_Stone.class);
         blockTerrain.setBlock(0, 0, 0, Block_Grass.class);
-        
+
         this.terrainNode = new Node();
         terrainNode.addControl(blockTerrain);
-        
+
         localRootNode.setLocalScale(0.2f);
         localRootNode.attachChild(terrainNode);
     }
 
     private void registerBlocks() {
-        
+
         // Register blocks to make them available for use
         BlockManager.register(Block_Grass.class, new BlockSkin(new BlockSkin_TextureLocation(0, 0), false));
         BlockManager.register(Block_Stone.class, new BlockSkin(new BlockSkin_TextureLocation(9, 0), false));
-        
+
         BlockManager.register(Block_Wood.class, new BlockSkin(new BlockSkin_TextureLocation[]{
             new BlockSkin_TextureLocation(4, 0),
             new BlockSkin_TextureLocation(4, 0),
@@ -175,7 +175,7 @@ public class KubusScreenState extends AbstractAppState {
             new BlockSkin_TextureLocation(3, 0)
         }, false));
     }
-    
+
     @Override
     public void stateAttached(AppStateManager stateManager) {
         rootNode.attachChild(localRootNode);

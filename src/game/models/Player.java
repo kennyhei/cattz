@@ -16,7 +16,11 @@ public class Player {
         playerPhysics = new CharacterControl(capsule, 0.01f);
         playerModel = (Node) assetManager.loadModel("Models/Oto/Oto.mesh.xml");
         playerModel.addControl(playerPhysics);
+
         playerPhysics.setPhysicsLocation(location);
+        playerPhysics.setJumpSpeed(20);
+        playerPhysics.setFallSpeed(30);
+        playerPhysics.setGravity(30);
     }
 
     public CharacterControl getPhysics() {

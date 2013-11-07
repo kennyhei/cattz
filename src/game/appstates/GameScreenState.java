@@ -225,7 +225,7 @@ public class GameScreenState extends AbstractAppState implements PhysicsCollisio
     }
 
     private void initCharacter() {
-        player = new Player(assetManager, new Vector3f(10f, 40f, 15f));
+        player = new Player(assetManager, new Vector3f(30f, 15f, 10f));
 
         // Register solid player to PhysicsSpace
         bulletAppState.getPhysicsSpace().add(player.getPhysics());
@@ -277,7 +277,7 @@ public class GameScreenState extends AbstractAppState implements PhysicsCollisio
     private void initWorld() {
 
         BlockTerrainControl blockTerrain = new BlockTerrainControl(CubesTestAssets.getSettings(this.app), new Vector3Int(14, 1, 14));
-        blockTerrain.setBlocksFromHeightmap(new Vector3Int(0, -5, -5), "Textures/maze2.png", 15, Block_Grass.class);
+        blockTerrain.setBlocksFromHeightmap(new Vector3Int(0, -5, -5), "Textures/maze-h2.jpg", 17, Block_Grass.class);
 
         this.terrainNode = new Node();
         terrainNode.addControl(blockTerrain);

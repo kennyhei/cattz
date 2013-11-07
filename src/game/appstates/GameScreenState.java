@@ -276,6 +276,9 @@ public class GameScreenState extends AbstractAppState implements PhysicsCollisio
 
     private void initWorld() {
 
+        CubesTestAssets.initializeEnvironment(this.app);
+        CubesTestAssets.initializeWater(this.app);
+
         BlockTerrainControl blockTerrain = new BlockTerrainControl(CubesTestAssets.getSettings(this.app), new Vector3Int(14, 1, 14));
         blockTerrain.setBlocksFromHeightmap(new Vector3Int(0, -5, -5), "Textures/maze-h2.jpg", 17, Block_Grass.class);
 

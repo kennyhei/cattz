@@ -119,14 +119,12 @@ public class GameScreenState extends AbstractAppState implements PhysicsCollisio
         stateManager.attach(bulletAppState);
 
         // Add input handling
-        inputHandler = new InputHandler();
-        inputHandler.init(inputManager);
+        this.inputHandler = this.app.getInputHandler();
 
         setUpLight();
 
         initCharacter();
         initChaseCamera();
-        registerBlocks();
         initWorld();
         initBlocks();
         initTime();
@@ -243,38 +241,10 @@ public class GameScreenState extends AbstractAppState implements PhysicsCollisio
         chaseCam.setInvertVerticalAxis(true);
     }
 
-    private void registerBlocks() {
-
-        // Register blocks to make them available for use
-        BlockManager.register(Block_Grass.class, new BlockSkin(new BlockSkin_TextureLocation[]{
-
-            // We specify the 3 textures we need:
-            // Grass, Earth-Grass-Transition and Earth
-            new BlockSkin_TextureLocation(0, 0),
-            new BlockSkin_TextureLocation(1, 0),
-            new BlockSkin_TextureLocation(2, 0),}, false) {
-
-                // The number that's being returned specified the index
-            // of the texture in the previous declared TextureLocation array
-            @Override
-            protected int getTextureLocationIndex(BlockChunkControl chunk, Vector3Int blockLocation, com.cubes.Block.Face face) {
-
-                if (chunk.isBlockOnSurface(blockLocation)) {
-                    switch (face) {
-                        case Top:
-                            return 0;
-
-                        case Bottom:
-                            return 2;
-                    }
-                    return 1;
-                }
-                return 2;
-            }
-        });
-    }
-
     private void initWorld() {
+
+        // Register blocks
+        CubesTestAssets.registerBlocks();
 
         CubesTestAssets.initializeEnvironment(this.app);
         CubesTestAssets.initializeWater(this.app);
@@ -370,6 +340,9 @@ public class GameScreenState extends AbstractAppState implements PhysicsCollisio
     @Override
     public void stateDetached(AppStateManager stateManager) {
         chaseCam.setInvertVerticalAxis(false);
+        rootNode.detachChildNamed("Sky");
+        viewPort.clearProcessors();
+
         rootNode.detachChild(localRootNode);
         guiNode.detachChild(localGuiNode);
     }

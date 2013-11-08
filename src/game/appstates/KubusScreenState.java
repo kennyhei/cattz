@@ -4,12 +4,10 @@ import com.cubes.BlockManager;
 import com.cubes.BlockSkin;
 import com.cubes.BlockSkin_TextureLocation;
 import com.cubes.BlockTerrainControl;
-import com.cubes.CubesSettings;
 import com.cubes.Vector3Int;
 import com.cubes.test.CubesTestAssets;
+import com.cubes.test.blocks.Block_Brick;
 import com.cubes.test.blocks.Block_Grass;
-import com.cubes.test.blocks.Block_Stone;
-import com.cubes.test.blocks.Block_Wood;
 import com.jme3.app.Application;
 import com.jme3.app.SimpleApplication;
 import com.jme3.app.state.AbstractAppState;
@@ -25,11 +23,12 @@ import com.jme3.math.Vector3f;
 import com.jme3.renderer.Camera;
 import com.jme3.scene.Node;
 import com.jme3.system.AppSettings;
+import game.Main;
 import game.controllers.InputHandler;
 
 public class KubusScreenState extends AbstractAppState {
 
-    private SimpleApplication app;
+    private Main app;
     private Node rootNode;
     private Node guiNode;
     private AssetManager assetManager;
@@ -39,7 +38,7 @@ public class KubusScreenState extends AbstractAppState {
     private FlyByCamera flyCam;
 
     public KubusScreenState(SimpleApplication app) {
-        this.app = app;
+        this.app = (Main) app;
         this.rootNode = this.app.getRootNode();
         this.guiNode = this.app.getGuiNode();
         this.assetManager = this.app.getAssetManager();
@@ -79,8 +78,7 @@ public class KubusScreenState extends AbstractAppState {
         flyCam.setMoveSpeed(10);
 
         // Add input handling
-        inputHandler = new InputHandler();
-        inputHandler.init(inputManager);
+        this.inputHandler = this.app.getInputHandler();
 
         registerBlocks();
         createWorld();
@@ -93,7 +91,7 @@ public class KubusScreenState extends AbstractAppState {
     public void update(float tpf) {
 
         if (canRotate) {
-            terrainNode.rotate(1 * tpf, 2 * tpf, 0f);
+//            terrainNode.rotate(1 * tpf, 2 * tpf, 0f);
         }
 
         if (inputHandler.LEFT) {
@@ -143,37 +141,29 @@ public class KubusScreenState extends AbstractAppState {
         }
     };
 
+    private void registerBlocks() {
+
+        BlockManager.register(Block_Brick.class, new BlockSkin(new BlockSkin_TextureLocation[]{
+            new BlockSkin_TextureLocation(4, 0),
+            new BlockSkin_TextureLocation(4, 0),
+            new BlockSkin_TextureLocation(4, 0),
+            new BlockSkin_TextureLocation(4, 0),
+            new BlockSkin_TextureLocation(4, 0),
+            new BlockSkin_TextureLocation(4, 0)
+        }, false));
+    }
+
     private void createWorld() {
 
         BlockTerrainControl blockTerrain = new BlockTerrainControl(CubesTestAssets.getSettings(this.app), new Vector3Int(1, 1, 1));
-
-        blockTerrain.setBlock(new Vector3Int(0, 0, 0), Block_Wood.class);
-        blockTerrain.setBlock(new Vector3Int(0, 0, 1), Block_Wood.class);
-        blockTerrain.setBlock(new Vector3Int(1, 0, 0), Block_Wood.class);
-        blockTerrain.setBlock(new Vector3Int(1, 0, 1), Block_Stone.class);
-        blockTerrain.setBlock(0, 0, 0, Block_Grass.class);
+        blockTerrain.setBlockArea(new Vector3Int(0, 2, 1), new Vector3Int(6, 6, 1), Block_Brick.class);
+        blockTerrain.setBlockArea(new Vector3Int(0, 1, 1), new Vector3Int(6, 1, 7), Block_Brick.class);
 
         this.terrainNode = new Node();
         terrainNode.addControl(blockTerrain);
 
         localRootNode.setLocalScale(0.2f);
         localRootNode.attachChild(terrainNode);
-    }
-
-    private void registerBlocks() {
-
-        // Register blocks to make them available for use
-        BlockManager.register(Block_Grass.class, new BlockSkin(new BlockSkin_TextureLocation(0, 0), false));
-        BlockManager.register(Block_Stone.class, new BlockSkin(new BlockSkin_TextureLocation(9, 0), false));
-
-        BlockManager.register(Block_Wood.class, new BlockSkin(new BlockSkin_TextureLocation[]{
-            new BlockSkin_TextureLocation(4, 0),
-            new BlockSkin_TextureLocation(4, 0),
-            new BlockSkin_TextureLocation(3, 0),
-            new BlockSkin_TextureLocation(3, 0),
-            new BlockSkin_TextureLocation(3, 0),
-            new BlockSkin_TextureLocation(3, 0)
-        }, false));
     }
 
     @Override

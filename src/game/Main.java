@@ -12,6 +12,7 @@ import game.appstates.GameScreenState;
 import game.appstates.KubusScreenState;
 import game.appstates.PauseScreenState;
 import game.appstates.StartScreenState;
+import game.controllers.InputHandler;
 
 public class Main extends SimpleApplication {
 
@@ -21,6 +22,9 @@ public class Main extends SimpleApplication {
     private KubusScreenState kubusScreenState;
     private PauseScreenState pauseScreenState;
     private Tonegod tonegod;
+
+    /* Input hander */
+    private InputHandler inputHandler;
 
     private boolean switchToKubus = false;
 
@@ -50,6 +54,9 @@ public class Main extends SimpleApplication {
         pauseScreenState = new PauseScreenState(this);
 
         stateManager.attach(startScreenState);
+
+        this.inputHandler = new InputHandler();
+        this.inputHandler.init(inputManager);
 
         inputManager.addMapping("Start", new KeyTrigger(KeyInput.KEY_BACK));
         inputManager.addMapping("Continue", new KeyTrigger(KeyInput.KEY_RETURN));
@@ -111,6 +118,10 @@ public class Main extends SimpleApplication {
             }
         }
     };
+
+    public InputHandler getInputHandler() {
+        return inputHandler;
+    }
 
     @Override
     public void destroy() {

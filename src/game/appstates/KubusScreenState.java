@@ -29,6 +29,7 @@ import com.jme3.scene.shape.Box;
 import com.jme3.system.AppSettings;
 import game.Main;
 import game.controllers.InputHandler;
+import game.levels.Level;
 import game.models.Block;
 
 /*
@@ -101,9 +102,8 @@ public class KubusScreenState extends AbstractAppState {
 
         setUpLight();
 
-        registerBlocks();
-        createWorld();
-        createPuzzlePieces();
+        initWorld();
+        initPuzzlePieces();
 
         // Custom keybindings for switching camera views
         initCameraKeys();
@@ -156,32 +156,15 @@ public class KubusScreenState extends AbstractAppState {
         inputManager.addListener(actionListener, "Change");
     }
 
-    private void registerBlocks() {
-
-        BlockManager.register(Block_Brick.class, new BlockSkin(new BlockSkin_TextureLocation[]{
-            new BlockSkin_TextureLocation(4, 0),
-            new BlockSkin_TextureLocation(4, 0),
-            new BlockSkin_TextureLocation(4, 0),
-            new BlockSkin_TextureLocation(4, 0),
-            new BlockSkin_TextureLocation(4, 0),
-            new BlockSkin_TextureLocation(4, 0)
-        }, false));
-    }
-
-    private void createWorld() {
-
-        BlockTerrainControl blockTerrain = new BlockTerrainControl(CubesTestAssets.getSettings(this.app), new Vector3Int(1, 1, 1));
-        blockTerrain.setBlockArea(new Vector3Int(0, 2, 1), new Vector3Int(6, 6, 1), Block_Brick.class);
-        blockTerrain.setBlockArea(new Vector3Int(0, 1, 1), new Vector3Int(6, 1, 7), Block_Brick.class);
-
-        this.terrainNode = new Node();
-        terrainNode.addControl(blockTerrain);
+    private void initWorld() {
+        Level level = this.app.getLevelManager().getLevel(0);
+        this.terrainNode = level.getTerrain();
 
         localRootNode.setLocalScale(0.2f);
         localRootNode.attachChild(terrainNode);
     }
 
-    private void createPuzzlePieces() {
+    private void initPuzzlePieces() {
 
         this.puzzlePieces = new Node("Controllable Blocks");
 
@@ -254,23 +237,26 @@ public class KubusScreenState extends AbstractAppState {
             // Change controlled block
             // TODO: Refactor control change to own util class?
             if (name.equals("Change") && !keyPressed) {
-
-                currentPiece.setMesh(box);
-
-                ++currentIndex;
-
-                if (currentIndex == puzzlePieces.getChildren().size()) {
-                    currentIndex = 0;
-                }
-
-                currentPiece = (Geometry) puzzlePieces.getChild(currentIndex);
-
-                box = (Box) currentPiece.getMesh();
-                currentPiece.setMesh(new WireBox(1.5f, 1.5f, 1.5f));
-                currentPiece.getMesh().setLineWidth(4f);
+                changePiece();
             }
         }
     };
+
+    private void changePiece() {
+        currentPiece.setMesh(box);
+
+        ++currentIndex;
+
+        if (currentIndex == puzzlePieces.getChildren().size()) {
+            currentIndex = 0;
+        }
+
+        currentPiece = (Geometry) puzzlePieces.getChild(currentIndex);
+
+        box = (Box) currentPiece.getMesh();
+        currentPiece.setMesh(new WireBox(1.5f, 1.5f, 1.5f));
+        currentPiece.getMesh().setLineWidth(4f);
+    }
 
     @Override
     public void stateAttached(AppStateManager stateManager) {

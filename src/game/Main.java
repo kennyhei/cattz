@@ -13,6 +13,7 @@ import game.appstates.KubusScreenState;
 import game.appstates.PauseScreenState;
 import game.appstates.StartScreenState;
 import game.controllers.InputHandler;
+import game.managers.LevelManager;
 
 public class Main extends SimpleApplication {
 
@@ -23,7 +24,10 @@ public class Main extends SimpleApplication {
     private PauseScreenState pauseScreenState;
     private Tonegod tonegod;
 
-    /* Input hander */
+    /* Level manager */
+    private LevelManager levelManager;
+
+    /* Input handler */
     private InputHandler inputHandler;
 
     private boolean switchToKubus = false;
@@ -46,9 +50,13 @@ public class Main extends SimpleApplication {
     public void simpleInitApp() {
         flyCam.setEnabled(false);
 
-        // creating the GUI
+        // Create GUI
         tonegod = new Tonegod(this);
 
+        // Create level manager
+        levelManager = new LevelManager(this);
+
+        // Create states
         gameRunningState = new GameScreenState(this);
         startScreenState = new StartScreenState(this, tonegod);
         kubusScreenState = new KubusScreenState(this);
@@ -123,6 +131,10 @@ public class Main extends SimpleApplication {
 
     public InputHandler getInputHandler() {
         return inputHandler;
+    }
+
+    public LevelManager getLevelManager() {
+        return levelManager;
     }
 
     @Override

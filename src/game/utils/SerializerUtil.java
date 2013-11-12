@@ -15,7 +15,6 @@ import java.io.FileOutputStream;
 public class SerializerUtil {
 
     public static void writeToFile(BlockTerrainControl blockTerrain, String fileName) {
-
         byte[] serializedBlockTerrain = CubesSerializer.writeToBytes(blockTerrain);
         BufferedOutputStream bos;
 

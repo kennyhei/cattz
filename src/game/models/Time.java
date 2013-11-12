@@ -32,6 +32,13 @@ public class Time extends TimerTask {
             ++seconds;
         }
     }
+    
+    public void add(int penaltySeconds) {
+        while (penaltySeconds > 0) {
+            tick();
+            penaltySeconds--;
+        }
+    }
 
     @Override
     public String toString() {

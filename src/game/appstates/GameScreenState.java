@@ -192,6 +192,19 @@ public class GameScreenState extends AbstractAppState implements PhysicsCollisio
         for (Spatial block : blockNode.getChildren()) {
             block.rotate(0f, 2 * tpf, 0f);
         }
+        
+        if (player.getPhysics().getPhysicsLocation().y < -40) {
+            
+        // Remove solid player from PhysicsSpace
+            bulletAppState.getPhysicsSpace().remove(player.getPhysics());
+
+        // Detach player from the scene
+            localRootNode.detachChild(player.getModel());
+            
+            initCharacter();
+            initChaseCamera();
+            this.time.add(5);
+        }
     }
 
     // Remove blocks if they were hit by the player
@@ -320,6 +333,10 @@ public class GameScreenState extends AbstractAppState implements PhysicsCollisio
         text.setText("Press Enter to continue.");
         text.setLocalTranslation(settings.getWidth() / 2 - text.getLineWidth() / 2,
                                  settings.getHeight() / 2 + text.getLineHeight(), 0);
+    }
+    
+    public Time getTime() {
+        return this.time;
     }
 
     @Override

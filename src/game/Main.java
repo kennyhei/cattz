@@ -27,6 +27,7 @@ public class Main extends SimpleApplication {
     private InputHandler inputHandler;
 
     private boolean switchToKubus = false;
+    private boolean isRunning = false;
 
     public static void main(String[] args) {
         Main app = new Main();
@@ -58,7 +59,7 @@ public class Main extends SimpleApplication {
         this.inputHandler = new InputHandler();
         this.inputHandler.init(inputManager);
 
-        inputManager.addMapping("Start", new KeyTrigger(KeyInput.KEY_BACK));
+        inputManager.addMapping("Start", new KeyTrigger(KeyInput.KEY_RETURN));
         inputManager.addMapping("Continue", new KeyTrigger(KeyInput.KEY_RETURN));
         inputManager.addMapping("Pause", new KeyTrigger(KeyInput.KEY_F1));
         inputManager.addListener(actionListener, "Start");
@@ -90,14 +91,15 @@ public class Main extends SimpleApplication {
 //               }
 //            }
 
-            if (name.equals("Start") && !isPressed) {
+            if (name.equals("Start") && !isPressed && !isRunning) {
                 stateManager.detach(startScreenState);
                 stateManager.attach(gameRunningState);
                 gameRunningState.setEnabled(true);
+                isRunning = true;
                 System.out.println("Starting game...");
             }
 
-            if (name.equals("Continue") && !isPressed && switchToKubus) {
+            if (name.equals("Continue") && !isPressed && switchToKubus && !stateManager.hasState(kubusScreenState)) {
                 stateManager.detach(gameRunningState);
                 stateManager.attach(kubusScreenState);
                 System.out.println("Switching to kubus world...");

@@ -69,16 +69,16 @@ public class KubusScreenState extends AbstractAppState {
 
     /* Input */
     InputHandler inputHandler;
-    
+
     /* Block handler */
     Node puzzlePieces;
-    
+
     // Currently controlled piece
     Geometry currentPiece;
-    
+
     // Index of currently controlled piece
     int currentIndex;
-    
+
     Box box;
 
     /* Block node */
@@ -98,16 +98,16 @@ public class KubusScreenState extends AbstractAppState {
 
         // Add input handling
         this.inputHandler = this.app.getInputHandler();
-        
+
         setUpLight();
-        
+
         registerBlocks();
         createWorld();
         createPuzzlePieces();
 
         // Custom keybindings for switching camera views
         initCameraKeys();
-        
+
         // Custom keybindings for controlling puzzle pieces
         initPuzzlePieceKeys();
     }
@@ -116,7 +116,7 @@ public class KubusScreenState extends AbstractAppState {
     public void update(float tpf) {
         // TODO
     }
-    
+
     private void setUpLight() {
         DirectionalLight dl = new DirectionalLight();
         dl.setColor(ColorRGBA.White);
@@ -125,7 +125,7 @@ public class KubusScreenState extends AbstractAppState {
     }
 
     private void initCameraKeys() {
-        
+
         // Camera keys
         inputManager.addMapping("1st camera", new KeyTrigger(KeyInput.KEY_1));
         inputManager.addMapping("2nd camera", new KeyTrigger(KeyInput.KEY_2));
@@ -135,16 +135,16 @@ public class KubusScreenState extends AbstractAppState {
         inputManager.addListener(actionListener, "2nd camera");
         inputManager.addListener(actionListener, "3rd camera");
     }
-    
+
     private void initPuzzlePieceKeys() {
-        
+
         // Block handling keys
         inputManager.addMapping("BlockLeft", new KeyTrigger(KeyInput.KEY_LEFT));
         inputManager.addMapping("BlockRight", new KeyTrigger(KeyInput.KEY_RIGHT));
-        inputManager.addMapping("BlockUp", new KeyTrigger(KeyInput.KEY_UP));
-        inputManager.addMapping("BlockDown", new KeyTrigger(KeyInput.KEY_DOWN));
-        inputManager.addMapping("BlockForward", new KeyTrigger(KeyInput.KEY_PERIOD));
-        inputManager.addMapping("BlockBackward", new KeyTrigger(KeyInput.KEY_COMMA));
+        inputManager.addMapping("BlockUp", new KeyTrigger(KeyInput.KEY_K));
+        inputManager.addMapping("BlockDown", new KeyTrigger(KeyInput.KEY_COMMA));
+        inputManager.addMapping("BlockForward", new KeyTrigger(KeyInput.KEY_UP));
+        inputManager.addMapping("BlockBackward", new KeyTrigger(KeyInput.KEY_DOWN));
         inputManager.addMapping("Change", new KeyTrigger(KeyInput.KEY_TAB));
 
         inputManager.addListener(actionListener, "BlockLeft");
@@ -173,34 +173,34 @@ public class KubusScreenState extends AbstractAppState {
         BlockTerrainControl blockTerrain = new BlockTerrainControl(CubesTestAssets.getSettings(this.app), new Vector3Int(1, 1, 1));
         blockTerrain.setBlockArea(new Vector3Int(0, 2, 1), new Vector3Int(6, 6, 1), Block_Brick.class);
         blockTerrain.setBlockArea(new Vector3Int(0, 1, 1), new Vector3Int(6, 1, 7), Block_Brick.class);
-        
+
         this.terrainNode = new Node();
         terrainNode.addControl(blockTerrain);
 
         localRootNode.setLocalScale(0.2f);
         localRootNode.attachChild(terrainNode);
     }
-    
+
     private void createPuzzlePieces() {
-        
+
         this.puzzlePieces = new Node("Controllable Blocks");
-        
+
         // Create two controllable blocks
         Block block = new Block(assetManager, ColorRGBA.Blue, new Vector3f(1.5f, 7.6f, 7.6f), new float[]{1.5f, 1.5f, 1.5f});
         puzzlePieces.attachChild(block.getBlockGeometry());
-        
+
         block = new Block(assetManager, ColorRGBA.Orange, new Vector3f(4.5f, 7.6f, 7.6f), new float[]{1.5f, 1.5f, 1.5f});
         puzzlePieces.attachChild(block.getBlockGeometry());
-        
+
         // Set currently controlled piece to first puzzle piece
         currentPiece = (Geometry) puzzlePieces.getChild(0);
         box = (Box) currentPiece.getMesh();
         currentPiece.setMesh(new WireBox(1.5f, 1.5f, 1.5f));
         currentPiece.getMesh().setLineWidth(4f);
-        
+
         localRootNode.attachChild(puzzlePieces);
     }
-    
+
     private ActionListener actionListener = new ActionListener() {
 
         @Override
@@ -226,45 +226,45 @@ public class KubusScreenState extends AbstractAppState {
                 cam.setLocation(new Vector3f(0f, 10f, 0f));
                 cam.lookAt(new Vector3f(0f, 0f, -1f), Vector3f.UNIT_Y);
             }
-            
+
             if (name.equals("BlockUp") && !keyPressed) {
                 currentPiece.move(0f, 3f, 0f);
             }
-            
+
             if (name.equals("BlockDown") && !keyPressed) {
                 currentPiece.move(0f, -3f, 0f);
             }
-            
+
             if (name.equals("BlockLeft") && !keyPressed) {
                 currentPiece.move(-3f, 0f, 0f);
             }
-            
+
             if (name.equals("BlockRight") && !keyPressed) {
                 currentPiece.move(3f, 0f, 0f);
             }
-            
+
             if (name.equals("BlockForward") && !keyPressed) {
                 currentPiece.move(0f, 0f, -3f);
             }
-            
+
             if (name.equals("BlockBackward") && !keyPressed) {
                 currentPiece.move(0f, 0f, 3f);
             }
-            
+
             // Change controlled block
             // TODO: Refactor control change to own util class?
             if (name.equals("Change") && !keyPressed) {
-                
+
                 currentPiece.setMesh(box);
-                
+
                 ++currentIndex;
-                
+
                 if (currentIndex == puzzlePieces.getChildren().size()) {
                     currentIndex = 0;
                 }
-                
+
                 currentPiece = (Geometry) puzzlePieces.getChild(currentIndex);
-                
+
                 box = (Box) currentPiece.getMesh();
                 currentPiece.setMesh(new WireBox(1.5f, 1.5f, 1.5f));
                 currentPiece.getMesh().setLineWidth(4f);

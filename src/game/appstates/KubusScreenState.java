@@ -18,10 +18,14 @@ import com.jme3.input.InputManager;
 import com.jme3.input.KeyInput;
 import com.jme3.input.controls.ActionListener;
 import com.jme3.input.controls.KeyTrigger;
+import com.jme3.light.DirectionalLight;
 import com.jme3.math.ColorRGBA;
 import com.jme3.math.Vector3f;
 import com.jme3.renderer.Camera;
+import com.jme3.scene.Geometry;
 import com.jme3.scene.Node;
+import com.jme3.scene.debug.WireBox;
+import com.jme3.scene.shape.Box;
 import com.jme3.system.AppSettings;
 import game.Main;
 import game.controllers.InputHandler;
@@ -62,12 +66,17 @@ public class KubusScreenState extends AbstractAppState {
     
     /* Block handler */
     Node puzzlePieces;
+    
+    // Currently controlled piece
+    Geometry currentPiece;
+    
+    // Index of currently controlled piece
+    int currentIndex;
+    
+    Box box;
 
     /* Block node */
     private Node terrainNode;
-
-    // Rotate
-    private boolean canRotate = true;
 
     @Override
     public void initialize(AppStateManager stateManager, Application app) {
@@ -84,6 +93,8 @@ public class KubusScreenState extends AbstractAppState {
         // Add input handling
         this.inputHandler = this.app.getInputHandler();
         
+        setUpLight();
+        
         registerBlocks();
         createWorld();
         createPuzzlePieces();
@@ -98,6 +109,13 @@ public class KubusScreenState extends AbstractAppState {
     @Override
     public void update(float tpf) {
         // TODO
+    }
+    
+    private void setUpLight() {
+        DirectionalLight dl = new DirectionalLight();
+        dl.setColor(ColorRGBA.White);
+        dl.setDirection(new Vector3f(-.5f, -.5f, -.5f).normalizeLocal());
+        localRootNode.addLight(dl);
     }
 
     private void initCameraKeys() {
@@ -160,9 +178,20 @@ public class KubusScreenState extends AbstractAppState {
     private void createPuzzlePieces() {
         
         this.puzzlePieces = new Node("Controllable Blocks");
-        Block block = new Block(assetManager, ColorRGBA.Blue, new Vector3f(1.5f, 7.5f, 7.6f), new float[]{1.5f, 1.5f, 1.5f});
         
+        // Create two controllable blocks
+        Block block = new Block(assetManager, ColorRGBA.Blue, new Vector3f(1.5f, 7.6f, 7.6f), new float[]{1.5f, 1.5f, 1.5f});
         puzzlePieces.attachChild(block.getBlockGeometry());
+        
+        block = new Block(assetManager, ColorRGBA.Orange, new Vector3f(4.5f, 7.6f, 7.6f), new float[]{1.5f, 1.5f, 1.5f});
+        puzzlePieces.attachChild(block.getBlockGeometry());
+        
+        // Set currently controlled piece to first puzzle piece
+        currentPiece = (Geometry) puzzlePieces.getChild(0);
+        box = (Box) currentPiece.getMesh();
+        currentPiece.setMesh(new WireBox(1.5f, 1.5f, 1.5f));
+        currentPiece.getMesh().setLineWidth(4f);
+        
         localRootNode.attachChild(puzzlePieces);
     }
     
@@ -193,27 +222,46 @@ public class KubusScreenState extends AbstractAppState {
             }
             
             if (name.equals("BlockUp") && !keyPressed) {
-                puzzlePieces.getChild(0).move(0f, 3f, 0f);
+                currentPiece.move(0f, 3f, 0f);
             }
             
             if (name.equals("BlockDown") && !keyPressed) {
-                puzzlePieces.getChild(0).move(0f, -3f, 0f);
+                currentPiece.move(0f, -3f, 0f);
             }
             
             if (name.equals("BlockLeft") && !keyPressed) {
-                puzzlePieces.getChild(0).move(-3f, 0f, 0f);
+                currentPiece.move(-3f, 0f, 0f);
             }
             
             if (name.equals("BlockRight") && !keyPressed) {
-                puzzlePieces.getChild(0).move(3f, 0f, 0f);
+                currentPiece.move(3f, 0f, 0f);
             }
             
             if (name.equals("BlockForward") && !keyPressed) {
-                puzzlePieces.getChild(0).move(0f, 0f, -3f);
+                currentPiece.move(0f, 0f, -3f);
             }
             
             if (name.equals("BlockBackward") && !keyPressed) {
-                puzzlePieces.getChild(0).move(0f, 0f, 3f);
+                currentPiece.move(0f, 0f, 3f);
+            }
+            
+            // Change controlled block
+            // TODO: Refactor control change to own util class?
+            if (name.equals("Change") && !keyPressed) {
+                
+                currentPiece.setMesh(box);
+                
+                ++currentIndex;
+                
+                if (currentIndex == puzzlePieces.getChildren().size()) {
+                    currentIndex = 0;
+                }
+                
+                currentPiece = (Geometry) puzzlePieces.getChild(currentIndex);
+                
+                box = (Box) currentPiece.getMesh();
+                currentPiece.setMesh(new WireBox(1.5f, 1.5f, 1.5f));
+                currentPiece.getMesh().setLineWidth(4f);
             }
         }
     };

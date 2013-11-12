@@ -31,6 +31,12 @@ import game.Main;
 import game.controllers.InputHandler;
 import game.models.Block;
 
+/*
+* Cubes source code and simple classes showing how to use the framework
+* can be found here:
+* https://code.google.com/p/jmonkeyplatform-contributions/source/browse/#svn%2Ftrunk%2Fcubes%2FCubes%2Fsrc
+*/
+
 public class KubusScreenState extends AbstractAppState {
 
     private Main app;

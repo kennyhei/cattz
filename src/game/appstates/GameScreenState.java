@@ -286,7 +286,7 @@ public class GameScreenState extends AbstractAppState implements PhysicsCollisio
         for (int i = 0; i < 6; ++i) {
             Block kubusBlock = new Block(assetManager,
                                          ColorRGBA.randomColor(),
-                                         new Vector3f(i * 10, 20f, -5f));
+                                         new Vector3f(i * 10, 20f, -5f), new float[]{2f, 4f, 1f});
 
             BlockControl c = kubusBlock.getBlockGeometry().getControl(BlockControl.class);
 

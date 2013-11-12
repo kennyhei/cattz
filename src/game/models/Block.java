@@ -18,10 +18,10 @@ public class Block {
     private Material blockMaterial;
     private GhostControl physics;
 
-    public Block(AssetManager assetManager, ColorRGBA color, Vector3f location) {
+    public Block(AssetManager assetManager, ColorRGBA color, Vector3f location, float[] size) {
 
         // Create kubus block
-        this.blockBox = new Box(2f, 4f, 1f);
+        this.blockBox = new Box(size[0], size[1], size[2]);
         this.blockGeometry = new Geometry("Block", blockBox);
         this.blockGeometry.setLocalTranslation(location);
 

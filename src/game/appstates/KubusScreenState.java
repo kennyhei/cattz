@@ -7,7 +7,6 @@ import com.cubes.BlockTerrainControl;
 import com.cubes.Vector3Int;
 import com.cubes.test.CubesTestAssets;
 import com.cubes.test.blocks.Block_Brick;
-import com.cubes.test.blocks.Block_Grass;
 import com.jme3.app.Application;
 import com.jme3.app.SimpleApplication;
 import com.jme3.app.state.AbstractAppState;
@@ -19,12 +18,14 @@ import com.jme3.input.InputManager;
 import com.jme3.input.KeyInput;
 import com.jme3.input.controls.ActionListener;
 import com.jme3.input.controls.KeyTrigger;
+import com.jme3.math.ColorRGBA;
 import com.jme3.math.Vector3f;
 import com.jme3.renderer.Camera;
 import com.jme3.scene.Node;
 import com.jme3.system.AppSettings;
 import game.Main;
 import game.controllers.InputHandler;
+import game.models.Block;
 
 public class KubusScreenState extends AbstractAppState {
 
@@ -58,6 +59,9 @@ public class KubusScreenState extends AbstractAppState {
 
     /* Input */
     InputHandler inputHandler;
+    
+    /* Block handler */
+    Node puzzlePieces;
 
     /* Block node */
     private Node terrainNode;
@@ -79,31 +83,26 @@ public class KubusScreenState extends AbstractAppState {
 
         // Add input handling
         this.inputHandler = this.app.getInputHandler();
-
+        
         registerBlocks();
         createWorld();
+        createPuzzlePieces();
 
         // Custom keybindings for switching camera views
         initCameraKeys();
+        
+        // Custom keybindings for controlling puzzle pieces
+        initPuzzlePieceKeys();
     }
 
     @Override
     public void update(float tpf) {
-
-        if (canRotate) {
-//            terrainNode.rotate(1 * tpf, 2 * tpf, 0f);
-        }
-
-        if (inputHandler.LEFT) {
-            canRotate = false;
-        }
-
-        if (inputHandler.RIGHT) {
-            canRotate = true;
-        }
+        // TODO
     }
 
     private void initCameraKeys() {
+        
+        // Camera keys
         inputManager.addMapping("1st camera", new KeyTrigger(KeyInput.KEY_1));
         inputManager.addMapping("2nd camera", new KeyTrigger(KeyInput.KEY_2));
         inputManager.addMapping("3rd camera", new KeyTrigger(KeyInput.KEY_3));
@@ -112,7 +111,61 @@ public class KubusScreenState extends AbstractAppState {
         inputManager.addListener(actionListener, "2nd camera");
         inputManager.addListener(actionListener, "3rd camera");
     }
+    
+    private void initPuzzlePieceKeys() {
+        
+        // Block handling keys
+        inputManager.addMapping("BlockLeft", new KeyTrigger(KeyInput.KEY_LEFT));
+        inputManager.addMapping("BlockRight", new KeyTrigger(KeyInput.KEY_RIGHT));
+        inputManager.addMapping("BlockUp", new KeyTrigger(KeyInput.KEY_UP));
+        inputManager.addMapping("BlockDown", new KeyTrigger(KeyInput.KEY_DOWN));
+        inputManager.addMapping("BlockForward", new KeyTrigger(KeyInput.KEY_PERIOD));
+        inputManager.addMapping("BlockBackward", new KeyTrigger(KeyInput.KEY_COMMA));
+        inputManager.addMapping("Change", new KeyTrigger(KeyInput.KEY_TAB));
 
+        inputManager.addListener(actionListener, "BlockLeft");
+        inputManager.addListener(actionListener, "BlockRight");
+        inputManager.addListener(actionListener, "BlockUp");
+        inputManager.addListener(actionListener, "BlockDown");
+        inputManager.addListener(actionListener, "BlockForward");
+        inputManager.addListener(actionListener, "BlockBackward");
+        inputManager.addListener(actionListener, "Change");
+    }
+
+    private void registerBlocks() {
+
+        BlockManager.register(Block_Brick.class, new BlockSkin(new BlockSkin_TextureLocation[]{
+            new BlockSkin_TextureLocation(4, 0),
+            new BlockSkin_TextureLocation(4, 0),
+            new BlockSkin_TextureLocation(4, 0),
+            new BlockSkin_TextureLocation(4, 0),
+            new BlockSkin_TextureLocation(4, 0),
+            new BlockSkin_TextureLocation(4, 0)
+        }, false));
+    }
+
+    private void createWorld() {
+
+        BlockTerrainControl blockTerrain = new BlockTerrainControl(CubesTestAssets.getSettings(this.app), new Vector3Int(1, 1, 1));
+        blockTerrain.setBlockArea(new Vector3Int(0, 2, 1), new Vector3Int(6, 6, 1), Block_Brick.class);
+        blockTerrain.setBlockArea(new Vector3Int(0, 1, 1), new Vector3Int(6, 1, 7), Block_Brick.class);
+        
+        this.terrainNode = new Node();
+        terrainNode.addControl(blockTerrain);
+
+        localRootNode.setLocalScale(0.2f);
+        localRootNode.attachChild(terrainNode);
+    }
+    
+    private void createPuzzlePieces() {
+        
+        this.puzzlePieces = new Node("Controllable Blocks");
+        Block block = new Block(assetManager, ColorRGBA.Blue, new Vector3f(1.5f, 7.5f, 7.6f), new float[]{1.5f, 1.5f, 1.5f});
+        
+        puzzlePieces.attachChild(block.getBlockGeometry());
+        localRootNode.attachChild(puzzlePieces);
+    }
+    
     private ActionListener actionListener = new ActionListener() {
 
         @Override
@@ -138,33 +191,32 @@ public class KubusScreenState extends AbstractAppState {
                 cam.setLocation(new Vector3f(0f, 10f, 0f));
                 cam.lookAt(new Vector3f(0f, 0f, -1f), Vector3f.UNIT_Y);
             }
+            
+            if (name.equals("BlockUp") && !keyPressed) {
+                puzzlePieces.getChild(0).move(0f, 3f, 0f);
+            }
+            
+            if (name.equals("BlockDown") && !keyPressed) {
+                puzzlePieces.getChild(0).move(0f, -3f, 0f);
+            }
+            
+            if (name.equals("BlockLeft") && !keyPressed) {
+                puzzlePieces.getChild(0).move(-3f, 0f, 0f);
+            }
+            
+            if (name.equals("BlockRight") && !keyPressed) {
+                puzzlePieces.getChild(0).move(3f, 0f, 0f);
+            }
+            
+            if (name.equals("BlockForward") && !keyPressed) {
+                puzzlePieces.getChild(0).move(0f, 0f, -3f);
+            }
+            
+            if (name.equals("BlockBackward") && !keyPressed) {
+                puzzlePieces.getChild(0).move(0f, 0f, 3f);
+            }
         }
     };
-
-    private void registerBlocks() {
-
-        BlockManager.register(Block_Brick.class, new BlockSkin(new BlockSkin_TextureLocation[]{
-            new BlockSkin_TextureLocation(4, 0),
-            new BlockSkin_TextureLocation(4, 0),
-            new BlockSkin_TextureLocation(4, 0),
-            new BlockSkin_TextureLocation(4, 0),
-            new BlockSkin_TextureLocation(4, 0),
-            new BlockSkin_TextureLocation(4, 0)
-        }, false));
-    }
-
-    private void createWorld() {
-
-        BlockTerrainControl blockTerrain = new BlockTerrainControl(CubesTestAssets.getSettings(this.app), new Vector3Int(1, 1, 1));
-        blockTerrain.setBlockArea(new Vector3Int(0, 2, 1), new Vector3Int(6, 6, 1), Block_Brick.class);
-        blockTerrain.setBlockArea(new Vector3Int(0, 1, 1), new Vector3Int(6, 1, 7), Block_Brick.class);
-
-        this.terrainNode = new Node();
-        terrainNode.addControl(blockTerrain);
-
-        localRootNode.setLocalScale(0.2f);
-        localRootNode.attachChild(terrainNode);
-    }
 
     @Override
     public void stateAttached(AppStateManager stateManager) {

@@ -12,6 +12,7 @@ import com.jme3.input.KeyInput;
 import com.jme3.input.controls.ActionListener;
 import com.jme3.input.controls.KeyTrigger;
 import com.jme3.light.DirectionalLight;
+import com.jme3.material.Material;
 import com.jme3.math.ColorRGBA;
 import com.jme3.math.Vector3f;
 import com.jme3.renderer.Camera;
@@ -67,13 +68,12 @@ public class KubusScreenState extends AbstractAppState {
     /* Block handler */
     Node puzzlePieces;
 
-    // Currently controlled piece
+    // Currently controlled piece and its highlighting
     Geometry currentPiece;
+    Geometry highlight;
 
     // Index of currently controlled piece
     int currentIndex;
-
-    Box box;
 
     /* Block node */
     private Node terrainNode;
@@ -96,6 +96,7 @@ public class KubusScreenState extends AbstractAppState {
         setUpLight();
 
         initWorld();
+        initHighlightPiece();
         initPuzzlePieces();
 
         // Custom keybindings for switching camera views
@@ -157,6 +158,19 @@ public class KubusScreenState extends AbstractAppState {
         localRootNode.attachChild(terrainNode);
     }
 
+    private void initHighlightPiece() {
+
+        WireBox wbox = new WireBox(1.5f, 1.5f, 1.5f);
+        wbox.setLineWidth(6f);
+        this.highlight = new Geometry("Wirebox", wbox);
+        Material mat = new Material(assetManager, "Common/MatDefs/Misc/Unshaded.j3md");
+        mat.getAdditionalRenderState().setWireframe(true);
+        mat.setColor("Color", ColorRGBA.Green);
+        this.highlight.setMaterial(mat);
+
+        localRootNode.attachChild(this.highlight);
+    }
+
     private void initPuzzlePieces() {
 
         this.puzzlePieces = new Node("Controllable Blocks");
@@ -170,9 +184,7 @@ public class KubusScreenState extends AbstractAppState {
 
         // Set currently controlled piece to first puzzle piece
         currentPiece = (Geometry) puzzlePieces.getChild(0);
-        box = (Box) currentPiece.getMesh();
-        currentPiece.setMesh(new WireBox(1.5f, 1.5f, 1.5f));
-        currentPiece.getMesh().setLineWidth(4f);
+        highlight.setLocalTranslation(currentPiece.getLocalTranslation());
 
         localRootNode.attachChild(puzzlePieces);
     }
@@ -232,12 +244,12 @@ public class KubusScreenState extends AbstractAppState {
             if (name.equals("Change") && !keyPressed) {
                 changePiece();
             }
+
+            highlight.setLocalTranslation(currentPiece.getLocalTranslation());
         }
     };
 
     private void changePiece() {
-        currentPiece.setMesh(box);
-
         ++currentIndex;
 
         if (currentIndex == puzzlePieces.getChildren().size()) {
@@ -245,10 +257,6 @@ public class KubusScreenState extends AbstractAppState {
         }
 
         currentPiece = (Geometry) puzzlePieces.getChild(currentIndex);
-
-        box = (Box) currentPiece.getMesh();
-        currentPiece.setMesh(new WireBox(1.5f, 1.5f, 1.5f));
-        currentPiece.getMesh().setLineWidth(4f);
     }
 
     @Override

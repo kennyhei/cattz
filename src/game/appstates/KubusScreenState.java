@@ -19,7 +19,6 @@ import com.jme3.renderer.Camera;
 import com.jme3.scene.Geometry;
 import com.jme3.scene.Node;
 import com.jme3.scene.debug.WireBox;
-import com.jme3.scene.shape.Box;
 import com.jme3.system.AppSettings;
 import game.Main;
 import game.controllers.InputHandler;

@@ -4,6 +4,7 @@ import com.cubes.BlockTerrainControl;
 import com.cubes.Vector3Int;
 import com.cubes.test.CubesTestAssets;
 import com.cubes.test.blocks.Block_Brick;
+import com.jme3.math.ColorRGBA;
 import com.jme3.scene.Node;
 import game.Main;
 
@@ -22,8 +23,5 @@ public class LevelOne extends Level {
 
         this.terrainNode = new Node();
         terrainNode.addControl(blockTerrain);
-
-//        localRootNode.setLocalScale(0.2f);
-//        localRootNode.attachChild(terrainNode);
     }
 }

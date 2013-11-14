@@ -1,5 +1,6 @@
 package game.appstates;
 
+import com.cubes.test.CubesTestAssets;
 import com.jme3.app.Application;
 import com.jme3.app.SimpleApplication;
 import com.jme3.app.state.AbstractAppState;
@@ -81,11 +82,11 @@ public class KubusScreenState extends AbstractAppState {
     public void initialize(AppStateManager stateManager, Application app) {
         super.initialize(stateManager, app);
 
-        // Default camera settings
+        // Camera settings
         flyCam.setEnabled(true);
         flyCam.setDragToRotate(true);
-        cam.setLocation(new Vector3f(0f, 0f, 10f));
-        cam.lookAt(new Vector3f(0f, 0f, -1f), Vector3f.UNIT_Y);
+        cam.setLocation(new Vector3f(1.6f, 2.5f, 11f)); // Default: 0f, 0f, 10f
+        cam.lookAt(new Vector3f(1.6f, 2.5f, -1f), Vector3f.UNIT_Y); // Default: 0f, 0f, -1f
 
         flyCam.setMoveSpeed(10);
 
@@ -95,7 +96,7 @@ public class KubusScreenState extends AbstractAppState {
         setUpLight();
 
         initWorld();
-        initHighlightPiece();
+        initHighlight();
         initPuzzlePieces();
 
         // Custom keybindings for switching camera views
@@ -157,7 +158,7 @@ public class KubusScreenState extends AbstractAppState {
         localRootNode.attachChild(terrainNode);
     }
 
-    private void initHighlightPiece() {
+    private void initHighlight() {
 
         WireBox wbox = new WireBox(1.5f, 1.5f, 1.5f);
         wbox.setLineWidth(6f);
@@ -174,11 +175,15 @@ public class KubusScreenState extends AbstractAppState {
 
         this.puzzlePieces = new Node("Controllable Blocks");
 
-        // Create two controllable blocks
+        // Create two 1x1 controllable blocks
         Block block = new Block(assetManager, ColorRGBA.Blue, new Vector3f(1.5f, 7.6f, 7.6f), new float[]{1.5f, 1.5f, 1.5f});
         puzzlePieces.attachChild(block.getBlockGeometry());
 
         block = new Block(assetManager, ColorRGBA.Orange, new Vector3f(4.5f, 7.6f, 7.6f), new float[]{1.5f, 1.5f, 1.5f});
+        puzzlePieces.attachChild(block.getBlockGeometry());
+
+        // 3x2 puzzle piece
+        block = new Block(assetManager, ColorRGBA.randomColor(), new Vector3f(4.5f, 7.6f, 21f), new float[]{4.5f, 1.5f, 3f});
         puzzlePieces.attachChild(block.getBlockGeometry());
 
         // Set currently controlled piece to first puzzle piece

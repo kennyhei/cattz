@@ -41,6 +41,9 @@ import game.models.HudBlock;
 import game.controllers.InputHandler;
 import game.models.Player;
 import game.models.Time;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.Random;
 
 public class GameScreenState extends AbstractAppState implements PhysicsCollisionListener {
 
@@ -147,6 +150,8 @@ public class GameScreenState extends AbstractAppState implements PhysicsCollisio
 
     @Override
     public void update(float tpf) {
+
+        System.out.println(player.getModel().getLocalTranslation());
 
         // Blocks have been collected
         if (blockNode.getChildren().isEmpty()) {
@@ -284,6 +289,10 @@ public class GameScreenState extends AbstractAppState implements PhysicsCollisio
 
     private void initBlocks() {
 
+        ArrayList<Integer> usedLocations = new ArrayList<Integer>();
+        float[][] locations = Block.locations;
+        Random random = new Random();
+
         blockNode = new Node("BlockNode");
 
         // Create 6 blocks and hud blocks
@@ -291,6 +300,18 @@ public class GameScreenState extends AbstractAppState implements PhysicsCollisio
             Block kubusBlock = new Block(assetManager,
                                          ColorRGBA.randomColor(),
                                          new Vector3f(i * 10, 20f, -5f), new float[]{2f, 4f, 1f});
+
+            // Set random location to kubus block
+            while (true) {
+                int index = random.nextInt(locations.length);
+
+                if (!usedLocations.contains(index)) {
+                    float[] newLocation = locations[index];
+                    usedLocations.add(index);
+                    kubusBlock.setLocation(new Vector3f(newLocation[0], newLocation[1], newLocation[2]));
+                    break;
+                }
+            }
 
             BlockControl c = kubusBlock.getBlockGeometry().getControl(BlockControl.class);
 

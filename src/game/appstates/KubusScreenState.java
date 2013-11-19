@@ -51,7 +51,6 @@ public class KubusScreenState extends AbstractAppState {
         this.cam = this.app.getCamera();
         this.flyCam = this.app.getFlyByCamera();
         this.settings = this.app.getContext().getSettings();
-        this.bulletAppState = this.app.getStateManager().getState(BulletAppState.class);
     }
 
     /* Local root and gui nodes */
@@ -80,6 +79,8 @@ public class KubusScreenState extends AbstractAppState {
     @Override
     public void initialize(AppStateManager stateManager, Application app) {
         super.initialize(stateManager, app);
+
+        this.bulletAppState = this.app.getStateManager().getState(BulletAppState.class);
 
         // Camera settings
         flyCam.setEnabled(true);

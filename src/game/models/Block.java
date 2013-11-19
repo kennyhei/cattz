@@ -37,7 +37,7 @@ public class Block {
         this.blockMaterial.setColor("Color", color);
         this.blockGeometry.setMaterial(blockMaterial);
 
-        this.physics = new GhostControl(new BoxCollisionShape(new Vector3f(2f, 4f, 1f)));
+        this.physics = new GhostControl(new BoxCollisionShape(new Vector3f(size[0], size[1], size[2])));
         this.blockGeometry.addControl(physics);
 
         this.blockGeometry.addControl(new BlockControl(color));

@@ -42,7 +42,6 @@ import game.controllers.InputHandler;
 import game.models.Player;
 import game.models.Time;
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.Random;
 
 public class GameScreenState extends AbstractAppState implements PhysicsCollisionListener {
@@ -150,8 +149,6 @@ public class GameScreenState extends AbstractAppState implements PhysicsCollisio
 
     @Override
     public void update(float tpf) {
-
-        System.out.println(player.getModel().getLocalTranslation());
 
         // Blocks have been collected
         if (blockNode.getChildren().isEmpty()) {
@@ -371,6 +368,7 @@ public class GameScreenState extends AbstractAppState implements PhysicsCollisio
         chaseCam.setInvertVerticalAxis(false);
         rootNode.detachChildNamed("Sky");
         viewPort.clearProcessors();
+        bulletAppState.getPhysicsSpace().removeCollisionListener(this);
 
         rootNode.detachChild(localRootNode);
         guiNode.detachChild(localGuiNode);

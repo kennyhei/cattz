@@ -46,7 +46,7 @@ public class StartScreenState extends AbstractAppState {
         BitmapFont guiFont = assetManager.loadFont("Interface/Fonts/Default.fnt");
         BitmapText displaytext = new BitmapText(guiFont);
         displaytext.setSize(guiFont.getCharSet().getRenderedSize());
-        displaytext.setText("Start screen. Press Enter to start the game");
+        displaytext.setText("You are entering a world, where you need to collect colorful blocks!");
 
         displaytext.setLocalTranslation(this.app.getContext().getSettings().getWidth() / 2 - displaytext.getLineWidth() / 2,
                                         this.app.getContext().getSettings().getHeight() / 2 + displaytext.getLineHeight(), 0);

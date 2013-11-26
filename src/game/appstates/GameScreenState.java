@@ -230,12 +230,14 @@ public class GameScreenState extends AbstractAppState implements PhysicsCollisio
 
     private void initCharacter() {
         player = new Player(assetManager, new Vector3f(30f, 15f, 10f));
+        
 
         // Register solid player to PhysicsSpace
         bulletAppState.getPhysicsSpace().add(player.getPhysics());
 
         // Add player to the scene
         localRootNode.attachChild(player.getModel());
+        
     }
 
     private void initChaseCamera() {

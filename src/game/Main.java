@@ -2,10 +2,10 @@ package game;
 
 import com.jme3.app.SimpleApplication;
 import com.jme3.input.KeyInput;
-import com.jme3.input.MouseInput;
+
 import com.jme3.input.controls.ActionListener;
 import com.jme3.input.controls.KeyTrigger;
-import com.jme3.input.controls.MouseButtonTrigger;
+
 import com.jme3.system.AppSettings;
 import game.GUI.Tonegod;
 import game.appstates.GameScreenState;
@@ -14,8 +14,7 @@ import game.appstates.PauseScreenState;
 import game.appstates.StartScreenState;
 import game.controllers.InputHandler;
 import game.managers.LevelManager;
-import javax.swing.AbstractButton;
-import tonegod.gui.controls.buttons.Button;
+
 
 public class Main extends SimpleApplication {
     
@@ -72,10 +71,10 @@ public class Main extends SimpleApplication {
         this.inputHandler = new InputHandler();
         this.inputHandler.init(inputManager);
 
-        inputManager.addMapping("Start", new KeyTrigger(KeyInput.KEY_RETURN));
+       // inputManager.addMapping("Start", new KeyTrigger(KeyInput.KEY_RETURN));
         inputManager.addMapping("Continue", new KeyTrigger(KeyInput.KEY_RETURN));
         inputManager.addMapping("Pause", new KeyTrigger(KeyInput.KEY_F1));
-        inputManager.addListener(actionListener, "Start");
+      //  inputManager.addListener(actionListener, "Start");
         inputManager.addListener(actionListener, "Continue");
         inputManager.addListener(actionListener, "Pause");
 
@@ -92,7 +91,6 @@ public class Main extends SimpleApplication {
 
         public void onAction(String name, boolean isPressed, float tpf) {
 
-// this is a tonegod-related listener that does not work as it is
             
             if (name.equals("level") && level == 1) {
                // we know something has been clicked
@@ -105,13 +103,13 @@ public class Main extends SimpleApplication {
                
             }
 
-            if (name.equals("Start") && !isPressed && !isRunning) {
-                stateManager.detach(startScreenState);
-                stateManager.attach(gameRunningState);
-                gameRunningState.setEnabled(true);
-                isRunning = true;
-                System.out.println("Starting game...");
-            }
+//            if (name.equals("Start") && !isPressed && !isRunning) {
+//                stateManager.detach(startScreenState);
+//                stateManager.attach(gameRunningState);
+//                gameRunningState.setEnabled(true);
+//                isRunning = true;
+//                System.out.println("Starting game...");
+//            }
 
             if (name.equals("Continue") && !isPressed && switchToKubus && !stateManager.hasState(kubusScreenState)) {
                 stateManager.detach(gameRunningState);

@@ -40,7 +40,7 @@ public class StartScreenState extends AbstractAppState {
 
         // tonegod gui start
 //        below commented out because of shaky functionality --Emilia
-//        tonegod.drawGui();
+        tonegod.drawGui();
 
         // Menu message
         BitmapFont guiFont = assetManager.loadFont("Interface/Fonts/Default.fnt");
@@ -64,7 +64,7 @@ public class StartScreenState extends AbstractAppState {
     @Override
     public void stateDetached(AppStateManager stateManager) {
         // below commented out because of shaky functionality --Emilia
-        //tonegod.destroyGui();
+        tonegod.destroyGui();
         rootNode.detachChild(localRootNode);
         guiNode.detachChild(localGuiNode);
     }

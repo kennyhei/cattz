@@ -14,8 +14,13 @@ import game.appstates.PauseScreenState;
 import game.appstates.StartScreenState;
 import game.controllers.InputHandler;
 import game.managers.LevelManager;
+import javax.swing.AbstractButton;
+import tonegod.gui.controls.buttons.Button;
 
 public class Main extends SimpleApplication {
+    
+    /* test public var */
+    public static int level = 0;
 
     /* States */
     private GameScreenState gameRunningState;
@@ -75,8 +80,8 @@ public class Main extends SimpleApplication {
         inputManager.addListener(actionListener, "Pause");
 
         // Tonegodgui click listener
-        inputManager.addMapping("click", new MouseButtonTrigger(MouseInput.BUTTON_LEFT));
-        inputManager.addListener(actionListener, "click");
+       // inputManager.addMapping("level", new MouseButtonTrigger(MouseInput.BUTTON_LEFT));
+        inputManager.addListener(actionListener, "level");
     }
 
     public void setSwitch(boolean switchOk) {
@@ -88,16 +93,17 @@ public class Main extends SimpleApplication {
         public void onAction(String name, boolean isPressed, float tpf) {
 
 // this is a tonegod-related listener that does not work as it is
-//            if (name.equals("click") && !isPressed) {
-//               // we know something has been clicked
-//                System.out.println("KLIKKKK");
-//               if (tonegod.buttonPressed()) {
-//                   stateManager.detach(startScreenState);
-//                   stateManager.attach(gameRunningState);
-//                   gameRunningState.setEnabled(true);
-//                   System.out.println("level 1");
-//               }
-//            }
+            
+            if (name.equals("level") && level == 1) {
+               // we know something has been clicked
+                System.out.println("KLIKKKK");
+                stateManager.detach(startScreenState);
+                stateManager.attach(gameRunningState);
+                gameRunningState.setEnabled(true);
+                System.out.println("level 1");
+       
+               
+            }
 
             if (name.equals("Start") && !isPressed && !isRunning) {
                 stateManager.detach(startScreenState);
@@ -131,10 +137,18 @@ public class Main extends SimpleApplication {
 
     public InputHandler getInputHandler() {
         return inputHandler;
+        
     }
 
     public LevelManager getLevelManager() {
         return levelManager;
+    }
+    
+    public static void changeGameState(Main main) {
+        level = 1;
+        System.out.println(level);   
+        main.actionListener.onAction("level", true, 5);
+     
     }
 
     @Override

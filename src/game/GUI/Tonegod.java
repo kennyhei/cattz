@@ -43,8 +43,11 @@ public class Tonegod {
 
             @Override
             public void onButtonMouseLeftUp(MouseButtonEvent evt, boolean toggled) {
-                createNewWindow("New Window " + winCount);
+                //createNewWindow("New Window " + winCount);
                 buttonPressed = true;
+                Main.changeGameState((Main) app);
+                   
+                
             }
         };
 

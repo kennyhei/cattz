@@ -22,6 +22,7 @@ import com.jme3.input.ChaseCamera;
 import com.jme3.input.FlyByCamera;
 import com.jme3.input.InputManager;
 import com.jme3.light.DirectionalLight;
+import com.jme3.material.Material;
 import com.jme3.math.ColorRGBA;
 import com.jme3.math.Vector3f;
 import com.jme3.post.FilterPostProcessor;
@@ -90,6 +91,9 @@ public class GameScreenState extends AbstractAppState implements PhysicsCollisio
 
     /* Player */
     private Player player;
+    
+    /* test cat */
+    private Geometry cat;
 
     /* Camera */
     private ChaseCamera chaseCam;
@@ -229,8 +233,8 @@ public class GameScreenState extends AbstractAppState implements PhysicsCollisio
     }
 
     private void initCharacter() {
-        player = new Player(assetManager, new Vector3f(30f, 15f, 10f));
-        
+        //player = new Player(assetManager, new Vector3f(30f, 15f, 10f));
+        player = new Player(assetManager, new Vector3f(30f, 6f, 10f));
 
         // Register solid player to PhysicsSpace
         bulletAppState.getPhysicsSpace().add(player.getPhysics());

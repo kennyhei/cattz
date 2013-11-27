@@ -41,6 +41,7 @@ public class KubusScreenState extends AbstractAppState {
     private InputManager inputManager;
     private Camera cam;
     private FlyByCamera flyCam;
+    private final float rotate = (float) (Math.PI/2);
 
     public KubusScreenState(SimpleApplication app) {
         this.app = (Main) app;
@@ -135,10 +136,13 @@ public class KubusScreenState extends AbstractAppState {
         // Block handling keys
         inputManager.addMapping("BlockLeft", new KeyTrigger(KeyInput.KEY_LEFT));
         inputManager.addMapping("BlockRight", new KeyTrigger(KeyInput.KEY_RIGHT));
-        inputManager.addMapping("BlockUp", new KeyTrigger(KeyInput.KEY_K));
-        inputManager.addMapping("BlockDown", new KeyTrigger(KeyInput.KEY_COMMA));
+        inputManager.addMapping("BlockUp", new KeyTrigger(KeyInput.KEY_PGUP));
+        inputManager.addMapping("BlockDown", new KeyTrigger(KeyInput.KEY_PGDN));
         inputManager.addMapping("BlockForward", new KeyTrigger(KeyInput.KEY_UP));
         inputManager.addMapping("BlockBackward", new KeyTrigger(KeyInput.KEY_DOWN));
+        inputManager.addMapping("BlockRotateX", new KeyTrigger(KeyInput.KEY_G));
+        inputManager.addMapping("BlockRotateY", new KeyTrigger(KeyInput.KEY_H));
+        inputManager.addMapping("BlockRotateZ", new KeyTrigger(KeyInput.KEY_J));
         inputManager.addMapping("Change", new KeyTrigger(KeyInput.KEY_TAB));
 
         inputManager.addListener(actionListener, "BlockLeft");
@@ -147,6 +151,9 @@ public class KubusScreenState extends AbstractAppState {
         inputManager.addListener(actionListener, "BlockDown");
         inputManager.addListener(actionListener, "BlockForward");
         inputManager.addListener(actionListener, "BlockBackward");
+        inputManager.addListener(actionListener, "BlockRotateX");
+        inputManager.addListener(actionListener, "BlockRotateY");
+        inputManager.addListener(actionListener, "BlockRotateZ");
         inputManager.addListener(actionListener, "Change");
     }
 
@@ -160,7 +167,7 @@ public class KubusScreenState extends AbstractAppState {
 
     private void initHighlight() {
 
-        WireBox wbox = new WireBox(1.5f, 1.5f, 1.5f);
+        WireBox wbox = new WireBox(4.5f, 1.5f, 3f);
         wbox.setLineWidth(6f);
         this.highlight = new Geometry("Wirebox", wbox);
         Material mat = new Material(assetManager, "Common/MatDefs/Misc/Unshaded.j3md");
@@ -175,15 +182,16 @@ public class KubusScreenState extends AbstractAppState {
 
         this.puzzlePieces = new Node("Controllable Blocks");
 
-        // Create two 1x1 controllable blocks
+        /*// Create two 1x1 controllable blocks
         Block block = new Block(assetManager, ColorRGBA.Blue, new Vector3f(1.5f, 7.6f, 7.6f), new float[]{1.5f, 1.5f, 1.5f});
         puzzlePieces.attachChild(block.getBlockGeometry());
 
         block = new Block(assetManager, ColorRGBA.Orange, new Vector3f(4.5f, 7.6f, 7.6f), new float[]{1.5f, 1.5f, 1.5f});
         puzzlePieces.attachChild(block.getBlockGeometry());
+        */
 
         // 3x2 puzzle piece
-        block = new Block(assetManager, ColorRGBA.randomColor(), new Vector3f(4.5f, 7.6f, 21f), new float[]{4.5f, 1.5f, 3f});
+        Block block = new Block(assetManager, ColorRGBA.randomColor(), new Vector3f(4.5f, 7.6f, 21f), new float[]{4.5f, 1.5f, 3f});
         puzzlePieces.attachChild(block.getBlockGeometry());
 
         // Set currently controlled piece to first puzzle piece
@@ -241,6 +249,24 @@ public class KubusScreenState extends AbstractAppState {
 
             if (name.equals("BlockBackward") && !keyPressed) {
                 currentPiece.move(0f, 0f, 3f);
+            }
+
+            if (name.equals("BlockRotateX") && !keyPressed) {
+                currentPiece.rotate(rotate, 0, 0);
+                currentPiece.move(0f, 1.5f, 1.5f);
+                highlight.rotate(rotate, 0, 0);
+            }
+
+            if (name.equals("BlockRotateY") && !keyPressed) {
+                currentPiece.rotate(0, rotate, 0);
+                currentPiece.move(-1.5f, 0f, -1.5f);
+                highlight.rotate(0, rotate, 0);
+            }
+
+            if (name.equals("BlockRotateZ") && !keyPressed) {
+                currentPiece.rotate(0, 0, rotate);
+                currentPiece.move(-3f, 3f, 0f);
+                highlight.rotate(0, 0, rotate);
             }
 
             // Change controlled block

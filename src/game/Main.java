@@ -96,7 +96,8 @@ public class Main extends SimpleApplication {
                // we know something has been clicked
                 System.out.println("KLIKKKK");
                 stateManager.detach(startScreenState);
-                stateManager.attach(gameRunningState);
+                //stateManager.attach(gameRunningState);
+                stateManager.attach(kubusScreenState);
                 gameRunningState.setEnabled(true);
                 System.out.println("level 1");
        

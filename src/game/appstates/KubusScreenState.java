@@ -42,7 +42,6 @@ public class KubusScreenState extends AbstractAppState {
     private Camera cam;
     private FlyByCamera flyCam;
     private final float rotate = (float) (Math.PI/2);
-    private boolean[] rotation = new boolean[]{false, false, false};
 
     public KubusScreenState(SimpleApplication app) {
         this.app = (Main) app;
@@ -181,7 +180,7 @@ public class KubusScreenState extends AbstractAppState {
 
     private void initPuzzlePieces() {
 
-        this.puzzlePieces = new Node("Controllable Blocks");
+        this.puzzlePieces = this.app.getLevelManager().getLevel(currentIndex).getPuzzlePieces();
 
         /*// Create two 1x1 controllable blocks
         Block block = new Block(assetManager, ColorRGBA.Blue, new Vector3f(1.5f, 7.6f, 7.6f), new float[]{1.5f, 1.5f, 1.5f});
@@ -191,9 +190,9 @@ public class KubusScreenState extends AbstractAppState {
         puzzlePieces.attachChild(block.getBlockGeometry());
         */
 
-        // 3x2 puzzle piece
-        Block block = new Block(assetManager, ColorRGBA.randomColor(), new Vector3f(4.5f, 7.6f, 21f), new float[]{4.5f, 1.5f, 3f});
-        puzzlePieces.attachChild(block.getBlockGeometry());
+        // 3x2 puzzle piece REFACTORED to Level.java
+        //Block block = new Block(assetManager, ColorRGBA.randomColor(), new Vector3f(4.5f, 7.6f, 21f), new float[]{4.5f, 1.5f, 3f});
+        //puzzlePieces.attachChild(block.getBlockGeometry());
 
         // Set currently controlled piece to first puzzle piece
         currentPiece = (Geometry) puzzlePieces.getChild(0);
@@ -280,7 +279,12 @@ public class KubusScreenState extends AbstractAppState {
             }
 
             highlight.setLocalTranslation(currentPiece.getLocalTranslation());
+            
+            if (app.getLevelManager().getLevel(currentIndex).checkBlocks()) {
+                System.out.println("Congrats, you've cleared this level!");
+            }
                 System.out.println(currentPiece.getLocalTranslation());
+         //       System.out.println(currentPiece.getLocalRotation());
         }
     };
 

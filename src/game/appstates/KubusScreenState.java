@@ -42,6 +42,7 @@ public class KubusScreenState extends AbstractAppState {
     private Camera cam;
     private FlyByCamera flyCam;
     private final float rotate = (float) (Math.PI/2);
+    private boolean[] rotation = new boolean[]{false, false, false};
 
     public KubusScreenState(SimpleApplication app) {
         this.app = (Main) app;
@@ -253,20 +254,41 @@ public class KubusScreenState extends AbstractAppState {
 
             if (name.equals("BlockRotateX") && !keyPressed) {
                 currentPiece.rotate(rotate, 0, 0);
-                currentPiece.move(0f, 1.5f, 1.5f);
                 highlight.rotate(rotate, 0, 0);
+                if (rotation[0]) {
+                    currentPiece.move(0f, -1.5f, -1.5f);
+                    rotation[0] = false;
+                }
+                else {
+                    currentPiece.move(0f, 1.5f, 1.5f);
+                    rotation[0] = true;
+                }
             }
 
             if (name.equals("BlockRotateY") && !keyPressed) {
                 currentPiece.rotate(0, rotate, 0);
-                currentPiece.move(-1.5f, 0f, -1.5f);
                 highlight.rotate(0, rotate, 0);
+                if (rotation[1]) {
+                    currentPiece.move(1.5f, 0f, 1.5f);
+                    rotation[1] = false;
+                }
+                else {
+                    currentPiece.move(-1.5f, 0f, -1.5f);
+                    rotation[1] = true;
+                }
             }
 
             if (name.equals("BlockRotateZ") && !keyPressed) {
                 currentPiece.rotate(0, 0, rotate);
-                currentPiece.move(-3f, 3f, 0f);
                 highlight.rotate(0, 0, rotate);
+                if (rotation[2]) {
+                    currentPiece.move(3f, -3f, 0f);
+                    rotation[2] = false;
+                }
+                else {
+                    currentPiece.move(-3f, 3f, 0f);
+                    rotation[2] = true;
+                }
             }
 
             // Change controlled block
@@ -276,6 +298,7 @@ public class KubusScreenState extends AbstractAppState {
             }
 
             highlight.setLocalTranslation(currentPiece.getLocalTranslation());
+                System.out.println(currentPiece.getLocalTranslation());
         }
     };
 

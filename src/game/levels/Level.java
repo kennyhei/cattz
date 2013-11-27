@@ -11,6 +11,7 @@ public abstract class Level {
 
     protected Node terrainNode;
     protected Main app;
+    protected int[][] blocklist;
 
     public Level(Main app) {
         this.app = app;

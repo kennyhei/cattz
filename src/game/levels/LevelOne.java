@@ -22,5 +22,9 @@ public class LevelOne extends Level {
 
         this.terrainNode = new Node();
         terrainNode.addControl(blockTerrain);
+        
+        this.blocklist = new int[][]{
+            {0,0,0,0}
+            };
     }
 }

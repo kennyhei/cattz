@@ -253,8 +253,8 @@ public class KubusScreenState extends AbstractAppState {
             }
 
             if (name.equals("BlockRotateX") && !keyPressed) {
-                currentPiece.rotate(rotate, 0, 0);
-                highlight.rotate(rotate, 0, 0);
+                rotatePiece(rotate, 0, 0);
+                /*
                 if (rotation[0]) {
                     currentPiece.move(0f, -1.5f, -1.5f);
                     rotation[0] = false;
@@ -262,33 +262,15 @@ public class KubusScreenState extends AbstractAppState {
                 else {
                     currentPiece.move(0f, 1.5f, 1.5f);
                     rotation[0] = true;
-                }
+                }*/
             }
 
             if (name.equals("BlockRotateY") && !keyPressed) {
-                currentPiece.rotate(0, rotate, 0);
-                highlight.rotate(0, rotate, 0);
-                if (rotation[1]) {
-                    currentPiece.move(1.5f, 0f, 1.5f);
-                    rotation[1] = false;
-                }
-                else {
-                    currentPiece.move(-1.5f, 0f, -1.5f);
-                    rotation[1] = true;
-                }
+                rotatePiece(0,rotate, 0);
             }
 
             if (name.equals("BlockRotateZ") && !keyPressed) {
-                currentPiece.rotate(0, 0, rotate);
-                highlight.rotate(0, 0, rotate);
-                if (rotation[2]) {
-                    currentPiece.move(3f, -3f, 0f);
-                    rotation[2] = false;
-                }
-                else {
-                    currentPiece.move(-3f, 3f, 0f);
-                    rotation[2] = true;
-                }
+                rotatePiece(0, 0, rotate);
             }
 
             // Change controlled block
@@ -310,6 +292,11 @@ public class KubusScreenState extends AbstractAppState {
         }
 
         currentPiece = (Geometry) puzzlePieces.getChild(currentIndex);
+    }
+    
+    private void rotatePiece(float x, float y, float z) {
+        currentPiece.rotate(x, y, z);
+        highlight.rotate(x, y, z);
     }
 
     @Override

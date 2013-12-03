@@ -3,20 +3,54 @@ package game.managers;
 import game.Main;
 import game.levels.Level;
 import game.levels.LevelOne;
-import java.util.HashMap;
+import java.util.Map;
+import java.util.SortedMap;
+import java.util.TreeMap;
 
 public class LevelManager {
 
-    HashMap<Integer, Level> levels;
+    private SortedMap<Integer, String> levelOrder;
+    private Map<String, Level> levels;
+    private Map<Integer, Boolean> enabledLevels;
+    private int currentLevelOrder;
 
     public LevelManager(Main app) {
-        this.levels = new HashMap<Integer, Level>();
-
-        levels.put(0, new LevelOne(app));
+        this.levels = new TreeMap<String, Level>();
+        this.levelOrder = new TreeMap<Integer, String>();
+        this.enabledLevels = new TreeMap<Integer, Boolean>();
+        
+        
+        // could load game progress from disk here
+        addLevel(1, "Baby steps", new LevelOne(app), true);
+        addLevel(2, "Didn't see this one coming!", new LevelOne(app), false);
+        addLevel(3, "Oh no, more levels!", new LevelOne(app), false);
+        
+        this.currentLevelOrder = 1;
     }
 
-    public Level getLevel(int levelId) {
-        return levels.get(levelId);
+    public Level getCurrentLevel() {
+        return levels.get(levelOrder.get(currentLevelOrder));
     }
 
+    public boolean isEnabled(int levelIndex) {
+        return enabledLevels.containsKey(levelIndex) && enabledLevels.get(levelIndex);
+    }
+
+    public SortedMap<Integer, String> getLevelOrdering() {
+        return levelOrder;
+    }
+
+    private void addLevel(int order, String levelName, Level level, boolean enabled) {
+        levels.put(levelName, level);
+        levelOrder.put(order, levelName);
+        enabledLevels.put(order, enabled);
+    }
+
+    public void setActiveLevel(int levelIndex) {
+        if (!enabledLevels.keySet().contains(levelIndex)) {
+            return;
+        }
+
+        currentLevelOrder = levelIndex;
+    }
 }

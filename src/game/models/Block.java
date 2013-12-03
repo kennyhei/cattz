@@ -1,6 +1,7 @@
 package game.models;
 
 import com.jme3.asset.AssetManager;
+import com.jme3.bounding.BoundingVolume;
 import com.jme3.bullet.collision.shapes.BoxCollisionShape;
 import com.jme3.bullet.control.GhostControl;
 import com.jme3.material.Material;
@@ -25,9 +26,11 @@ public class Block {
     private Geometry blockGeometry;
     private Material blockMaterial;
     private GhostControl physics;
+    private float[] size;
 
     public Block(AssetManager assetManager, ColorRGBA color, Vector3f location, float[] size) {
-
+        this.size = size;
+        
         // Create kubus block
         this.blockBox = new Box(size[0], size[1], size[2]);
         this.blockGeometry = new Geometry("Block", blockBox);
@@ -42,6 +45,14 @@ public class Block {
 
         this.blockGeometry.addControl(new BlockControl(color));
     }
+    
+    public float[] getSize() {
+        return size;
+    }
+    
+    public Box getBox() {
+        return blockBox;
+    }
 
     public Geometry getBlockGeometry() {
         return blockGeometry;
@@ -53,5 +64,9 @@ public class Block {
 
     public void setLocation(Vector3f newLocation) {
         this.blockGeometry.setLocalTranslation(newLocation);
+    }
+    
+    public BoundingVolume getWorldBound() {
+        return this.blockGeometry.getWorldBound();
     }
 }

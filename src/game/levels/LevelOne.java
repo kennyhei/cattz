@@ -8,7 +8,9 @@ import com.jme3.math.ColorRGBA;
 import com.jme3.math.Vector3f;
 import com.jme3.scene.Node;
 import game.Main;
+import static game.levels.Level.BLOCK_SIDE_WIDTH;
 import game.models.Block;
+import java.util.ArrayList;
 
 public class LevelOne extends Level {
 
@@ -25,15 +27,27 @@ public class LevelOne extends Level {
 
         this.terrainNode = new Node();
         terrainNode.addControl(blockTerrain);
-        this.puzzlePieces = new Node("Controllable Blocks");
-        
-        
+
+
+        this.puzzlePieces = new ArrayList<Block>(); // ("Controllable Blocks");
+
         // 3x2 puzzle piece
-        Block block = new Block(assetManager, ColorRGBA.randomColor(), new Vector3f(4.5f, 7.6f, 21f), new float[]{4.5f, 1.5f, 3f});
-        puzzlePieces.attachChild(block.getBlockGeometry());
-        
+        Block block = new Block(assetManager,
+                ColorRGBA.randomColor(),
+                new Vector3f(4.5f, 7.6f, 21f),
+                new float[]{3 * BLOCK_SIDE_WIDTH, BLOCK_SIDE_WIDTH, 2 * BLOCK_SIDE_WIDTH});
+        puzzlePieces.add(block);
+
+        block = new Block(assetManager,
+                ColorRGBA.randomColor(),
+                new Vector3f(4f, 15f, 10f),
+                new float[]{BLOCK_SIDE_WIDTH, BLOCK_SIDE_WIDTH, BLOCK_SIDE_WIDTH});
+        puzzlePieces.add(block);
+
+
         this.blockCheckList = new int[][]{
-            {105,136,150,5}
-            };
+            {105, 136, 150, 5},
+            {105, 136, 150, 5}
+        };
     }
 }

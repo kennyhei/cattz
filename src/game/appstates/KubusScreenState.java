@@ -5,6 +5,8 @@ import com.jme3.app.SimpleApplication;
 import com.jme3.app.state.AbstractAppState;
 import com.jme3.app.state.AppStateManager;
 import com.jme3.asset.AssetManager;
+import com.jme3.bounding.BoundingBox;
+import com.jme3.bounding.BoundingVolume;
 import com.jme3.bullet.BulletAppState;
 import com.jme3.input.FlyByCamera;
 import com.jme3.input.InputManager;
@@ -24,15 +26,16 @@ import game.Main;
 import game.controllers.InputHandler;
 import game.levels.Level;
 import game.models.Block;
+import java.util.List;
 
 /*
-* Cubes source code and simple classes showing how to use the framework
-* can be found here:
-* https://code.google.com/p/jmonkeyplatform-contributions/source/browse/#svn%2Ftrunk%2Fcubes%2FCubes%2Fsrc
-*/
-
+ * Cubes source code and simple classes showing how to use the framework
+ * can be found here:
+ * https://code.google.com/p/jmonkeyplatform-contributions/source/browse/#svn%2Ftrunk%2Fcubes%2FCubes%2Fsrc
+ */
 public class KubusScreenState extends AbstractAppState {
 
+    private final float BLOCK_WIDTH = 3f;
     private Main app;
     private Node rootNode;
     private Node guiNode;
@@ -41,7 +44,7 @@ public class KubusScreenState extends AbstractAppState {
     private InputManager inputManager;
     private Camera cam;
     private FlyByCamera flyCam;
-    private final float rotate = (float) (Math.PI/2);
+    private final float rotate = (float) (Math.PI / 2);
 
     public KubusScreenState(SimpleApplication app) {
         this.app = (Main) app;
@@ -65,12 +68,10 @@ public class KubusScreenState extends AbstractAppState {
     InputHandler inputHandler;
 
     /* Block handler */
-    Node puzzlePieces;
-
+    List<Block> puzzlePieces;
     // Currently controlled piece and its highlighting
-    Geometry currentPiece;
+    Block currentPiece;
     Geometry highlight;
-
     // Index of currently controlled piece
     int currentIndex;
 
@@ -97,8 +98,8 @@ public class KubusScreenState extends AbstractAppState {
         setUpLight();
 
         initWorld();
-        initHighlight();
         initPuzzlePieces();
+        updateHighlight();
 
         // Custom keybindings for switching camera views
         initCameraKeys();
@@ -158,119 +159,59 @@ public class KubusScreenState extends AbstractAppState {
     }
 
     private void initWorld() {
-        Level level = this.app.getLevelManager().getLevel(0);
+        Level level = this.app.getLevelManager().getCurrentLevel();
         this.terrainNode = level.getTerrain();
 
         localRootNode.setLocalScale(0.2f);
         localRootNode.attachChild(terrainNode);
     }
 
-    private void initHighlight() {
+    private void updateHighlight() {
+        if (highlight != null) {
+            localRootNode.detachChild(highlight);
+        }
 
-        WireBox wbox = new WireBox(4.5f, 1.5f, 3f);
+        WireBox wbox = new WireBox(currentPiece.getSize()[0], currentPiece.getSize()[1], currentPiece.getSize()[2]); // .getBox().xExtent, currentPiece.getBox().yExtent, currentPiece.getBox().zExtent);
         wbox.setLineWidth(6f);
+
         this.highlight = new Geometry("Wirebox", wbox);
         Material mat = new Material(assetManager, "Common/MatDefs/Misc/Unshaded.j3md");
         mat.getAdditionalRenderState().setWireframe(true);
         mat.setColor("Color", ColorRGBA.Green);
         this.highlight.setMaterial(mat);
-
         localRootNode.attachChild(this.highlight);
+        
+        highlight.setLocalTranslation(currentPiece.getBlockGeometry().getLocalTranslation());
     }
 
     private void initPuzzlePieces() {
 
-        this.puzzlePieces = this.app.getLevelManager().getLevel(currentIndex).getPuzzlePieces();
+        this.puzzlePieces = this.app.getLevelManager().getCurrentLevel().getPuzzlePieces();
 
         /*// Create two 1x1 controllable blocks
-        Block block = new Block(assetManager, ColorRGBA.Blue, new Vector3f(1.5f, 7.6f, 7.6f), new float[]{1.5f, 1.5f, 1.5f});
-        puzzlePieces.attachChild(block.getBlockGeometry());
+         Block block = new Block(assetManager, ColorRGBA.Blue, new Vector3f(1.5f, 7.6f, 7.6f), new float[]{1.5f, 1.5f, 1.5f});
+         puzzlePieces.attachChild(block.getBlockGeometry());
 
-        block = new Block(assetManager, ColorRGBA.Orange, new Vector3f(4.5f, 7.6f, 7.6f), new float[]{1.5f, 1.5f, 1.5f});
-        puzzlePieces.attachChild(block.getBlockGeometry());
-        */
+         block = new Block(assetManager, ColorRGBA.Orange, new Vector3f(4.5f, 7.6f, 7.6f), new float[]{1.5f, 1.5f, 1.5f});
+         puzzlePieces.attachChild(block.getBlockGeometry());
+         */
 
         // 3x2 puzzle piece REFACTORED to Level.java
         //Block block = new Block(assetManager, ColorRGBA.randomColor(), new Vector3f(4.5f, 7.6f, 21f), new float[]{4.5f, 1.5f, 3f});
         //puzzlePieces.attachChild(block.getBlockGeometry());
 
         // Set currently controlled piece to first puzzle piece
-        currentPiece = (Geometry) puzzlePieces.getChild(0);
-        highlight.setLocalTranslation(currentPiece.getLocalTranslation());
+        currentPiece = puzzlePieces.get(0);
 
-        localRootNode.attachChild(puzzlePieces);
+        for (Block block : puzzlePieces) {
+            localRootNode.attachChild(block.getBlockGeometry());
+        }
     }
-
     private ActionListener actionListener = new ActionListener() {
-
         @Override
         public void onAction(String name, boolean keyPressed, float tpf) {
-
-            if (name.equals("1st camera") && !keyPressed) {
-
-                // Switch to 1st camera view
-                cam.setLocation(new Vector3f(0f, 0f, 10f));
-                cam.lookAt(new Vector3f(0f, 0f, -1f), Vector3f.UNIT_Y);
-            }
-
-            if (name.equals("2nd camera") && !keyPressed) {
-
-                // Switch to 2nd camera view
-                cam.setLocation(new Vector3f(0f, 0f, -10f));
-                cam.lookAt(new Vector3f(0f, 0f, -1f), Vector3f.UNIT_Y);
-            }
-
-            if (name.equals("3rd camera") && !keyPressed) {
-
-                // Switch to 3rd camera view
-                cam.setLocation(new Vector3f(0f, 10f, 0f));
-                cam.lookAt(new Vector3f(0f, 0f, -1f), Vector3f.UNIT_Y);
-            }
-
-            if (name.equals("BlockUp") && !keyPressed) {
-                currentPiece.move(0f, 3f, 0f);
-            }
-
-            if (name.equals("BlockDown") && !keyPressed) {
-                currentPiece.move(0f, -3f, 0f);
-            }
-
-            if (name.equals("BlockLeft") && !keyPressed) {
-                currentPiece.move(-3f, 0f, 0f);
-            }
-
-            if (name.equals("BlockRight") && !keyPressed) {
-                currentPiece.move(3f, 0f, 0f);
-            }
-
-            if (name.equals("BlockForward") && !keyPressed) {
-                currentPiece.move(0f, 0f, -3f);
-            }
-
-            if (name.equals("BlockBackward") && !keyPressed) {
-                currentPiece.move(0f, 0f, 3f);
-            }
-
-            if (name.equals("BlockRotateX") && !keyPressed) {
-                rotatePiece(rotate, 0, 0);
-                /*
-                if (rotation[0]) {
-                    currentPiece.move(0f, -1.5f, -1.5f);
-                    rotation[0] = false;
-                }
-                else {
-                    currentPiece.move(0f, 1.5f, 1.5f);
-                    rotation[0] = true;
-                }*/
-            }
-
-            if (name.equals("BlockRotateY") && !keyPressed) {
-                rotatePiece(0,rotate, 0);
-            }
-
-            if (name.equals("BlockRotateZ") && !keyPressed) {
-                rotatePiece(0, 0, rotate);
-            }
+            handleCamera(name, keyPressed);
+            handleMovement(name, keyPressed);
 
             // Change controlled block
             // TODO: Refactor control change to own util class?
@@ -278,28 +219,146 @@ public class KubusScreenState extends AbstractAppState {
                 changePiece();
             }
 
-            highlight.setLocalTranslation(currentPiece.getLocalTranslation());
-            
-            if (app.getLevelManager().getLevel(currentIndex).checkBlocks()) {
+            updateHighlight();
+//            highlight.setLocalTranslation(currentPiece.getLocalTranslation());
+
+            if (app.getLevelManager().getCurrentLevel().checkBlocks()) {
                 System.out.println("Congrats, you've cleared this level!");
             }
-                System.out.println(currentPiece.getLocalTranslation());
-         //       System.out.println(currentPiece.getLocalRotation());
+
+        }
+
+        private void handleCamera(String name, boolean keyPressed) {
+            if (keyPressed) {
+                return;
+            }
+
+            if (name.equals("1st camera")) {
+
+                // Switch to 1st camera view
+                cam.setLocation(new Vector3f(0f, 0f, 10f));
+                cam.lookAt(new Vector3f(0f, 0f, -1f), Vector3f.UNIT_Y);
+            }
+
+            if (name.equals("2nd camera")) {
+
+                // Switch to 2nd camera view
+                cam.setLocation(new Vector3f(0f, 0f, -10f));
+                cam.lookAt(new Vector3f(0f, 0f, -1f), Vector3f.UNIT_Y);
+            }
+
+            if (name.equals("3rd camera")) {
+
+                // Switch to 3rd camera view
+                cam.setLocation(new Vector3f(0f, 10f, 0f));
+                cam.lookAt(new Vector3f(0f, 0f, -1f), Vector3f.UNIT_Y);
+            }
+        }
+
+        private void handleMovement(String eventName, boolean keyPressed) {
+            movePiece(eventName, keyPressed);
+
+            if (eventName.equals("BlockRotateX") && !keyPressed) {
+                rotatePiece(rotate, 0, 0);
+                /*
+                 if (rotation[0]) {
+                 currentPiece.move(0f, -1.5f, -1.5f);
+                 rotation[0] = false;
+                 }
+                 else {
+                 currentPiece.move(0f, 1.5f, 1.5f);
+                 rotation[0] = true;
+                 }*/
+            }
+
+            if (eventName.equals("BlockRotateY") && !keyPressed) {
+                rotatePiece(0, rotate, 0);
+            }
+
+            if (eventName.equals("BlockRotateZ") && !keyPressed) {
+                rotatePiece(0, 0, rotate);
+            }
+        }
+
+        private void movePiece(String eventName, boolean keyPressed) {
+            if (keyPressed) {
+                return;
+            }
+
+            float[] move = {0f, 0f, 0f};
+
+            if (eventName.equals("BlockLeft")) {
+                move[0] = -BLOCK_WIDTH;
+            }
+
+            if (eventName.equals("BlockRight")) {
+                move[0] = BLOCK_WIDTH;
+            }
+
+            if (eventName.equals("BlockUp")) {
+                move[1] = BLOCK_WIDTH;
+            }
+
+            if (eventName.equals("BlockDown")) {
+                move[1] = -BLOCK_WIDTH;
+            }
+
+            if (eventName.equals("BlockForward")) {
+                move[2] = -BLOCK_WIDTH;
+            }
+
+            if (eventName.equals("BlockBackward")) {
+                move[2] = BLOCK_WIDTH;
+            }
+
+            currentPiece.getBlockGeometry().move(move[0], move[1], move[2]);
+
+            if (!currentPieceInBounds()) {
+                currentPiece.getBlockGeometry().move(-move[0], -move[1], -move[2]);
+            }
+        }
+
+        private boolean currentPieceInBounds() {
+            BoundingBox terrainBox = (BoundingBox) terrainNode.getWorldBound();
+            BoundingBox pieceBox = (BoundingBox) currentPiece.getWorldBound();
+
+
+            for (Block block : puzzlePieces) {
+                if (block == currentPiece) {
+                    continue;
+                }
+
+                System.out.println("checking if collides with " + block);
+            }
+            
+            // magic number due to the piece being a bit bigger than the boxes
+            if(terrainBox.clone().mergeLocal(pieceBox).getVolume() > terrainBox.getVolume() + 2) {
+                return false;
+            }
+            
+            // TODO: fix
+            // magic number 1 due to box size
+            if (terrainBox.getCenter().getY() - 1 > pieceBox.getCenter().getY() + pieceBox.getYExtent()) {
+                System.out.println("boksi alapuolella");
+                return false;
+            }
+
+            if (terrainBox.getCenter().getZ() > pieceBox.getCenter().getZ() + pieceBox.getZExtent()) {
+                System.out.println("boksi takana");
+                return false;
+            }
+
+            return true;
         }
     };
 
     private void changePiece() {
-        ++currentIndex;
-
-        if (currentIndex == puzzlePieces.getChildren().size()) {
-            currentIndex = 0;
-        }
-
-        currentPiece = (Geometry) puzzlePieces.getChild(currentIndex);
+        currentIndex = (currentIndex + 1) % puzzlePieces.size();
+        currentPiece = puzzlePieces.get(currentIndex);
     }
-    
+
     private void rotatePiece(float x, float y, float z) {
-        currentPiece.rotate(x, y, z);
+        currentPiece.getBlockGeometry().rotate(x, y, z);
         highlight.rotate(x, y, z);
     }
 

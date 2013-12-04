@@ -29,7 +29,7 @@ public class Tonegod {
 
     public final void createNewWindow(String someWindowTitle) {
         Window nWin = new Window(screen, "Window" + winCount, new Vector2f(
-                (screen.getWidth() / 2) - 175, (screen.getHeight() / 2) - 100));
+                                (screen.getWidth() / 2) - 175, (screen.getHeight() / 2) - 100));
 
         nWin.setWindowTitle(someWindowTitle);
         screen.addElement(nWin);
@@ -54,7 +54,7 @@ public class Tonegod {
         int buttonNum = 0;
 
         for (final Integer levelIndex : levels.keySet()) {
-            System.out.println("creating button for level index: " + levelIndex + " (" + levels.get(levelIndex) + ")");
+            System.out.println("Creating button for level index: " + levelIndex + " (" + levels.get(levelIndex) + ")");
 
             Vector2f buttonPosition = new Vector2f(15, 55 + buttonNum * 40);
             Vector2f buttonSize = new Vector2f(320, 30);
@@ -78,8 +78,6 @@ public class Tonegod {
                 levelButton.setIgnoreMouse(true);
                 levelButton.setFontColor(ColorRGBA.Gray);
             }
-
-            
 
             levelButton.setText(levels.get(levelIndex));
 

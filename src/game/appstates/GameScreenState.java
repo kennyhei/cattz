@@ -304,17 +304,17 @@ public class GameScreenState extends AbstractAppState implements PhysicsCollisio
                                          ColorRGBA.randomColor(),
                                          new Vector3f(i * 10, 20f, -5f), new float[]{2f, 4f, 1f});
 
-            // Set random location to kubus block
-            while (true) {
-                int index = random.nextInt(locations.length);
-
-                if (!usedLocations.contains(index)) {
-                    float[] newLocation = locations[index];
-                    usedLocations.add(index);
-                    kubusBlock.setLocation(new Vector3f(newLocation[0], newLocation[1], newLocation[2]));
-                    break;
-                }
-            }
+//            // Set random location to kubus block
+//            while (true) {
+//                int index = random.nextInt(locations.length);
+//
+//                if (!usedLocations.contains(index)) {
+//                    float[] newLocation = locations[index];
+//                    usedLocations.add(index);
+//                    kubusBlock.setLocation(new Vector3f(newLocation[0], newLocation[1], newLocation[2]));
+//                    break;
+//                }
+//            }
 
             BlockControl c = kubusBlock.getBlockGeometry().getControl(BlockControl.class);
 

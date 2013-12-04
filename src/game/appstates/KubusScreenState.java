@@ -182,6 +182,7 @@ public class KubusScreenState extends AbstractAppState {
         localRootNode.attachChild(this.highlight);
         
         highlight.setLocalTranslation(currentPiece.getBlockGeometry().getLocalTranslation());
+        highlight.setLocalRotation(currentPiece.getBlockGeometry().getLocalRotation());
     }
 
     private void initPuzzlePieces() {
@@ -359,7 +360,6 @@ public class KubusScreenState extends AbstractAppState {
 
     private void rotatePiece(float x, float y, float z) {
         currentPiece.getBlockGeometry().rotate(x, y, z);
-        highlight.rotate(x, y, z);
     }
 
     @Override

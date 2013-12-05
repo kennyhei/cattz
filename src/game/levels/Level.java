@@ -18,6 +18,7 @@ public abstract class Level {
     protected Main app;
     protected AssetManager assetManager;
     protected List<Block> puzzlePieces;
+    protected List<Block> correctPieces;
     protected int[][] blockCheckList;
 
     public Level(Main app) {
@@ -50,8 +51,9 @@ public abstract class Level {
     public boolean checkBlocks() {
         for (int i = 0; i < puzzlePieces.size(); i++) {
             Block block = puzzlePieces.get(i);
+            Block correctBlock = correctPieces.get(i);
             
-            if (!checkBlock(block.getBlockGeometry().getLocalTranslation(), i)) {
+            if (!checkBlockPosition(block, correctBlock)) {
                 return false;
             }
         }
@@ -59,13 +61,25 @@ public abstract class Level {
         return true;
     }
 
-    public boolean checkBlock(Vector3f position, int index) {
-        if (blockCheckList[index][0] != ((int) (position.x * 10))
-                || blockCheckList[index][1] != ((int) (position.y * 10))
-                || blockCheckList[index][2] != ((int) (position.z * 10))) {
+    public boolean checkBlockPosition(Block toCheck, Block correct) {
+        if (Math.round(toCheck.getBlockGeometry().getLocalTranslation().x*10) !=
+                Math.round(correct.getBlockGeometry().getLocalTranslation().x*10) || 
+                Math.round(toCheck.getBlockGeometry().getLocalTranslation().y*10) !=
+                Math.round(correct.getBlockGeometry().getLocalTranslation().y*10) || 
+                Math.round(toCheck.getBlockGeometry().getLocalTranslation().z*10) !=
+                Math.round(correct.getBlockGeometry().getLocalTranslation().z*10)) {
+            return true;
+        } else {
             return false;
+        }
+    }
+    
+    private boolean checkBlockRotation(Block block) {
+        if (true) {
+            
         } else {
             return true;
         }
+        return true;
     }
 }

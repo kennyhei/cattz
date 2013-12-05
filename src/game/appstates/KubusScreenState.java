@@ -222,9 +222,9 @@ public class KubusScreenState extends AbstractAppState {
             updateHighlight();
 //            highlight.setLocalTranslation(currentPiece.getLocalTranslation());
 
-            if (app.getLevelManager().getCurrentLevel().checkBlocks()) {
-                System.out.println("Congrats, you've cleared this level!");
-            }
+//            if (app.getLevelManager().getCurrentLevel().checkBlocks()) {
+//                System.out.println("Congrats, you've cleared this level!");
+//            }
 
         }
 

@@ -5,6 +5,7 @@ import com.cubes.Vector3Int;
 import com.cubes.test.CubesTestAssets;
 import com.cubes.test.blocks.Block_Brick;
 import com.jme3.math.ColorRGBA;
+import com.jme3.math.Matrix3f;
 import com.jme3.math.Vector3f;
 import com.jme3.scene.Node;
 import game.Main;
@@ -30,6 +31,25 @@ public class LevelOne extends Level {
 
 
         this.puzzlePieces = new ArrayList<Block>(); // ("Controllable Blocks");
+        this.checkPieces = new ArrayList<Block>(); // correct blocks
+   
+        Block checkPiece = new Block(assetManager,
+                ColorRGBA.randomColor(),
+                new Vector3f(10.5f, 13.6f, 15f),
+                new float[]{3 * BLOCK_SIDE_WIDTH, BLOCK_SIDE_WIDTH, 2 * BLOCK_SIDE_WIDTH});
+        checkPiece.getBlockGeometry().setLocalRotation(new Matrix3f(0f, 1f, 0f, 
+                                                                    0f, 0f, 1f,
+                                                                    1f, 0f, 0f));
+        checkPieces.add(checkPiece);
+        
+        checkPiece = new Block(assetManager,
+                ColorRGBA.randomColor(),
+                new Vector3f(4f, 9f, 22f),
+                new float[]{BLOCK_SIDE_WIDTH, BLOCK_SIDE_WIDTH, BLOCK_SIDE_WIDTH});  
+        checkPiece.getBlockGeometry().setLocalRotation(new Matrix3f(1f, 0f, 0f, 
+                                                                    0f, 1f, 0f,
+                                                                    0f, 0f, 1f));
+        checkPieces.add(checkPiece);
 
         // 3x2 puzzle piece
         Block block = new Block(assetManager,

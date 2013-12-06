@@ -110,7 +110,6 @@ public class GameScreenState extends AbstractAppState implements PhysicsCollisio
         bulletAppState = new BulletAppState();
         stateManager.attach(bulletAppState);
 
-
         setUpLight();
 
         initCharacter();
@@ -121,8 +120,6 @@ public class GameScreenState extends AbstractAppState implements PhysicsCollisio
         initText();
 
         initInput();
-
-
 
         bulletAppState.getPhysicsSpace().addCollisionListener(this);
 
@@ -217,7 +214,6 @@ public class GameScreenState extends AbstractAppState implements PhysicsCollisio
         // Register blocks
         CubesTestAssets.registerBlocks();
 
-
         CubesTestAssets.getSettings(this.app).getBlockMaterial().getAdditionalRenderState().setFaceCullMode(RenderState.FaceCullMode.FrontAndBack);
 
         CubesTestAssets.getSettings(this.app).getBlockMaterial().getAdditionalRenderState().setDepthTest(true); // .setFaceCullMode(RenderState.FaceCullMode.FrontAndBack);
@@ -232,7 +228,7 @@ public class GameScreenState extends AbstractAppState implements PhysicsCollisio
 //        Material blockMaterial = blockTerrain.getSettings().getBlockMaterial();
 //        blockMaterial.getAdditionalRenderState().setFaceCullMode(RenderState.FaceCullMode.Back);
 //        blockMaterial.getAdditionalRenderState().setDepthTest(true); // .setFaceCullMode(RenderState.FaceCullMode.FrontAndBack);
-//        
+//
 
 
         this.terrainNode = new Node();
@@ -274,11 +270,11 @@ public class GameScreenState extends AbstractAppState implements PhysicsCollisio
         int idx = 0;
         for (Block tmpBlock : levelBlocks) {
             // do not change tmpBlock as they are used in the kubus game
-            
+
             Block kubusBlock = new Block(assetManager,
                     tmpBlock.getColor(),
                     new Vector3f(idx * 10, 20f, -5f), new float[]{2f, 4f, 1f});
-            
+
             while (true) {
                 int index = random.nextInt(locations.length);
 

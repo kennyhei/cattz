@@ -223,13 +223,11 @@ public class GameScreenState extends AbstractAppState implements PhysicsCollisio
 //        CubesTestAssets.initializeEnvironment(this.app);
 //        CubesTestAssets.initializeWater(this.app);
 
-        BlockTerrainControl blockTerrain = new BlockTerrainControl(CubesTestAssets.getSettings(this.app), new Vector3Int(11, 1, 11));
+        BlockTerrainControl blockTerrain = new BlockTerrainControl(CubesTestAssets.getSettings(this.app), new Vector3Int(14, 1, 14));
         blockTerrain.setBlocksFromHeightmap(new Vector3Int(0, 1, -5), current.getLevelHeightMap(), 3, Block_Grass.class);
 //        Material blockMaterial = blockTerrain.getSettings().getBlockMaterial();
 //        blockMaterial.getAdditionalRenderState().setFaceCullMode(RenderState.FaceCullMode.Back);
 //        blockMaterial.getAdditionalRenderState().setDepthTest(true); // .setFaceCullMode(RenderState.FaceCullMode.FrontAndBack);
-//
-
 
         this.terrainNode = new Node();
         terrainNode.addControl(blockTerrain);
@@ -324,8 +322,8 @@ public class GameScreenState extends AbstractAppState implements PhysicsCollisio
             sparks.setStartColor(c.getColor());
 
             sparks.getParticleInfluencer().setInitialVelocity(new Vector3f(0, 2, 0));
-            sparks.setStartSize(4.5f);
-            sparks.setEndSize(3f);
+            sparks.setStartSize(1.5f);
+            sparks.setEndSize(0.5f);
             sparks.setGravity(0, -0.5f, 0);
             sparks.setLowLife(2f);
             sparks.setHighLife(8f);
@@ -377,6 +375,7 @@ public class GameScreenState extends AbstractAppState implements PhysicsCollisio
 //        chaseCam.setInvertVerticalAxis(false);
         rootNode.detachChildNamed("Sky");
         viewPort.clearProcessors();
+        inputManager.removeListener(player);
         bulletAppState.getPhysicsSpace().removeCollisionListener(this);
 
         rootNode.detachChild(localRootNode);

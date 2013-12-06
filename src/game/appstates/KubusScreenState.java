@@ -60,7 +60,6 @@ public class KubusScreenState extends AbstractAppState {
     /* Physics */
     private BulletAppState bulletAppState;
 
-
     /* Block handler */
     List<Block> puzzlePieces;
     // Currently controlled piece and its highlighting
@@ -279,9 +278,9 @@ public class KubusScreenState extends AbstractAppState {
             if (eventName.equals("BlockBackward")) {
                 move[2] = BLOCK_WIDTH;
             }
-            
+
             currentPiece.move(move);
-            
+
             if (!currentPieceInBounds()) {
                 currentPiece.negateMove(move);
             }
@@ -291,7 +290,7 @@ public class KubusScreenState extends AbstractAppState {
             if (!keyPressed) {
                 return;
             }
-            
+
             float[] rotate = {0f, 0f, 0f};
 
             if (eventName.equals("BlockRotateX")) {
@@ -305,9 +304,9 @@ public class KubusScreenState extends AbstractAppState {
             if (eventName.equals("BlockRotateZ")) {
                 rotate[2] = rotateAmount;
             }
-            
+
             currentPiece.rotate(rotate);
-            
+
             if (!currentPieceInBounds()) {
                 currentPiece.negateRotate(rotate);
             }
@@ -347,7 +346,7 @@ public class KubusScreenState extends AbstractAppState {
         currentPiece.setActive(false);
         currentIndex = (currentIndex + 1) % puzzlePieces.size();
         currentPiece = puzzlePieces.get(currentIndex);
-        
+
         currentPiece.setActive(true);
     }
 

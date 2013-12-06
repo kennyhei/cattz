@@ -33,7 +33,7 @@ public class Player implements ActionListener {
         playerModel.scale(5f);
         
         playerControl = new CharacterControl(CollisionShapeFactory.createDynamicMeshShape(playerModel), 0.2f);
-        playerControl.setJumpSpeed(20);
+        playerControl.setJumpSpeed(10);
         playerControl.setFallSpeed(30);
         playerControl.setGravity(15);
         

@@ -12,7 +12,7 @@ import tonegod.gui.controls.buttons.ButtonAdapter;
 import tonegod.gui.controls.windows.Window;
 import tonegod.gui.core.Screen;
 
-public class Tonegod {
+public class LevelMenu {
 
     private Screen screen;
     private Main app;
@@ -21,15 +21,15 @@ public class Tonegod {
     private Window win;
     boolean buttonPressed;
 
-    public Tonegod(Main app) {
-        this.app = app;
+    public LevelMenu() {
+        this.app = Main.getApp();
         this.guiNode = app.getGuiNode();
         this.buttonPressed = false;
     }
 
     public final void createNewWindow(String someWindowTitle) {
         Window nWin = new Window(screen, "Window" + winCount, new Vector2f(
-                                (screen.getWidth() / 2) - 175, (screen.getHeight() / 2) - 100));
+                (screen.getWidth() / 2) - 175, (screen.getHeight() / 2) - 100));
 
         nWin.setWindowTitle(someWindowTitle);
         screen.addElement(nWin);
@@ -63,10 +63,10 @@ public class Tonegod {
             ButtonAdapter levelButton = new ButtonAdapter(screen, "Btn" + levelIndex, buttonPosition, buttonSize) {
                 @Override
                 public void onButtonMouseLeftUp(MouseButtonEvent evt, boolean toggled) {
-                    if(!levelManager.isEnabled(levelIndex)) {
+                    if (!levelManager.isEnabled(levelIndex)) {
                         return;
                     }
-                    
+
                     //createNewWindow("New Window " + winCount);
                     buttonPressed = true;
                     ((Main) app).setActiveLevel(levelIndex);

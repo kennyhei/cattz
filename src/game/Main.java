@@ -9,7 +9,7 @@ import com.jme3.input.controls.KeyTrigger;
 import com.jme3.math.Vector3f;
 
 import com.jme3.system.AppSettings;
-import game.GUI.Tonegod;
+import game.GUI.LevelMenu;
 import game.appstates.GameScreenState;
 import game.appstates.KubusScreenState;
 import game.appstates.PauseScreenState;
@@ -25,7 +25,7 @@ public class Main extends SimpleApplication {
     private StartScreenState startScreenState;
     private KubusScreenState kubusScreenState;
     private PauseScreenState pauseScreenState;
-    private Tonegod tonegod;
+    private LevelMenu tonegod;
 
     /* Level manager */
     private LevelManager levelManager;
@@ -63,7 +63,7 @@ public class Main extends SimpleApplication {
         flyCam.setEnabled(false);
 
         // Create GUI
-        tonegod = new Tonegod(this);
+        tonegod = new LevelMenu();
 
         // Create level manager
         levelManager = new LevelManager();

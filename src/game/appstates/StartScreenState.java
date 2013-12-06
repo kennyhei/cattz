@@ -10,7 +10,7 @@ import com.jme3.font.BitmapText;
 import com.jme3.math.ColorRGBA;
 import com.jme3.renderer.ViewPort;
 import com.jme3.scene.Node;
-import game.GUI.Tonegod;
+import game.GUI.LevelMenu;
 
 public class StartScreenState extends AbstractAppState {
 
@@ -22,9 +22,9 @@ public class StartScreenState extends AbstractAppState {
     private Node localRootNode = new Node("Start Screen RootNode");
     private Node localGuiNode = new Node("Start Screen GuiNode");
     private final ColorRGBA backgroundColor = ColorRGBA.Black;
-    private Tonegod tonegod;
+    private LevelMenu tonegod;
 
-    public StartScreenState(SimpleApplication app, Tonegod tonegod) {
+    public StartScreenState(SimpleApplication app, LevelMenu tonegod) {
         this.app = app;
         this.rootNode = app.getRootNode();
         this.viewPort = app.getViewPort();

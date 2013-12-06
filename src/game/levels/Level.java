@@ -65,9 +65,9 @@ public abstract class Level {
         physicsSpace.addAll(terrainNode);
     }
 
-    abstract List<Block> getBlocks();
+    public abstract List<Block> getBlocks();
 
-    abstract List<Block> getSolution();
+    public abstract List<Block> getSolution();
     
     public abstract String getLevelHeightMap();
 

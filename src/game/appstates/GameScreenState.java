@@ -49,6 +49,7 @@ import game.models.HudBlock;
 import game.models.Player;
 import game.models.Time;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Random;
 
 public class GameScreenState extends AbstractAppState implements PhysicsCollisionListener {
@@ -186,7 +187,7 @@ public class GameScreenState extends AbstractAppState implements PhysicsCollisio
         if (b.getName().startsWith("block_")) {
             b.getControl(BlockControl.class).getHudBlock().colour();
             blockNode.detachChild(b);
-            
+
             localRootNode.detachChildNamed("bling_" + b.getName());
             bulletAppState.getPhysicsSpace().remove(b);
         }
@@ -212,7 +213,7 @@ public class GameScreenState extends AbstractAppState implements PhysicsCollisio
     private void initWorld() {
 
         Level current = Main.getApp().getLevelManager().getCurrentLevel();
-        
+
         // Register blocks
         CubesTestAssets.registerBlocks();
 
@@ -260,6 +261,7 @@ public class GameScreenState extends AbstractAppState implements PhysicsCollisio
     }
 
     private void initBlocks() {
+        Level currentLevel = Main.getApp().getLevelManager().getCurrentLevel();
 
         ArrayList<Integer> usedLocations = new ArrayList<Integer>();
         float[][] locations = Block.locations;
@@ -267,13 +269,16 @@ public class GameScreenState extends AbstractAppState implements PhysicsCollisio
 
         blockNode = new Node("BlockNode");
 
-        // Create 6 blocks and hud blocks
-        for (int i = 0; i < 6; ++i) {
+        // Create blocks for the level blocks
+        List<Block> levelBlocks = currentLevel.getBlocks();
+        int idx = 0;
+        for (Block tmpBlock : levelBlocks) {
+            // do not change tmpBlock as they are used in the kubus game
+            
             Block kubusBlock = new Block(assetManager,
-                    ColorRGBA.randomColor(),
-                    new Vector3f(i * 10, 20f, -5f), new float[]{2f, 4f, 1f});
-
-//            // Set random location to kubus block
+                    tmpBlock.getColor(),
+                    new Vector3f(idx * 10, 20f, -5f), new float[]{2f, 4f, 1f});
+            
             while (true) {
                 int index = random.nextInt(locations.length);
 
@@ -285,26 +290,28 @@ public class GameScreenState extends AbstractAppState implements PhysicsCollisio
                 }
             }
 
+
             BlockControl c = kubusBlock.getBlockGeometry().getControl(BlockControl.class);
 
             HudBlock hudBlock = new HudBlock(assetManager,
                     c.getColor(),
-                    new Vector3f(80 + i * 30, settings.getHeight() - 25, 0));
+                    new Vector3f(80 + idx * 30, settings.getHeight() - 25, 0));
+
 
             c.setHudBlock(hudBlock);
             localGuiNode.attachChild(hudBlock.getGeometry());
 
             bulletAppState.getPhysicsSpace().add(kubusBlock.getPhysics());
 
-            Spatial block = kubusBlock.getBlockGeometry();
-            blockNode.attachChild(block);
+            Spatial blockSpatial = kubusBlock.getBlockGeometry();
+            blockNode.attachChild(blockSpatial);
 
             // rotate blocks
-            block.rotate(.4f, .4f, 0f);
+            blockSpatial.rotate(.4f, .4f, 0f);
 
             // add bling
-            Node node = new Node("bling_" + block.getName());
-            node.setLocalTranslation(block.getLocalTranslation());
+            Node node = new Node("bling_" + blockSpatial.getName());
+            node.setLocalTranslation(blockSpatial.getLocalTranslation());
             node.move(0f, -4f, 0f);
 
             ParticleEmitter fire =
@@ -330,7 +337,30 @@ public class GameScreenState extends AbstractAppState implements PhysicsCollisio
 
             node.attachChild(fire);
             localRootNode.attachChild(node);
+
+            idx++;
+
         }
+//
+//        // Create 6 blocks and hud blocks
+//        for (int i = 0; i < 6; ++i) {
+//            Block kubusBlock = new Block(assetManager,
+//                    ColorRGBA.randomColor(),
+//                    new Vector3f(i * 10, 20f, -5f), new float[]{2f, 4f, 1f});
+//
+////            // Set random location to kubus block
+//            while (true) {
+//                int index = random.nextInt(locations.length);
+//
+//                if (!usedLocations.contains(index)) {
+//                    float[] newLocation = locations[index];
+//                    usedLocations.add(index);
+//                    kubusBlock.setLocation(new Vector3f(newLocation[0], newLocation[1], newLocation[2]));
+//                    break;
+//                }
+//            }
+//
+//        }
 
         localRootNode.attachChild(blockNode);
     }

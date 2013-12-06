@@ -228,7 +228,7 @@ public class GameScreenState extends AbstractAppState implements PhysicsCollisio
 //        CubesTestAssets.initializeWater(this.app);
 
         BlockTerrainControl blockTerrain = new BlockTerrainControl(CubesTestAssets.getSettings(this.app), new Vector3Int(14, 1, 14));
-        blockTerrain.setBlocksFromHeightmap(new Vector3Int(0, -5, -5), current.getLevelHeightMap(), 17, Block_Grass.class);
+        blockTerrain.setBlocksFromHeightmap(new Vector3Int(0, -5, -5), current.getLevelHeightMap(), 13, Block_Grass.class);
 //        Material blockMaterial = blockTerrain.getSettings().getBlockMaterial();
 //        blockMaterial.getAdditionalRenderState().setFaceCullMode(RenderState.FaceCullMode.Back);
 //        blockMaterial.getAdditionalRenderState().setDepthTest(true); // .setFaceCullMode(RenderState.FaceCullMode.FrontAndBack);
@@ -328,8 +328,8 @@ public class GameScreenState extends AbstractAppState implements PhysicsCollisio
             sparks.setStartColor(c.getColor());
 
             sparks.getParticleInfluencer().setInitialVelocity(new Vector3f(0, 2, 0));
-            sparks.setStartSize(4.5f);
-            sparks.setEndSize(3f);
+            sparks.setStartSize(1.5f);
+            sparks.setEndSize(0.5f);
             sparks.setGravity(0, -0.5f, 0);
             sparks.setLowLife(2f);
             sparks.setHighLife(8f);

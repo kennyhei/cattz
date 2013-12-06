@@ -44,6 +44,7 @@ import com.jme3.system.AppSettings;
 import game.Main;
 import game.models.Block;
 import game.controllers.BlockControl;
+import game.levels.Level;
 import game.models.HudBlock;
 import game.models.Player;
 import game.models.Time;
@@ -165,7 +166,7 @@ public class GameScreenState extends AbstractAppState implements PhysicsCollisio
         player.update(tpf);
 
         for (Spatial block : blockNode.getChildren()) {
-            block.rotate(0f, .01f, 0f);
+            block.rotate(0f, .02f, 0f);
         }
     }
 
@@ -210,6 +211,8 @@ public class GameScreenState extends AbstractAppState implements PhysicsCollisio
 
     private void initWorld() {
 
+        Level current = Main.getApp().getLevelManager().getCurrentLevel();
+        
         // Register blocks
         CubesTestAssets.registerBlocks();
 
@@ -224,7 +227,7 @@ public class GameScreenState extends AbstractAppState implements PhysicsCollisio
 //        CubesTestAssets.initializeWater(this.app);
 
         BlockTerrainControl blockTerrain = new BlockTerrainControl(CubesTestAssets.getSettings(this.app), new Vector3Int(14, 1, 14));
-        blockTerrain.setBlocksFromHeightmap(new Vector3Int(0, -5, -5), "Textures/maze-easy.jpg", 17, Block_Grass.class);
+        blockTerrain.setBlocksFromHeightmap(new Vector3Int(0, -5, -5), current.getLevelHeightMap(), 17, Block_Grass.class);
 //        Material blockMaterial = blockTerrain.getSettings().getBlockMaterial();
 //        blockMaterial.getAdditionalRenderState().setFaceCullMode(RenderState.FaceCullMode.Back);
 //        blockMaterial.getAdditionalRenderState().setDepthTest(true); // .setFaceCullMode(RenderState.FaceCullMode.FrontAndBack);

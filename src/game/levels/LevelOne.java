@@ -62,4 +62,9 @@ public class LevelOne extends Level {
     public List<Block> getSolution() {
         return checkPieces;
     }
+
+    @Override
+    public String getLevelHeightMap() {
+        return "Textures/maze-easy.jpg";
+    }
 }

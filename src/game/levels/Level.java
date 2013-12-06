@@ -68,6 +68,8 @@ public abstract class Level {
     abstract List<Block> getBlocks();
 
     abstract List<Block> getSolution();
+    
+    public abstract String getLevelHeightMap();
 
     public Node getTerrain() {
         return terrainNode;
@@ -125,4 +127,5 @@ public abstract class Level {
             return false;
         }
     }
+
 }

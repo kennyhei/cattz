@@ -36,13 +36,13 @@ public class Main extends SimpleApplication {
     private InputHandler inputHandler;
     private boolean switchToKubus = false;
     private boolean isRunning = false;
-    private static Application APPLICATION;
+    private static Main APPLICATION;
     
     private Main() {
         APPLICATION = this;
     }
     
-    public static Application getApp() {
+    public static Main getApp() {
         return APPLICATION;
     }
     

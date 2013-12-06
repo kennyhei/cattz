@@ -30,6 +30,11 @@ public class LevelManager {
     public Level getCurrentLevel() {
         return levels.get(levelOrder.get(currentLevelOrder));
     }
+    
+    public void currentLevelCleared() {
+        currentLevelOrder++;
+        enabledLevels.put(currentLevelOrder, Boolean.TRUE);
+    }
 
     public boolean isEnabled(int levelIndex) {
         return enabledLevels.containsKey(levelIndex) && enabledLevels.get(levelIndex);

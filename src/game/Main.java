@@ -1,14 +1,12 @@
 package game;
 
-import com.cubes.CubesSettings;
-import com.cubes.test.CubesTestAssets;
 import com.jme3.app.SimpleApplication;
+import com.jme3.app.state.AbstractAppState;
 import com.jme3.bullet.BulletAppState;
 import com.jme3.input.KeyInput;
 
 import com.jme3.input.controls.ActionListener;
 import com.jme3.input.controls.KeyTrigger;
-import com.jme3.math.Vector3f;
 
 import com.jme3.system.AppSettings;
 import game.GUI.LevelMenu;
@@ -17,7 +15,6 @@ import game.appstates.KubusScreenState;
 import game.appstates.PauseScreenState;
 import game.appstates.StartScreenState;
 import game.managers.LevelManager;
-import game.models.CoordinateHelper;
 
 public class Main extends SimpleApplication {
 
@@ -27,13 +24,12 @@ public class Main extends SimpleApplication {
     private StartScreenState startScreenState;
     private KubusScreenState kubusScreenState;
     private PauseScreenState pauseScreenState;
-    private LevelMenu tonegod;
 
     /* Level manager */
     private LevelManager levelManager;
-    private boolean switchToKubus = false;
-    private boolean isRunning = false;
     private static Main APPLICATION;
+    private AbstractAppState currentState;
+    private Class<? extends AbstractAppState> nextState;
 
     private Main() {
         APPLICATION = this;
@@ -63,16 +59,10 @@ public class Main extends SimpleApplication {
 
         flyCam.setEnabled(false);
 
-        // Create GUI
-        tonegod = new LevelMenu();
 
         // Create level manager
         levelManager = new LevelManager();
 
-        // Create states
-        startScreenState = new StartScreenState(this, tonegod);
-
-        stateManager.attach(startScreenState);
         inputManager.clearRawInputListeners();
 
         // inputManager.addMapping("Start", new KeyTrigger(KeyInput.KEY_RETURN));
@@ -87,26 +77,40 @@ public class Main extends SimpleApplication {
         inputManager.addListener(actionListener, "level");
 
 //        new CoordinateHelper().attachCoordinates(Vector3f.ZERO, rootNode);
+        // invoke start
+        actionListener.onAction("level", true, 1.0f);
     }
 
-    public void setSwitch(boolean switchOk) {
-        this.switchToKubus = switchOk;
+    public void setNextState(Class<? extends AbstractAppState> nextGameState) {
+        this.nextState = nextGameState;
     }
     private ActionListener actionListener = new ActionListener() {
         public void onAction(String name, boolean isPressed, float tpf) {
 
+            if (name.equals("start") || (nextState != null && nextState.equals(StartScreenState.class) && !stateManager.hasState(startScreenState))) {
 
-            if (name.equals("level")) {
+                startScreenState = new StartScreenState();
+                if (currentState != null) {
+                    stateManager.detach(currentState);
+                }
+                
+                stateManager.attach(startScreenState);
+                currentState = startScreenState;
+            }
+
+            if (name.equals("level") || (name.equals("Continue") && nextState != null && nextState.equals(GameScreenState.class) && !stateManager.hasState(gameRunningState))) {
                 // we know something has been clicked
                 gameRunningState = new GameScreenState();
 
                 System.out.println("KLIKKKK");
-                stateManager.detach(startScreenState);
+                if (currentState != null) {
+                    stateManager.detach(currentState);
+                }
                 stateManager.attach(gameRunningState);
                 gameRunningState.setEnabled(true);
                 System.out.println("level 1");
 
-
+                currentState = gameRunningState;
             }
 
 //            if (name.equals("Start") && !isPressed && !isRunning) {
@@ -117,12 +121,17 @@ public class Main extends SimpleApplication {
 //                System.out.println("Starting game...");
 //            }
 
-            if (name.equals("Continue") && !isPressed && switchToKubus && !stateManager.hasState(kubusScreenState)) {
+            if (name.equals("Continue") && !isPressed && nextState != null && nextState.equals(KubusScreenState.class) && !stateManager.hasState(kubusScreenState)) {
 
                 kubusScreenState = new KubusScreenState();
-                stateManager.detach(gameRunningState);
+                if (currentState != null) {
+                    stateManager.detach(currentState);
+                }
+                
                 stateManager.attach(kubusScreenState);
                 System.out.println("Switching to kubus world...");
+
+                currentState = kubusScreenState;
             }
 
             if (name.equals("Pause") && !isPressed) {

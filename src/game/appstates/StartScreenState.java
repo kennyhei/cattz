@@ -5,12 +5,11 @@ import com.jme3.app.SimpleApplication;
 import com.jme3.app.state.AbstractAppState;
 import com.jme3.app.state.AppStateManager;
 import com.jme3.asset.AssetManager;
-import com.jme3.font.BitmapFont;
-import com.jme3.font.BitmapText;
 import com.jme3.math.ColorRGBA;
 import com.jme3.renderer.ViewPort;
 import com.jme3.scene.Node;
 import game.GUI.LevelMenu;
+import game.Main;
 
 public class StartScreenState extends AbstractAppState {
 
@@ -18,40 +17,24 @@ public class StartScreenState extends AbstractAppState {
     private ViewPort viewPort;
     private Node rootNode;
     private Node guiNode;
-    private AssetManager assetManager;
     private Node localRootNode = new Node("Start Screen RootNode");
     private Node localGuiNode = new Node("Start Screen GuiNode");
     private final ColorRGBA backgroundColor = ColorRGBA.Black;
-    private LevelMenu tonegod;
+    private LevelMenu levelMenu;
 
-    public StartScreenState(SimpleApplication app, LevelMenu tonegod) {
-        this.app = app;
+    public StartScreenState() {
+        this.app = Main.getApp();
         this.rootNode = app.getRootNode();
         this.viewPort = app.getViewPort();
         this.guiNode = app.getGuiNode();
-        this.assetManager = app.getAssetManager();
-        this.tonegod = tonegod;
+        this.levelMenu = new LevelMenu();
     }
 
     @Override
     public void initialize(AppStateManager stateManager, Application app) {
         super.initialize(stateManager, app);
         viewPort.setBackgroundColor(backgroundColor);
-
-        // tonegod gui start
-//        below commented out because of shaky functionality --Emilia
-        tonegod.drawGui();
-
-        // Menu message
-        BitmapFont guiFont = assetManager.loadFont("Interface/Fonts/Default.fnt");
-        BitmapText displaytext = new BitmapText(guiFont);
-        displaytext.setSize(guiFont.getCharSet().getRenderedSize());
-        displaytext.setText("You are entering a world, where you need to collect colorful blocks!");
-
-        displaytext.setLocalTranslation(this.app.getContext().getSettings().getWidth() / 2 - displaytext.getLineWidth() / 2,
-                                        this.app.getContext().getSettings().getHeight() / 2 + displaytext.getLineHeight(), 0);
-
-        localGuiNode.attachChild(displaytext);
+        levelMenu.drawGui();
     }
 
     @Override
@@ -64,7 +47,7 @@ public class StartScreenState extends AbstractAppState {
     @Override
     public void stateDetached(AppStateManager stateManager) {
         // below commented out because of shaky functionality --Emilia
-        tonegod.destroyGui();
+        levelMenu.destroyGui();
         rootNode.detachChild(localRootNode);
         guiNode.detachChild(localGuiNode);
     }

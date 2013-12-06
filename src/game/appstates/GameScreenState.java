@@ -7,7 +7,6 @@ import com.cubes.Vector3Int;
 import com.cubes.test.CubesTestAssets;
 import com.cubes.test.blocks.Block_Grass;
 import com.jme3.app.Application;
-import com.jme3.app.SimpleApplication;
 import com.jme3.app.state.AbstractAppState;
 import com.jme3.app.state.AppStateManager;
 import com.jme3.asset.AssetManager;
@@ -26,7 +25,6 @@ import com.jme3.input.KeyInput;
 import com.jme3.input.controls.KeyTrigger;
 import com.jme3.light.DirectionalLight;
 import com.jme3.material.Material;
-import com.jme3.material.RenderState;
 import com.jme3.math.ColorRGBA;
 import com.jme3.math.Vector3f;
 import com.jme3.post.FilterPostProcessor;
@@ -102,6 +100,7 @@ public class GameScreenState extends AbstractAppState implements PhysicsCollisio
     /* Kubus block */
     // Node contains blocks
     private Node blockNode;
+    private boolean finished = false;
 
     @Override
     public void initialize(AppStateManager stateManager, Application app) {
@@ -159,11 +158,15 @@ public class GameScreenState extends AbstractAppState implements PhysicsCollisio
             localGuiNode.attachChild(text);
 
             // Switching to kubus world ok
-            this.app.setSwitch(true);
+            this.app.setNextState(KubusScreenState.class);
+            finished = true;
         }
 
-        // Update clock time
-        timeText.setText(time.toString());
+        if (!finished) {
+            // Update clock time
+            timeText.setText(time.toString());
+        }
+
         player.update(tpf);
 
         for (Spatial block : blockNode.getChildren()) {
@@ -239,7 +242,7 @@ public class GameScreenState extends AbstractAppState implements PhysicsCollisio
         System.out.println("Updating spatial");
 //        blockTerrain.updateSpatial();
         System.out.println("done..");
-        
+
         // Make blocks solid
         blockTerrain.addChunkListener(new BlockChunkListener() {
             @Override
@@ -282,7 +285,7 @@ public class GameScreenState extends AbstractAppState implements PhysicsCollisio
 
             while (true) {
                 int index = random.nextInt(locations.length);
-                
+
                 float[] loc = locations[index];
 
                 if (!usedLocations.contains(index)) {
@@ -367,10 +370,6 @@ public class GameScreenState extends AbstractAppState implements PhysicsCollisio
         text.setText("Press Enter to continue.");
         text.setLocalTranslation(settings.getWidth() / 2 - text.getLineWidth() / 2,
                 settings.getHeight() / 2 + text.getLineHeight(), 0);
-    }
-
-    public Time getTime() {
-        return this.time;
     }
 
     @Override

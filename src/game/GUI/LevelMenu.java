@@ -16,15 +16,13 @@ import tonegod.gui.core.Screen;
 public class LevelMenu {
 
     private Screen screen;
-    private Main app;
     private Node guiNode;
     private int winCount = 0;
     private Window win;
     boolean buttonPressed;
 
     public LevelMenu() {
-        this.app = Main.getApp();
-        this.guiNode = app.getGuiNode();
+        this.guiNode = Main.getApp().getGuiNode();
         this.buttonPressed = false;
     }
 
@@ -38,7 +36,7 @@ public class LevelMenu {
     }
 
     public void drawGui() {
-        this.screen = new Screen(app);
+        this.screen = new Screen(Main.getApp());
         guiNode.addControl(screen);
 
         win = new Window(screen, "win", new Vector2f(15, 15));
@@ -53,7 +51,7 @@ public class LevelMenu {
         info.setTextAlign(Align.Center);
         win.addChild(info);
 
-        final LevelManager levelManager = app.getLevelManager();
+        final LevelManager levelManager = Main.getApp().getLevelManager();
 
         SortedMap<Integer, String> levels = levelManager.getLevelOrdering();
 

@@ -65,6 +65,6 @@ public class LevelOne extends Level {
 
     @Override
     public String getLevelHeightMap() {
-        return "Textures/maze-easy.jpg";
+        return "Textures/maze-easy.png";
     }
 }

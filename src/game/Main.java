@@ -82,6 +82,7 @@ public class Main extends SimpleApplication {
         this.inputHandler = new InputHandler();
         this.inputHandler.init(inputManager);
 
+        inputManager.clearRawInputListeners();
         // inputManager.addMapping("Start", new KeyTrigger(KeyInput.KEY_RETURN));
         inputManager.addMapping("Continue", new KeyTrigger(KeyInput.KEY_RETURN));
         inputManager.addMapping("Pause", new KeyTrigger(KeyInput.KEY_F1));
@@ -94,9 +95,7 @@ public class Main extends SimpleApplication {
         inputManager.addListener(actionListener, "level");
 
         new CoordinateHelper().attachCoordinates(Vector3f.ZERO, rootNode);
-
     }
-
 
     public void setSwitch(boolean switchOk) {
         this.switchToKubus = switchOk;

@@ -214,9 +214,9 @@ public class GameScreenState extends AbstractAppState implements PhysicsCollisio
         // Register blocks
         CubesTestAssets.registerBlocks();
 
-        CubesTestAssets.getSettings(this.app).getBlockMaterial().getAdditionalRenderState().setFaceCullMode(RenderState.FaceCullMode.FrontAndBack);
-
-        CubesTestAssets.getSettings(this.app).getBlockMaterial().getAdditionalRenderState().setDepthTest(true); // .setFaceCullMode(RenderState.FaceCullMode.FrontAndBack);
+//        CubesTestAssets.getSettings(this.app).getBlockMaterial().getAdditionalRenderState().setFaceCullMode(RenderState.FaceCullMode.FrontAndBack);
+//
+//        CubesTestAssets.getSettings(this.app).getBlockMaterial().getAdditionalRenderState().setDepthTest(true); // .setFaceCullMode(RenderState.FaceCullMode.FrontAndBack);
 
 
         // disabled due to laptop hw issues..
@@ -230,11 +230,15 @@ public class GameScreenState extends AbstractAppState implements PhysicsCollisio
 //        blockMaterial.getAdditionalRenderState().setDepthTest(true); // .setFaceCullMode(RenderState.FaceCullMode.FrontAndBack);
 //
 
-
+        
         this.terrainNode = new Node();
         terrainNode.addControl(blockTerrain);
         terrainNode.setShadowMode(RenderQueue.ShadowMode.CastAndReceive);
 
+        System.out.println("Updating spatial");
+//        blockTerrain.updateSpatial();
+        System.out.println("done..");
+        
         // Make blocks solid
         blockTerrain.addChunkListener(new BlockChunkListener() {
             @Override
@@ -277,6 +281,8 @@ public class GameScreenState extends AbstractAppState implements PhysicsCollisio
 
             while (true) {
                 int index = random.nextInt(locations.length);
+                
+                float[] loc = locations[index];
 
                 if (!usedLocations.contains(index)) {
                     float[] newLocation = locations[index];

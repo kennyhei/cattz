@@ -14,16 +14,16 @@ public class LevelManager {
     private Map<Integer, Boolean> enabledLevels;
     private int currentLevelOrder;
 
-    public LevelManager(Main app) {
+    public LevelManager() {
         this.levels = new TreeMap<String, Level>();
         this.levelOrder = new TreeMap<Integer, String>();
         this.enabledLevels = new TreeMap<Integer, Boolean>();
-        
+
         // could load game progress from disk here
-        addLevel(1, "Baby steps", new LevelOne(app), true);
-        addLevel(2, "Didn't see this one coming!", new LevelOne(app), false);
-        addLevel(3, "Oh no, more levels!", new LevelOne(app), false);
-        
+        addLevel(1, "Baby steps", new LevelOne(), true);
+        addLevel(2, "Didn't see this one coming!", new LevelOne(), false);
+        addLevel(3, "Oh no, more levels!", new LevelOne(), false);
+
         this.currentLevelOrder = 1;
     }
 

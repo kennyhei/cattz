@@ -7,6 +7,7 @@ import com.jme3.app.state.AppStateManager;
 import com.jme3.asset.AssetManager;
 import com.jme3.bounding.BoundingBox;
 import com.jme3.bullet.BulletAppState;
+import com.jme3.collision.CollisionResults;
 import com.jme3.input.FlyByCamera;
 import com.jme3.input.InputManager;
 import com.jme3.input.KeyInput;
@@ -15,6 +16,8 @@ import com.jme3.input.controls.KeyTrigger;
 import com.jme3.light.DirectionalLight;
 import com.jme3.material.Material;
 import com.jme3.math.ColorRGBA;
+import com.jme3.math.FastMath;
+import com.jme3.math.Quaternion;
 import com.jme3.math.Vector3f;
 import com.jme3.renderer.Camera;
 import com.jme3.scene.Geometry;
@@ -43,7 +46,7 @@ public class KubusScreenState extends AbstractAppState {
     private InputManager inputManager;
     private Camera cam;
     private FlyByCamera flyCam;
-    private final float rotate = (float) (Math.PI / 2);
+    private final float rotateAmount = (float) (Math.PI / 2);
 
     public KubusScreenState(SimpleApplication app) {
         this.app = (Main) app;
@@ -70,7 +73,7 @@ public class KubusScreenState extends AbstractAppState {
     List<Block> puzzlePieces;
     // Currently controlled piece and its highlighting
     Block currentPiece;
-    Geometry highlight;
+//    Geometry highlight;
     // Index of currently controlled piece
     int currentIndex;
 
@@ -109,7 +112,6 @@ public class KubusScreenState extends AbstractAppState {
 
     @Override
     public void update(float tpf) {
-        // TODO
     }
 
     private void setUpLight() {
@@ -166,45 +168,39 @@ public class KubusScreenState extends AbstractAppState {
     }
 
     private void updateHighlight() {
-        if (highlight != null) {
-            localRootNode.detachChild(highlight);
-        }
-
-        WireBox wbox = new WireBox(currentPiece.getSize()[0], currentPiece.getSize()[1], currentPiece.getSize()[2]); // .getBox().xExtent, currentPiece.getBox().yExtent, currentPiece.getBox().zExtent);
-        wbox.setLineWidth(6f);
-
-        this.highlight = new Geometry("Wirebox", wbox);
-        Material mat = new Material(assetManager, "Common/MatDefs/Misc/Unshaded.j3md");
-        mat.getAdditionalRenderState().setWireframe(true);
-        mat.setColor("Color", ColorRGBA.Green);
-        this.highlight.setMaterial(mat);
-        localRootNode.attachChild(this.highlight);
-        
-        highlight.setLocalTranslation(currentPiece.getBlockGeometry().getLocalTranslation());
-        highlight.setLocalRotation(currentPiece.getBlockGeometry().getLocalRotation());
+//        if (highlight != null) {
+//            localRootNode.detachChild(highlight);
+//        }
+//
+//        WireBox wbox = new WireBox(currentPiece.getBox().xExtent, currentPiece.getBox().yExtent, currentPiece.getBox().zExtent); // .getBox().xExtent, currentPiece.getBox().yExtent, currentPiece.getBox().zExtent);
+//        wbox.setLineWidth(6f);
+//
+//        this.highlight = new Geometry("Wirebox", wbox);
+//        Material mat = new Material(assetManager, "Common/MatDefs/Misc/Unshaded.j3md");
+//        mat.getAdditionalRenderState().setWireframe(true);
+//        mat.setColor("Color", ColorRGBA.Green);
+//        this.highlight.setMaterial(mat);
+//        localRootNode.attachChild(this.highlight);
+//
+//        highlight.setLocalTranslation(currentPiece.getBlockGeometry().getLocalTranslation());
+//        highlight.setLocalRotation(currentPiece.getBlockGeometry().getLocalRotation());
     }
 
     private void initPuzzlePieces() {
-
         this.puzzlePieces = this.app.getLevelManager().getCurrentLevel().getPuzzlePieces();
 
-        /*// Create two 1x1 controllable blocks
-         Block block = new Block(assetManager, ColorRGBA.Blue, new Vector3f(1.5f, 7.6f, 7.6f), new float[]{1.5f, 1.5f, 1.5f});
-         puzzlePieces.attachChild(block.getBlockGeometry());
-
-         block = new Block(assetManager, ColorRGBA.Orange, new Vector3f(4.5f, 7.6f, 7.6f), new float[]{1.5f, 1.5f, 1.5f});
-         puzzlePieces.attachChild(block.getBlockGeometry());
-         */
-
-        // 3x2 puzzle piece REFACTORED to Level.java
-        //Block block = new Block(assetManager, ColorRGBA.randomColor(), new Vector3f(4.5f, 7.6f, 21f), new float[]{4.5f, 1.5f, 3f});
-        //puzzlePieces.attachChild(block.getBlockGeometry());
-
-        // Set currently controlled piece to first puzzle piece
         currentPiece = puzzlePieces.get(0);
+        currentPiece.setActive(true);
 
         for (Block block : puzzlePieces) {
-            localRootNode.attachChild(block.getBlockGeometry());
+
+            if (block.getPivot() != null) {
+                System.out.println("attaching pivot to kubus screen");
+                localRootNode.attachChild(block.getPivot());
+            } else {
+                localRootNode.attachChild(block.getBlockGeometry());
+
+            }
         }
     }
     private ActionListener actionListener = new ActionListener() {
@@ -257,27 +253,10 @@ public class KubusScreenState extends AbstractAppState {
 
         private void handleMovement(String eventName, boolean keyPressed) {
             movePiece(eventName, keyPressed);
+            rotatePiece(eventName, keyPressed);
+            System.out.println("");
+            System.out.println("");
 
-            if (eventName.equals("BlockRotateX") && !keyPressed) {
-                rotatePiece(rotate, 0, 0);
-                /*
-                 if (rotation[0]) {
-                 currentPiece.move(0f, -1.5f, -1.5f);
-                 rotation[0] = false;
-                 }
-                 else {
-                 currentPiece.move(0f, 1.5f, 1.5f);
-                 rotation[0] = true;
-                 }*/
-            }
-
-            if (eventName.equals("BlockRotateY") && !keyPressed) {
-                rotatePiece(0, rotate, 0);
-            }
-
-            if (eventName.equals("BlockRotateZ") && !keyPressed) {
-                rotatePiece(0, 0, rotate);
-            }
         }
 
         private void movePiece(String eventName, boolean keyPressed) {
@@ -310,11 +289,37 @@ public class KubusScreenState extends AbstractAppState {
             if (eventName.equals("BlockBackward")) {
                 move[2] = BLOCK_WIDTH;
             }
-
-            currentPiece.getBlockGeometry().move(move[0], move[1], move[2]);
-
+            
+            currentPiece.move(move);
+            
             if (!currentPieceInBounds()) {
-                currentPiece.getBlockGeometry().move(-move[0], -move[1], -move[2]);
+                currentPiece.negateMove(move);
+            }
+        }
+
+        private void rotatePiece(String eventName, boolean keyPressed) {
+            if (!keyPressed) {
+                return;
+            }
+            
+            float[] rotate = {0f, 0f, 0f};
+
+            if (eventName.equals("BlockRotateX")) {
+                rotate[0] = rotateAmount;
+            }
+
+            if (eventName.equals("BlockRotateY")) {
+                rotate[1] = rotateAmount;
+            }
+
+            if (eventName.equals("BlockRotateZ")) {
+                rotate[2] = rotateAmount;
+            }
+            
+            currentPiece.rotate(rotate);
+            
+            if (!currentPieceInBounds()) {
+                currentPiece.negateRotate(rotate);
             }
         }
 
@@ -328,24 +333,20 @@ public class KubusScreenState extends AbstractAppState {
                     continue;
                 }
 
-                System.out.println("checking if collides with " + block);
-            }
-            
-            // magic number due to the piece being a bit bigger than the boxes
-            if(terrainBox.clone().mergeLocal(pieceBox).getVolume() > terrainBox.getVolume() + 2) {
-                return false;
-            }
-            
-            // TODO: fix
-            // magic number 1 due to box size
-            if (terrainBox.getCenter().getY() - 1 > pieceBox.getCenter().getY() + pieceBox.getYExtent()) {
-                System.out.println("boksi alapuolella");
-                return false;
+                System.out.println("todo:? if collides with " + block);
             }
 
-            if (terrainBox.getCenter().getZ() > pieceBox.getCenter().getZ() + pieceBox.getZExtent()) {
-                System.out.println("boksi takana");
-                return false;
+            CollisionResults results = new CollisionResults();
+            terrainNode.collideWith(currentPiece.getWorldBound(), results);
+            if (results.size() > 0) {
+                System.out.println("current piece collides with the terrain");
+//                return false;
+            }
+
+            // magic number due to the piece being a bit bigger than the boxes
+            if (terrainBox.clone().mergeLocal(pieceBox).getVolume() > terrainBox.getVolume()) {
+                System.out.println("current piece would be outside the box");
+//                return false;
             }
 
             return true;
@@ -353,12 +354,11 @@ public class KubusScreenState extends AbstractAppState {
     };
 
     private void changePiece() {
+        currentPiece.setActive(false);
         currentIndex = (currentIndex + 1) % puzzlePieces.size();
         currentPiece = puzzlePieces.get(currentIndex);
-    }
-
-    private void rotatePiece(float x, float y, float z) {
-        currentPiece.getBlockGeometry().rotate(x, y, z);
+        
+        currentPiece.setActive(true);
     }
 
     @Override

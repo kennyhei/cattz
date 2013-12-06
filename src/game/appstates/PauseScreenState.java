@@ -10,6 +10,7 @@ import com.jme3.font.BitmapText;
 import com.jme3.math.ColorRGBA;
 import com.jme3.renderer.ViewPort;
 import com.jme3.scene.Node;
+import game.Main;
 
 public class PauseScreenState extends AbstractAppState {
 
@@ -22,8 +23,8 @@ public class PauseScreenState extends AbstractAppState {
     private Node localGuiNode = new Node("Pause Screen GuiNode");
     private final ColorRGBA backgroundColor = ColorRGBA.Pink;
 
-    public PauseScreenState(SimpleApplication app) {
-        this.app = app;
+    public PauseScreenState() {
+        this.app = Main.getApp();
         this.rootNode = app.getRootNode();
         this.viewPort = app.getViewPort();
         this.guiNode = app.getGuiNode();
@@ -42,7 +43,7 @@ public class PauseScreenState extends AbstractAppState {
         displaytext.setText("Pause Screen");
 
         displaytext.setLocalTranslation(this.app.getContext().getSettings().getWidth() / 2 - displaytext.getLineWidth() / 2,
-                                        this.app.getContext().getSettings().getHeight() / 2 + displaytext.getLineHeight(), 0);
+                this.app.getContext().getSettings().getHeight() / 2 + displaytext.getLineHeight(), 0);
 
         localGuiNode.attachChild(displaytext);
     }

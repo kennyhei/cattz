@@ -64,8 +64,8 @@ public class GameScreenState extends AbstractAppState implements PhysicsCollisio
     private FlyByCamera flyCam;
     private ViewPort viewPort;
 
-    public GameScreenState(SimpleApplication app) {
-        this.app = (Main) app;
+    public GameScreenState() {
+        this.app = (Main) Main.getApp();
         this.rootNode = this.app.getRootNode();
         this.guiNode = this.app.getGuiNode();
         this.assetManager = this.app.getAssetManager();

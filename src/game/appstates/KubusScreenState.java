@@ -42,8 +42,8 @@ public class KubusScreenState extends AbstractAppState {
     private FlyByCamera flyCam;
     private final float rotateAmount = (float) (Math.PI / 2);
 
-    public KubusScreenState(SimpleApplication app) {
-        this.app = (Main) app;
+    public KubusScreenState() {
+        this.app = Main.getApp();
         this.rootNode = this.app.getRootNode();
         this.guiNode = this.app.getGuiNode();
         this.assetManager = this.app.getAssetManager();

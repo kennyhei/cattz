@@ -69,11 +69,8 @@ public class Main extends SimpleApplication {
         levelManager = new LevelManager();
 
         // Create states
-        gameRunningState = new GameScreenState(this);
         startScreenState = new StartScreenState(this, tonegod);
-        kubusScreenState = new KubusScreenState(this);
-        pauseScreenState = new PauseScreenState(this);
-
+        
         stateManager.attach(startScreenState);
         inputManager.clearRawInputListeners();
         
@@ -100,10 +97,11 @@ public class Main extends SimpleApplication {
 
             if (name.equals("level")) {
                 // we know something has been clicked
+                gameRunningState = new GameScreenState();
+
                 System.out.println("KLIKKKK");
                 stateManager.detach(startScreenState);
                 stateManager.attach(gameRunningState);
-//                stateManager.attach(kubusScreenState); // here for skipping straight into KubusWorld
                 gameRunningState.setEnabled(true);
                 System.out.println("level 1");
 
@@ -119,12 +117,15 @@ public class Main extends SimpleApplication {
 //            }
 
             if (name.equals("Continue") && !isPressed && switchToKubus && !stateManager.hasState(kubusScreenState)) {
+                
+                kubusScreenState = new KubusScreenState();
                 stateManager.detach(gameRunningState);
                 stateManager.attach(kubusScreenState);
                 System.out.println("Switching to kubus world...");
             }
 
             if (name.equals("Pause") && !isPressed) {
+                pauseScreenState = new PauseScreenState();
 
                 if (stateManager.hasState(gameRunningState) && gameRunningState.isEnabled()) {
                     gameRunningState.setEnabled(paused);

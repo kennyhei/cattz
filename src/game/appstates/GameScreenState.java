@@ -18,20 +18,23 @@ import com.jme3.bullet.collision.shapes.MeshCollisionShape;
 import com.jme3.bullet.control.RigidBodyControl;
 import com.jme3.font.BitmapFont;
 import com.jme3.font.BitmapText;
-import com.jme3.input.ChaseCamera;
 import com.jme3.input.FlyByCamera;
 import com.jme3.input.InputManager;
+import com.jme3.input.KeyInput;
+import com.jme3.input.controls.KeyTrigger;
 import com.jme3.light.DirectionalLight;
-import com.jme3.material.Material;
+import com.jme3.material.RenderState;
 import com.jme3.math.ColorRGBA;
 import com.jme3.math.Vector3f;
 import com.jme3.post.FilterPostProcessor;
 import com.jme3.renderer.Camera;
 import com.jme3.renderer.ViewPort;
 import com.jme3.renderer.queue.RenderQueue;
+import com.jme3.scene.CameraNode;
 import com.jme3.scene.Geometry;
 import com.jme3.scene.Node;
 import com.jme3.scene.Spatial;
+import com.jme3.scene.control.CameraControl.ControlDirection;
 import com.jme3.shadow.DirectionalLightShadowFilter;
 import com.jme3.shadow.DirectionalLightShadowRenderer;
 import com.jme3.system.AppSettings;
@@ -39,7 +42,6 @@ import game.Main;
 import game.models.Block;
 import game.controllers.BlockControl;
 import game.models.HudBlock;
-import game.controllers.InputHandler;
 import game.models.Player;
 import game.models.Time;
 import java.util.ArrayList;
@@ -83,30 +85,18 @@ public class GameScreenState extends AbstractAppState implements PhysicsCollisio
     /* Text */
     private BitmapText text;
 
-    /* Input */
-    InputHandler inputHandler;
-
     /* Terrain */
     private Node terrainNode;
 
     /* Player */
     private Player player;
-    
-    /* test cat */
-    private Geometry cat;
 
     /* Camera */
-    private ChaseCamera chaseCam;
+    private CameraNode cameraNode;
 
     /* Kubus block */
     // Node contains blocks
     private Node blockNode;
-
-    // Temporary vectors used on each frame.
-    // They are here to avoid instantiating new vectors on each frame
-    private Vector3f camDir = new Vector3f();
-    private Vector3f camLeft = new Vector3f();
-    private Vector3f walkDirection = new Vector3f();
 
     @Override
     public void initialize(AppStateManager stateManager, Application app) {
@@ -115,19 +105,21 @@ public class GameScreenState extends AbstractAppState implements PhysicsCollisio
         bulletAppState = new BulletAppState();
         stateManager.attach(bulletAppState);
 
-        // Add input handling
-        this.inputHandler = this.app.getInputHandler();
 
         setUpLight();
 
         initCharacter();
-        initChaseCamera();
+        initCamera();
         initWorld();
         initBlocks();
         initTime();
         initText();
 
+        initInput();
+
         bulletAppState.getPhysicsSpace().addCollisionListener(this);
+        
+        localRootNode.attachChild(player.getPlayerNode());
     }
 
     private void setUpLight() {
@@ -137,7 +129,7 @@ public class GameScreenState extends AbstractAppState implements PhysicsCollisio
         localRootNode.addLight(dl);
 
         /* Drop shadows */
-        final int SHADOWMAP_SIZE=1024;
+        final int SHADOWMAP_SIZE = 1024;
         DirectionalLightShadowRenderer dlsr = new DirectionalLightShadowRenderer(assetManager, SHADOWMAP_SIZE, 3);
         dlsr.setLight(dl);
         dlsr.setShadowIntensity(0.7f);
@@ -153,6 +145,7 @@ public class GameScreenState extends AbstractAppState implements PhysicsCollisio
 
     @Override
     public void update(float tpf) {
+        bulletAppState.update(tpf);
 
         // Blocks have been collected
         if (blockNode.getChildren().isEmpty()) {
@@ -164,58 +157,11 @@ public class GameScreenState extends AbstractAppState implements PhysicsCollisio
 
         // Update clock time
         timeText.setText(time.toString());
-
-        this.camDir.set(this.cam.getDirection().multLocal(0.6f));
-        this.camLeft.set(this.cam.getLeft().multLocal(0.6f));
-
-        // Nothing was pressed, do not walk anywhere
-        walkDirection.set(0f, 0f, 0f);
-
-        if (inputHandler.LEFT) {
-            walkDirection.addLocal(camLeft);
-        }
-
-        if (inputHandler.RIGHT) {
-            walkDirection.addLocal(camLeft.negate());
-        }
-
-        if (inputHandler.UP) {
-            walkDirection.addLocal(camDir);
-        }
-
-        if (inputHandler.DOWN) {
-            walkDirection.addLocal(camDir.negate());
-        }
-
-        if (inputHandler.SPACE) {
-            player.getPhysics().jump();
-        }
-
-        player.getPhysics().setWalkDirection(walkDirection);
-        cam.setLocation(player.getPhysics().getPhysicsLocation());
-
-        // Rotate blocks
-        for (Spatial block : blockNode.getChildren()) {
-            block.rotate(0f, 2 * tpf, 0f);
-        }
-
-        if (player.getPhysics().getPhysicsLocation().y < -40) {
-
-            // Remove solid player from PhysicsSpace
-            bulletAppState.getPhysicsSpace().remove(player.getPhysics());
-
-            // Detach player from the scene
-            localRootNode.detachChild(player.getModel());
-
-            initCharacter();
-            initChaseCamera();
-            this.time.add(5);
-        }
+        player.update();
     }
 
     // Remove blocks if they were hit by the player
     public void collision(PhysicsCollisionEvent event) {
-
         Spatial a = event.getNodeA();
         Spatial b = event.getNodeB();
 
@@ -233,24 +179,18 @@ public class GameScreenState extends AbstractAppState implements PhysicsCollisio
     }
 
     private void initCharacter() {
-        //player = new Player(assetManager, new Vector3f(30f, 15f, 10f));
-        player = new Player(assetManager, new Vector3f(30f, 6f, 10f));
-
-        // Register solid player to PhysicsSpace
-        bulletAppState.getPhysicsSpace().add(player.getPhysics());
-
-        // Add player to the scene
-        localRootNode.attachChild(player.getModel());
-        
+        player = new Player(assetManager, new Vector3f(30f, 15f, 10f));
+        bulletAppState.getPhysicsSpace().add(player.getPhysicsCharacter());
     }
 
-    private void initChaseCamera() {
+    private void initCamera() {
         flyCam.setEnabled(false);
-        chaseCam = new ChaseCamera(cam, player.getModel(), inputManager);
-        chaseCam.setDefaultHorizontalRotation(-1.5f);
-        chaseCam.setDefaultDistance(30f);
-        chaseCam.setLookAtOffset(new Vector3f(0f, 3f, 0f));
-        chaseCam.setInvertVerticalAxis(true);
+
+        cameraNode = new CameraNode("camera", cam);
+        cameraNode.setControlDir(ControlDirection.SpatialToCamera);
+        cameraNode.setLocalTranslation(new Vector3f(0, 10, -24));
+        cameraNode.lookAt(player.getModel().getLocalTranslation(), Vector3f.UNIT_Y);
+        player.getPlayerNode().attachChild(cameraNode);
     }
 
     private void initWorld() {
@@ -258,11 +198,23 @@ public class GameScreenState extends AbstractAppState implements PhysicsCollisio
         // Register blocks
         CubesTestAssets.registerBlocks();
 
-        CubesTestAssets.initializeEnvironment(this.app);
-        CubesTestAssets.initializeWater(this.app);
+
+        CubesTestAssets.getSettings(this.app).getBlockMaterial().getAdditionalRenderState().setFaceCullMode(RenderState.FaceCullMode.FrontAndBack);
+
+        CubesTestAssets.getSettings(this.app).getBlockMaterial().getAdditionalRenderState().setDepthTest(true); // .setFaceCullMode(RenderState.FaceCullMode.FrontAndBack);
+
+
+        // disabled due to laptop hw issues..
+//        CubesTestAssets.initializeEnvironment(this.app);
+//        CubesTestAssets.initializeWater(this.app);
 
         BlockTerrainControl blockTerrain = new BlockTerrainControl(CubesTestAssets.getSettings(this.app), new Vector3Int(14, 1, 14));
-        blockTerrain.setBlocksFromHeightmap(new Vector3Int(0, -5, -5), "Textures/maze-h2.jpg", 17, Block_Grass.class);
+        blockTerrain.setBlocksFromHeightmap(new Vector3Int(0, -5, -5), "Textures/maze-easy.jpg", 17, Block_Grass.class);
+//        Material blockMaterial = blockTerrain.getSettings().getBlockMaterial();
+//        blockMaterial.getAdditionalRenderState().setFaceCullMode(RenderState.FaceCullMode.Back);
+//        blockMaterial.getAdditionalRenderState().setDepthTest(true); // .setFaceCullMode(RenderState.FaceCullMode.FrontAndBack);
+//        
+
 
         this.terrainNode = new Node();
         terrainNode.addControl(blockTerrain);
@@ -270,7 +222,6 @@ public class GameScreenState extends AbstractAppState implements PhysicsCollisio
 
         // Make blocks solid
         blockTerrain.addChunkListener(new BlockChunkListener() {
-
             @Override
             public void onSpatialUpdated(BlockChunkControl blockChunk) {
 
@@ -301,26 +252,26 @@ public class GameScreenState extends AbstractAppState implements PhysicsCollisio
         // Create 6 blocks and hud blocks
         for (int i = 0; i < 6; ++i) {
             Block kubusBlock = new Block(assetManager,
-                                         ColorRGBA.randomColor(),
-                                         new Vector3f(i * 10, 20f, -5f), new float[]{2f, 4f, 1f});
+                    ColorRGBA.randomColor(),
+                    new Vector3f(i * 10, 20f, -5f), new float[]{2f, 4f, 1f});
 
 //            // Set random location to kubus block
-//            while (true) {
-//                int index = random.nextInt(locations.length);
-//
-//                if (!usedLocations.contains(index)) {
-//                    float[] newLocation = locations[index];
-//                    usedLocations.add(index);
-//                    kubusBlock.setLocation(new Vector3f(newLocation[0], newLocation[1], newLocation[2]));
-//                    break;
-//                }
-//            }
+            while (true) {
+                int index = random.nextInt(locations.length);
+
+                if (!usedLocations.contains(index)) {
+                    float[] newLocation = locations[index];
+                    usedLocations.add(index);
+                    kubusBlock.setLocation(new Vector3f(newLocation[0], newLocation[1], newLocation[2]));
+                    break;
+                }
+            }
 
             BlockControl c = kubusBlock.getBlockGeometry().getControl(BlockControl.class);
 
             HudBlock hudBlock = new HudBlock(assetManager,
-                                             c.getColor(),
-                                             new Vector3f(80 + i * 30, settings.getHeight() - 25, 0));
+                    c.getColor(),
+                    new Vector3f(80 + i * 30, settings.getHeight() - 25, 0));
 
             c.setHudBlock(hudBlock);
             localGuiNode.attachChild(hudBlock.getGeometry());
@@ -356,7 +307,7 @@ public class GameScreenState extends AbstractAppState implements PhysicsCollisio
         text.setSize(25.5f);
         text.setText("Press Enter to continue.");
         text.setLocalTranslation(settings.getWidth() / 2 - text.getLineWidth() / 2,
-                                 settings.getHeight() / 2 + text.getLineHeight(), 0);
+                settings.getHeight() / 2 + text.getLineHeight(), 0);
     }
 
     public Time getTime() {
@@ -371,12 +322,26 @@ public class GameScreenState extends AbstractAppState implements PhysicsCollisio
 
     @Override
     public void stateDetached(AppStateManager stateManager) {
-        chaseCam.setInvertVerticalAxis(false);
+//        chaseCam.setInvertVerticalAxis(false);
         rootNode.detachChildNamed("Sky");
         viewPort.clearProcessors();
         bulletAppState.getPhysicsSpace().removeCollisionListener(this);
 
         rootNode.detachChild(localRootNode);
         guiNode.detachChild(localGuiNode);
+    }
+
+    private void initInput() {
+        inputManager.addMapping(Player.LEFT, new KeyTrigger(KeyInput.KEY_A));
+        inputManager.addMapping(Player.RIGHT, new KeyTrigger(KeyInput.KEY_D));
+        inputManager.addMapping(Player.FORWARD, new KeyTrigger(KeyInput.KEY_W));
+        inputManager.addMapping(Player.BACKWARD, new KeyTrigger(KeyInput.KEY_S));
+        inputManager.addMapping(Player.JUMP, new KeyTrigger(KeyInput.KEY_SPACE));
+
+        inputManager.addListener(player, Player.LEFT);
+        inputManager.addListener(player, Player.RIGHT);
+        inputManager.addListener(player, Player.FORWARD);
+        inputManager.addListener(player, Player.BACKWARD);
+        inputManager.addListener(player, Player.JUMP);
     }
 }

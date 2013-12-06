@@ -95,6 +95,7 @@ public class Main extends SimpleApplication {
         inputManager.addListener(actionListener, "level");
         
         new CoordinateHelper().attachCoordinates(Vector3f.ZERO, rootNode);
+        
     }
     
     
@@ -109,8 +110,8 @@ public class Main extends SimpleApplication {
                 // we know something has been clicked
                 System.out.println("KLIKKKK");
                 stateManager.detach(startScreenState);
-//                stateManager.attach(gameRunningState);
-                stateManager.attach(kubusScreenState); // here for skipping straight into KubusWorld
+                stateManager.attach(gameRunningState);
+//                stateManager.attach(kubusScreenState); // here for skipping straight into KubusWorld
                 gameRunningState.setEnabled(true);
                 System.out.println("level 1");
                 

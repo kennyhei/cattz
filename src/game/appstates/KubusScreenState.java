@@ -14,18 +14,12 @@ import com.jme3.input.KeyInput;
 import com.jme3.input.controls.ActionListener;
 import com.jme3.input.controls.KeyTrigger;
 import com.jme3.light.DirectionalLight;
-import com.jme3.material.Material;
 import com.jme3.math.ColorRGBA;
-import com.jme3.math.FastMath;
-import com.jme3.math.Quaternion;
 import com.jme3.math.Vector3f;
 import com.jme3.renderer.Camera;
-import com.jme3.scene.Geometry;
 import com.jme3.scene.Node;
-import com.jme3.scene.debug.WireBox;
 import com.jme3.system.AppSettings;
 import game.Main;
-import game.controllers.InputHandler;
 import game.levels.Level;
 import game.models.Block;
 import java.util.List;
@@ -66,8 +60,6 @@ public class KubusScreenState extends AbstractAppState {
     /* Physics */
     private BulletAppState bulletAppState;
 
-    /* Input */
-    InputHandler inputHandler;
 
     /* Block handler */
     List<Block> puzzlePieces;
@@ -94,8 +86,6 @@ public class KubusScreenState extends AbstractAppState {
 
         flyCam.setMoveSpeed(10);
 
-        // Add input handling
-        this.inputHandler = this.app.getInputHandler();
 
         setUpLight();
 

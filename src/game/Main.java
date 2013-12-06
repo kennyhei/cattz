@@ -1,5 +1,7 @@
 package game;
 
+import com.cubes.CubesSettings;
+import com.cubes.test.CubesTestAssets;
 import com.jme3.app.SimpleApplication;
 import com.jme3.bullet.BulletAppState;
 import com.jme3.input.KeyInput;
@@ -29,7 +31,6 @@ public class Main extends SimpleApplication {
 
     /* Level manager */
     private LevelManager levelManager;
-
     private boolean switchToKubus = false;
     private boolean isRunning = false;
     private static Main APPLICATION;
@@ -70,10 +71,10 @@ public class Main extends SimpleApplication {
 
         // Create states
         startScreenState = new StartScreenState(this, tonegod);
-        
+
         stateManager.attach(startScreenState);
         inputManager.clearRawInputListeners();
-        
+
         // inputManager.addMapping("Start", new KeyTrigger(KeyInput.KEY_RETURN));
         inputManager.addMapping("Continue", new KeyTrigger(KeyInput.KEY_RETURN));
         inputManager.addMapping("Pause", new KeyTrigger(KeyInput.KEY_P));
@@ -85,7 +86,7 @@ public class Main extends SimpleApplication {
         // inputManager.addMapping("level", new MouseButtonTrigger(MouseInput.BUTTON_LEFT));
         inputManager.addListener(actionListener, "level");
 
-        new CoordinateHelper().attachCoordinates(Vector3f.ZERO, rootNode);
+//        new CoordinateHelper().attachCoordinates(Vector3f.ZERO, rootNode);
     }
 
     public void setSwitch(boolean switchOk) {
@@ -117,7 +118,7 @@ public class Main extends SimpleApplication {
 //            }
 
             if (name.equals("Continue") && !isPressed && switchToKubus && !stateManager.hasState(kubusScreenState)) {
-                
+
                 kubusScreenState = new KubusScreenState();
                 stateManager.detach(gameRunningState);
                 stateManager.attach(kubusScreenState);

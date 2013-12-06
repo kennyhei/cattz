@@ -1,7 +1,8 @@
 package game.appstates;
 
+import com.cubes.CubesSettings;
+import com.cubes.test.CubesTestAssets;
 import com.jme3.app.Application;
-import com.jme3.app.SimpleApplication;
 import com.jme3.app.state.AbstractAppState;
 import com.jme3.app.state.AppStateManager;
 import com.jme3.asset.AssetManager;
@@ -30,7 +31,7 @@ import java.util.List;
  * https://code.google.com/p/jmonkeyplatform-contributions/source/browse/#svn%2Ftrunk%2Fcubes%2FCubes%2Fsrc
  */
 public class KubusScreenState extends AbstractAppState {
-
+    
     private final float BLOCK_WIDTH = 3f;
     private Main app;
     private Node rootNode;
@@ -41,7 +42,7 @@ public class KubusScreenState extends AbstractAppState {
     private Camera cam;
     private FlyByCamera flyCam;
     private final float rotateAmount = (float) (Math.PI / 2);
-
+    
     public KubusScreenState() {
         this.app = Main.getApp();
         this.rootNode = this.app.getRootNode();
@@ -70,11 +71,12 @@ public class KubusScreenState extends AbstractAppState {
 
     /* Block node */
     private Node terrainNode;
-
+    
     @Override
     public void initialize(AppStateManager stateManager, Application app) {
         super.initialize(stateManager, app);
-
+        
+        
         this.bulletAppState = this.app.getStateManager().getState(BulletAppState.class);
 
         // Camera settings
@@ -84,10 +86,10 @@ public class KubusScreenState extends AbstractAppState {
         cam.lookAt(new Vector3f(1.6f, 2.5f, -1f), Vector3f.UNIT_Y); // Default: 0f, 0f, -1f
 
         flyCam.setMoveSpeed(10);
-
-
+        
+        
         setUpLight();
-
+        
         initWorld();
         initPuzzlePieces();
         updateHighlight();
@@ -97,31 +99,33 @@ public class KubusScreenState extends AbstractAppState {
 
         // Custom keybindings for controlling puzzle pieces
         initPuzzlePieceKeys();
-    }
 
+//        System.out.println(CubesTestAssets.getSettings(app).getBlockMaterial());
+    }
+    
     @Override
     public void update(float tpf) {
     }
-
+    
     private void setUpLight() {
         DirectionalLight dl = new DirectionalLight();
         dl.setColor(ColorRGBA.White);
         dl.setDirection(new Vector3f(-.5f, -.5f, -.5f).normalizeLocal());
         localRootNode.addLight(dl);
     }
-
+    
     private void initCameraKeys() {
 
         // Camera keys
         inputManager.addMapping("1st camera", new KeyTrigger(KeyInput.KEY_1));
         inputManager.addMapping("2nd camera", new KeyTrigger(KeyInput.KEY_2));
         inputManager.addMapping("3rd camera", new KeyTrigger(KeyInput.KEY_3));
-
+        
         inputManager.addListener(actionListener, "1st camera");
         inputManager.addListener(actionListener, "2nd camera");
         inputManager.addListener(actionListener, "3rd camera");
     }
-
+    
     private void initPuzzlePieceKeys() {
 
         // Block handling keys
@@ -135,7 +139,7 @@ public class KubusScreenState extends AbstractAppState {
         inputManager.addMapping("BlockRotateY", new KeyTrigger(KeyInput.KEY_H));
         inputManager.addMapping("BlockRotateZ", new KeyTrigger(KeyInput.KEY_J));
         inputManager.addMapping("Change", new KeyTrigger(KeyInput.KEY_TAB));
-
+        
         inputManager.addListener(actionListener, "BlockLeft");
         inputManager.addListener(actionListener, "BlockRight");
         inputManager.addListener(actionListener, "BlockUp");
@@ -147,15 +151,15 @@ public class KubusScreenState extends AbstractAppState {
         inputManager.addListener(actionListener, "BlockRotateZ");
         inputManager.addListener(actionListener, "Change");
     }
-
+    
     private void initWorld() {
         Level level = this.app.getLevelManager().getCurrentLevel();
         this.terrainNode = level.getTerrain();
-
+        
         localRootNode.setLocalScale(0.2f);
         localRootNode.attachChild(terrainNode);
     }
-
+    
     private void updateHighlight() {
 //        if (highlight != null) {
 //            localRootNode.detachChild(highlight);
@@ -174,21 +178,21 @@ public class KubusScreenState extends AbstractAppState {
 //        highlight.setLocalTranslation(currentPiece.getBlockGeometry().getLocalTranslation());
 //        highlight.setLocalRotation(currentPiece.getBlockGeometry().getLocalRotation());
     }
-
+    
     private void initPuzzlePieces() {
-        this.puzzlePieces = this.app.getLevelManager().getCurrentLevel().getPuzzlePieces();
+        this.puzzlePieces = this.app.getLevelManager().getCurrentLevel().getSolution(); // .getPuzzlePieces();
 
         currentPiece = puzzlePieces.get(0);
         currentPiece.setActive(true);
-
+        
         for (Block block : puzzlePieces) {
-
+            
             if (block.getPivot() != null) {
                 System.out.println("attaching pivot to kubus screen");
                 localRootNode.attachChild(block.getPivot());
             } else {
                 localRootNode.attachChild(block.getBlockGeometry());
-
+                
             }
         }
     }
@@ -203,35 +207,35 @@ public class KubusScreenState extends AbstractAppState {
             if (name.equals("Change") && !keyPressed) {
                 changePiece();
             }
-
+            
             updateHighlight();
 //            highlight.setLocalTranslation(currentPiece.getLocalTranslation());
 
             if (app.getLevelManager().getCurrentLevel().checkBlocks()) {
                 System.out.println("Congrats, you've cleared this level!");
             }
-
+            
         }
-
+        
         private void handleCamera(String name, boolean keyPressed) {
             if (keyPressed) {
                 return;
             }
-
+            
             if (name.equals("1st camera")) {
 
                 // Switch to 1st camera view
                 cam.setLocation(new Vector3f(0f, 0f, 10f));
                 cam.lookAt(new Vector3f(0f, 0f, -1f), Vector3f.UNIT_Y);
             }
-
+            
             if (name.equals("2nd camera")) {
 
                 // Switch to 2nd camera view
                 cam.setLocation(new Vector3f(0f, 0f, -10f));
                 cam.lookAt(new Vector3f(0f, 0f, -1f), Vector3f.UNIT_Y);
             }
-
+            
             if (name.equals("3rd camera")) {
 
                 // Switch to 3rd camera view
@@ -239,92 +243,92 @@ public class KubusScreenState extends AbstractAppState {
                 cam.lookAt(new Vector3f(0f, 0f, -1f), Vector3f.UNIT_Y);
             }
         }
-
+        
         private void handleMovement(String eventName, boolean keyPressed) {
             movePiece(eventName, keyPressed);
             rotatePiece(eventName, keyPressed);
             System.out.println("");
             System.out.println("");
-
+            
         }
-
+        
         private void movePiece(String eventName, boolean keyPressed) {
             if (keyPressed) {
                 return;
             }
-
+            
             float[] move = {0f, 0f, 0f};
-
+            
             if (eventName.equals("BlockLeft")) {
                 move[0] = -BLOCK_WIDTH;
             }
-
+            
             if (eventName.equals("BlockRight")) {
                 move[0] = BLOCK_WIDTH;
             }
-
+            
             if (eventName.equals("BlockUp")) {
                 move[1] = BLOCK_WIDTH;
             }
-
+            
             if (eventName.equals("BlockDown")) {
                 move[1] = -BLOCK_WIDTH;
             }
-
+            
             if (eventName.equals("BlockForward")) {
                 move[2] = -BLOCK_WIDTH;
             }
-
+            
             if (eventName.equals("BlockBackward")) {
                 move[2] = BLOCK_WIDTH;
             }
-
+            
             currentPiece.move(move);
-
+            
             if (!currentPieceInBounds()) {
                 currentPiece.negateMove(move);
             }
         }
-
+        
         private void rotatePiece(String eventName, boolean keyPressed) {
             if (!keyPressed) {
                 return;
             }
-
+            
             float[] rotate = {0f, 0f, 0f};
-
+            
             if (eventName.equals("BlockRotateX")) {
                 rotate[0] = rotateAmount;
             }
-
+            
             if (eventName.equals("BlockRotateY")) {
                 rotate[1] = rotateAmount;
             }
-
+            
             if (eventName.equals("BlockRotateZ")) {
                 rotate[2] = rotateAmount;
             }
-
+            
             currentPiece.rotate(rotate);
-
+            
             if (!currentPieceInBounds()) {
                 currentPiece.negateRotate(rotate);
             }
         }
-
+        
         private boolean currentPieceInBounds() {
             BoundingBox terrainBox = (BoundingBox) terrainNode.getWorldBound();
             BoundingBox pieceBox = (BoundingBox) currentPiece.getWorldBound();
-
-
+            
+            
             for (Block block : puzzlePieces) {
                 if (block == currentPiece) {
                     continue;
                 }
-
+                
                 System.out.println("todo:? if collides with " + block);
             }
-
+            
             CollisionResults results = new CollisionResults();
             terrainNode.collideWith(currentPiece.getWorldBound(), results);
             if (results.size() > 0) {
@@ -337,25 +341,25 @@ public class KubusScreenState extends AbstractAppState {
                 System.out.println("current piece would be outside the box");
 //                return false;
             }
-
+            
             return true;
         }
     };
-
+    
     private void changePiece() {
         currentPiece.setActive(false);
         currentIndex = (currentIndex + 1) % puzzlePieces.size();
         currentPiece = puzzlePieces.get(currentIndex);
-
+        
         currentPiece.setActive(true);
     }
-
+    
     @Override
     public void stateAttached(AppStateManager stateManager) {
         rootNode.attachChild(localRootNode);
         guiNode.attachChild(localGuiNode);
     }
-
+    
     @Override
     public void stateDetached(AppStateManager stateManager) {
         rootNode.detachChild(localRootNode);

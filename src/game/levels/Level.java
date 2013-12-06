@@ -4,9 +4,9 @@ import com.cubes.BlockManager;
 import com.cubes.BlockSkin;
 import com.cubes.BlockSkin_TextureLocation;
 import com.cubes.BlockTerrainControl;
+import com.cubes.CubesSettings;
 import com.cubes.Vector3Int;
 import com.cubes.test.CubesTestAssets;
-import com.cubes.test.blocks.Block_Brick;
 import com.jme3.bullet.BulletAppState;
 import com.jme3.bullet.PhysicsSpace;
 import com.jme3.bullet.control.RigidBodyControl;
@@ -14,11 +14,12 @@ import com.jme3.math.Matrix3f;
 import com.jme3.scene.Node;
 import game.Main;
 import game.models.Block;
+import game.models.blockclasses.BlockRegular;
+import game.models.blockclasses.BlockSolution;
 import java.util.List;
 
 public abstract class Level {
 
-    protected final int TEXTURE_ID = 6;
     protected Node terrainNode;
     protected int[][] blockCheckList;
 
@@ -28,34 +29,40 @@ public abstract class Level {
     }
 
     private void registerBlocks() {
-        BlockManager.register(Block_Brick.class,
+        int solutionColumn = 3;
+        int solutionRow = 1;
+        BlockManager.register(BlockSolution.class,
                 new BlockSkin(new BlockSkin_TextureLocation[]{
-            new BlockSkin_TextureLocation(TEXTURE_ID, 0),
-            new BlockSkin_TextureLocation(TEXTURE_ID, 0),
-            new BlockSkin_TextureLocation(TEXTURE_ID, 0),
-            new BlockSkin_TextureLocation(TEXTURE_ID, 0),
-            new BlockSkin_TextureLocation(TEXTURE_ID, 0),
-            new BlockSkin_TextureLocation(TEXTURE_ID, 0)
+            new BlockSkin_TextureLocation(solutionColumn, solutionRow),
+            new BlockSkin_TextureLocation(solutionColumn, solutionRow),
+            new BlockSkin_TextureLocation(solutionColumn, solutionRow),
+            new BlockSkin_TextureLocation(solutionColumn, solutionRow),
+            new BlockSkin_TextureLocation(solutionColumn, solutionRow),
+            new BlockSkin_TextureLocation(solutionColumn, solutionRow)
+        }, false));
+
+        solutionColumn = 6;
+        solutionRow = 0;
+        BlockManager.register(BlockRegular.class,
+                new BlockSkin(new BlockSkin_TextureLocation[]{
+            new BlockSkin_TextureLocation(solutionColumn, solutionRow),
+            new BlockSkin_TextureLocation(solutionColumn, solutionRow),
+            new BlockSkin_TextureLocation(solutionColumn, solutionRow),
+            new BlockSkin_TextureLocation(solutionColumn, solutionRow),
+            new BlockSkin_TextureLocation(solutionColumn, solutionRow),
+            new BlockSkin_TextureLocation(solutionColumn, solutionRow)
         }, false));
     }
 
     private final void createWorld() {
+        CubesSettings settings = CubesTestAssets.getSettings(Main.getApp());
+        settings.setDefaultBlockMaterial("Textures/cubes-terrain.png");
+
         BlockTerrainControl blockTerrain =
                 new BlockTerrainControl(
-                CubesTestAssets.getSettings(Main.getApp()), new Vector3Int(1, 1, 1));
-        // create floor
-        for (int x = 0; x < 6; x++) {
-            for (int z = 0; z < 7; z++) {
-                blockTerrain.setBlock(x, 0, z, Block_Brick.class);
-            }
-        }
+                settings, new Vector3Int(1, 1, 1));
 
-        // create wall
-        for (int x = 0; x < 6; x++) {
-            for (int y = 0; y < 7; y++) {
-                blockTerrain.setBlock(x, y, 0, Block_Brick.class);
-            }
-        }
+        addTerrainBlocks(blockTerrain);
 
         this.terrainNode = new Node();
         terrainNode.addControl(blockTerrain);
@@ -65,10 +72,12 @@ public abstract class Level {
         physicsSpace.addAll(terrainNode);
     }
 
+    public abstract void addTerrainBlocks(BlockTerrainControl control);
+
     public abstract List<Block> getBlocks();
 
     public abstract List<Block> getSolution();
-    
+
     public abstract String getLevelHeightMap();
 
     public Node getTerrain() {
@@ -83,16 +92,20 @@ public abstract class Level {
         List<Block> checkPieces = getSolution();
         List<Block> puzzlePieces = getPuzzlePieces();
 
-        for (int i = 0; i < puzzlePieces.size(); i++) {
-            Block block = puzzlePieces.get(i);
-            Block correctBlock = checkPieces.get(i);
+        // lets not assume same order, but same color
+        for (Block puzzlePiece : puzzlePieces) {
+            for (Block solutionPiece : checkPieces) {
+                if (!puzzlePiece.getColor().equals(solutionPiece.getColor())) {
+                    continue;
+                }
 
-            if (!checkBlockPosition(block, correctBlock)) {
-                return false;
-            }
+                if (!checkBlockPosition(puzzlePiece, solutionPiece)) {
+                    return false;
+                }
 
-            if (!checkBlockRotation(block, correctBlock)) {
-                return false;
+                if (!checkBlockRotation(puzzlePiece, solutionPiece)) {
+                    return false;
+                }
             }
         }
 
@@ -101,12 +114,12 @@ public abstract class Level {
 
     public boolean checkBlockPosition(Block toCheck, Block correct) {
 //        System.out.println(toCheck.getBlockGeometry().getLocalTranslation());
-        if (Math.round(toCheck.getBlockGeometry().getLocalTranslation().x * 10)
-                != Math.round(correct.getBlockGeometry().getLocalTranslation().x * 10)
-                || Math.round(toCheck.getBlockGeometry().getLocalTranslation().y * 10)
-                != Math.round(correct.getBlockGeometry().getLocalTranslation().y * 10)
-                || Math.round(toCheck.getBlockGeometry().getLocalTranslation().z * 10)
-                != Math.round(correct.getBlockGeometry().getLocalTranslation().z * 10)) {
+        if (Math.round(toCheck.getPivot().getLocalTranslation().x * 10)
+                != Math.round(correct.getPivot().getLocalTranslation().x * 10)
+                || Math.round(toCheck.getPivot().getLocalTranslation().y * 10)
+                != Math.round(correct.getPivot().getLocalTranslation().y * 10)
+                || Math.round(toCheck.getPivot().getLocalTranslation().z * 10)
+                != Math.round(correct.getPivot().getLocalTranslation().z * 10)) {
             return false;
         } else {
             System.out.println("Block position correct!");
@@ -118,14 +131,13 @@ public abstract class Level {
 
         // TODO: this matrix needs to have only positive values of either 0.0 or 1.0
         // (right now float-type inaccuracies and negative values crop up)
-        Matrix3f matrixToCheck = toCheck.getBlockGeometry().getLocalRotation().toRotationMatrix();
+        Matrix3f matrixToCheck = toCheck.getPivot().getLocalRotation().toRotationMatrix();
 //        System.out.println(matrixToCheck);
-        if (matrixToCheck.equals(correct.getBlockGeometry().getLocalRotation().toRotationMatrix())) {
+        if (matrixToCheck.equals(correct.getPivot().getLocalRotation().toRotationMatrix())) {
             System.out.println("Block rotation correct!");
             return true;
         } else {
             return false;
         }
     }
-
 }

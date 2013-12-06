@@ -66,7 +66,6 @@ public class LevelMenu {
             Vector2f buttonSize = new Vector2f(320, 30);
 
             ButtonAdapter levelButton = new ButtonAdapter(screen, "Btn" + levelIndex, buttonPosition, buttonSize) {
-
                 @Override
                 public void onButtonMouseLeftUp(MouseButtonEvent evt, boolean toggled) {
                     if (!levelManager.isEnabled(levelIndex)) {

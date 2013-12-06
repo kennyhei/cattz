@@ -1,5 +1,6 @@
 package game.managers;
 
+import game.levels.EasyStart;
 import game.levels.Level;
 import game.levels.LevelOne;
 import java.util.Map;
@@ -19,7 +20,7 @@ public class LevelManager {
         this.enabledLevels = new TreeMap<Integer, Boolean>();
 
         // could load game progress from disk here
-        addLevel(1, "Baby steps", new LevelOne(), true);
+        addLevel(1, "Baby steps", new EasyStart(), true);
         addLevel(2, "Didn't see this one coming!", new LevelOne(), false);
         addLevel(3, "Oh no, more levels!", new LevelOne(), false);
 

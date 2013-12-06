@@ -310,57 +310,36 @@ public class GameScreenState extends AbstractAppState implements PhysicsCollisio
             blockSpatial.rotate(.4f, .4f, 0f);
 
             // add bling
-            Node node = new Node("bling_" + blockSpatial.getName());
-            node.setLocalTranslation(blockSpatial.getLocalTranslation());
-            node.move(0f, -4f, 0f);
+            Node blingNode = new Node("bling_" + blockSpatial.getName());
+            blingNode.setLocalTranslation(blockSpatial.getLocalTranslation());
+            blingNode.move(0f, -4f, 0f);
 
-            ParticleEmitter fire =
+            ParticleEmitter sparks =
                     new ParticleEmitter("Emitter", ParticleMesh.Type.Triangle, 30);
-            Material mat_red = new Material(assetManager,
+            Material particleMaterial = new Material(assetManager,
                     "Common/MatDefs/Misc/Particle.j3md");
-            mat_red.setTexture("Texture", assetManager.loadTexture(
+            particleMaterial.setTexture("Texture", assetManager.loadTexture(
                     "Effects/Explosion/roundspark.png"));
-            fire.setMaterial(mat_red);
-            fire.setImagesX(3);
-            fire.setImagesY(3); // 2x2 texture animation
+            sparks.setMaterial(particleMaterial);
+            sparks.setImagesX(4);
+            sparks.setImagesY(4);
 
-            fire.setEndColor(c.getColor());
-            fire.setStartColor(c.getColor());
+            sparks.setEndColor(c.getColor());
+            sparks.setStartColor(c.getColor());
 
-            fire.getParticleInfluencer().setInitialVelocity(new Vector3f(0, 2, 0));
-            fire.setStartSize(4.5f);
-            fire.setEndSize(1f);
-            fire.setGravity(0, 0, 0);
-            fire.setLowLife(2f);
-            fire.setHighLife(6f);
-            fire.getParticleInfluencer().setVelocityVariation(0.5f);
+            sparks.getParticleInfluencer().setInitialVelocity(new Vector3f(0, 2, 0));
+            sparks.setStartSize(4.5f);
+            sparks.setEndSize(3f);
+            sparks.setGravity(0, -0.5f, 0);
+            sparks.setLowLife(2f);
+            sparks.setHighLife(8f);
+            sparks.getParticleInfluencer().setVelocityVariation(0.8f);
 
-            node.attachChild(fire);
-            localRootNode.attachChild(node);
+            blingNode.attachChild(sparks);
+            localRootNode.attachChild(blingNode);
 
             idx++;
-
         }
-//
-//        // Create 6 blocks and hud blocks
-//        for (int i = 0; i < 6; ++i) {
-//            Block kubusBlock = new Block(assetManager,
-//                    ColorRGBA.randomColor(),
-//                    new Vector3f(i * 10, 20f, -5f), new float[]{2f, 4f, 1f});
-//
-////            // Set random location to kubus block
-//            while (true) {
-//                int index = random.nextInt(locations.length);
-//
-//                if (!usedLocations.contains(index)) {
-//                    float[] newLocation = locations[index];
-//                    usedLocations.add(index);
-//                    kubusBlock.setLocation(new Vector3f(newLocation[0], newLocation[1], newLocation[2]));
-//                    break;
-//                }
-//            }
-//
-//        }
 
         localRootNode.attachChild(blockNode);
     }

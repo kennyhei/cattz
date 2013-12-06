@@ -121,6 +121,9 @@ public class GameScreenState extends AbstractAppState implements PhysicsCollisio
 
         initInput();
 
+        // Don't trigger built-in listeners (Space)
+        inputManager.clearRawInputListeners();
+
         bulletAppState.getPhysicsSpace().addCollisionListener(this);
 
         localRootNode.attachChild(player.getPlayerNode());
@@ -224,13 +227,11 @@ public class GameScreenState extends AbstractAppState implements PhysicsCollisio
 //        CubesTestAssets.initializeWater(this.app);
 
         BlockTerrainControl blockTerrain = new BlockTerrainControl(CubesTestAssets.getSettings(this.app), new Vector3Int(14, 1, 14));
-        blockTerrain.setBlocksFromHeightmap(new Vector3Int(0, -5, -5), current.getLevelHeightMap(), 13, Block_Grass.class);
+        blockTerrain.setBlocksFromHeightmap(new Vector3Int(0, 1, -5), current.getLevelHeightMap(), 3, Block_Grass.class);
 //        Material blockMaterial = blockTerrain.getSettings().getBlockMaterial();
 //        blockMaterial.getAdditionalRenderState().setFaceCullMode(RenderState.FaceCullMode.Back);
 //        blockMaterial.getAdditionalRenderState().setDepthTest(true); // .setFaceCullMode(RenderState.FaceCullMode.FrontAndBack);
-//
 
-        
         this.terrainNode = new Node();
         terrainNode.addControl(blockTerrain);
         terrainNode.setShadowMode(RenderQueue.ShadowMode.CastAndReceive);
@@ -383,6 +384,7 @@ public class GameScreenState extends AbstractAppState implements PhysicsCollisio
 //        chaseCam.setInvertVerticalAxis(false);
         rootNode.detachChildNamed("Sky");
         viewPort.clearProcessors();
+        inputManager.removeListener(player);
         bulletAppState.getPhysicsSpace().removeCollisionListener(this);
 
         rootNode.detachChild(localRootNode);

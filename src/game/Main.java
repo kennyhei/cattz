@@ -14,7 +14,6 @@ import game.appstates.GameScreenState;
 import game.appstates.KubusScreenState;
 import game.appstates.PauseScreenState;
 import game.appstates.StartScreenState;
-import game.controllers.InputHandler;
 import game.managers.LevelManager;
 import game.models.CoordinateHelper;
 
@@ -31,8 +30,6 @@ public class Main extends SimpleApplication {
     /* Level manager */
     private LevelManager levelManager;
 
-    /* Input handler */
-    private InputHandler inputHandler;
     private boolean switchToKubus = false;
     private boolean isRunning = false;
     private static Main APPLICATION;
@@ -78,14 +75,11 @@ public class Main extends SimpleApplication {
         pauseScreenState = new PauseScreenState(this);
 
         stateManager.attach(startScreenState);
-
-        this.inputHandler = new InputHandler();
-        this.inputHandler.init(inputManager);
-
         inputManager.clearRawInputListeners();
+        
         // inputManager.addMapping("Start", new KeyTrigger(KeyInput.KEY_RETURN));
         inputManager.addMapping("Continue", new KeyTrigger(KeyInput.KEY_RETURN));
-        inputManager.addMapping("Pause", new KeyTrigger(KeyInput.KEY_F1));
+        inputManager.addMapping("Pause", new KeyTrigger(KeyInput.KEY_P));
         //  inputManager.addListener(actionListener, "Start");
         inputManager.addListener(actionListener, "Continue");
         inputManager.addListener(actionListener, "Pause");
@@ -145,11 +139,6 @@ public class Main extends SimpleApplication {
             }
         }
     };
-
-    public InputHandler getInputHandler() {
-        return inputHandler;
-
-    }
 
     public LevelManager getLevelManager() {
         return levelManager;

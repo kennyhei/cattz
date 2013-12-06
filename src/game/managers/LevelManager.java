@@ -1,6 +1,5 @@
 package game.managers;
 
-import game.Main;
 import game.levels.Level;
 import game.levels.LevelOne;
 import java.util.Map;

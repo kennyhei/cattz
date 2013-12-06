@@ -16,6 +16,8 @@ import com.jme3.bullet.collision.PhysicsCollisionEvent;
 import com.jme3.bullet.collision.PhysicsCollisionListener;
 import com.jme3.bullet.collision.shapes.MeshCollisionShape;
 import com.jme3.bullet.control.RigidBodyControl;
+import com.jme3.effect.ParticleEmitter;
+import com.jme3.effect.ParticleMesh;
 import com.jme3.font.BitmapFont;
 import com.jme3.font.BitmapText;
 import com.jme3.input.FlyByCamera;
@@ -23,6 +25,7 @@ import com.jme3.input.InputManager;
 import com.jme3.input.KeyInput;
 import com.jme3.input.controls.KeyTrigger;
 import com.jme3.light.DirectionalLight;
+import com.jme3.material.Material;
 import com.jme3.material.RenderState;
 import com.jme3.math.ColorRGBA;
 import com.jme3.math.Vector3f;
@@ -117,8 +120,10 @@ public class GameScreenState extends AbstractAppState implements PhysicsCollisio
 
         initInput();
 
+
+
         bulletAppState.getPhysicsSpace().addCollisionListener(this);
-        
+
         localRootNode.attachChild(player.getPlayerNode());
     }
 
@@ -157,7 +162,11 @@ public class GameScreenState extends AbstractAppState implements PhysicsCollisio
 
         // Update clock time
         timeText.setText(time.toString());
-        player.update();
+        player.update(tpf);
+
+        for (Spatial block : blockNode.getChildren()) {
+            block.rotate(0f, .01f, 0f);
+        }
     }
 
     // Remove blocks if they were hit by the player
@@ -165,15 +174,19 @@ public class GameScreenState extends AbstractAppState implements PhysicsCollisio
         Spatial a = event.getNodeA();
         Spatial b = event.getNodeB();
 
-        if (a.getName().equals("Block")) {
+        if (a.getName().startsWith("block_")) {
             a.getControl(BlockControl.class).getHudBlock().colour();
             blockNode.detachChild(a);
+
+            localRootNode.detachChildNamed("bling_" + a.getName());
             bulletAppState.getPhysicsSpace().remove(a);
         }
 
-        if (b.getName().equals("Block")) {
+        if (b.getName().startsWith("block_")) {
             b.getControl(BlockControl.class).getHudBlock().colour();
             blockNode.detachChild(b);
+            
+            localRootNode.detachChildNamed("bling_" + b.getName());
             bulletAppState.getPhysicsSpace().remove(b);
         }
     }
@@ -188,8 +201,10 @@ public class GameScreenState extends AbstractAppState implements PhysicsCollisio
 
         cameraNode = new CameraNode("camera", cam);
         cameraNode.setControlDir(ControlDirection.SpatialToCamera);
-        cameraNode.setLocalTranslation(new Vector3f(0, 10, -24));
-        cameraNode.lookAt(player.getModel().getLocalTranslation(), Vector3f.UNIT_Y);
+        cameraNode.setLocalTranslation(new Vector3f(0, 8, -8));
+        Vector3f lookAt = player.getModel().getLocalTranslation().clone();
+        lookAt.y = 7f;
+        cameraNode.lookAt(lookAt, Vector3f.UNIT_Y);
         player.getPlayerNode().attachChild(cameraNode);
     }
 
@@ -277,15 +292,44 @@ public class GameScreenState extends AbstractAppState implements PhysicsCollisio
             localGuiNode.attachChild(hudBlock.getGeometry());
 
             bulletAppState.getPhysicsSpace().add(kubusBlock.getPhysics());
-            blockNode.attachChild(kubusBlock.getBlockGeometry());
+
+            Spatial block = kubusBlock.getBlockGeometry();
+            blockNode.attachChild(block);
+
+            // rotate blocks
+            block.rotate(.4f, .4f, 0f);
+
+            // add bling
+            Node node = new Node("bling_" + block.getName());
+            node.setLocalTranslation(block.getLocalTranslation());
+            node.move(0f, -4f, 0f);
+
+            ParticleEmitter fire =
+                    new ParticleEmitter("Emitter", ParticleMesh.Type.Triangle, 30);
+            Material mat_red = new Material(assetManager,
+                    "Common/MatDefs/Misc/Particle.j3md");
+            mat_red.setTexture("Texture", assetManager.loadTexture(
+                    "Effects/Explosion/roundspark.png"));
+            fire.setMaterial(mat_red);
+            fire.setImagesX(3);
+            fire.setImagesY(3); // 2x2 texture animation
+
+            fire.setEndColor(c.getColor());
+            fire.setStartColor(c.getColor());
+
+            fire.getParticleInfluencer().setInitialVelocity(new Vector3f(0, 2, 0));
+            fire.setStartSize(4.5f);
+            fire.setEndSize(1f);
+            fire.setGravity(0, 0, 0);
+            fire.setLowLife(2f);
+            fire.setHighLife(6f);
+            fire.getParticleInfluencer().setVelocityVariation(0.5f);
+
+            node.attachChild(fire);
+            localRootNode.attachChild(node);
         }
 
         localRootNode.attachChild(blockNode);
-
-        // Rotate blocks
-        for (Spatial block : blockNode.getChildren()) {
-            block.rotate(.4f, .4f, 0f);
-        }
     }
 
     private void initTime() {

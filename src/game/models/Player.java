@@ -47,14 +47,14 @@ public class Player implements ActionListener {
         viewDirection = playerControl.getViewDirection();
     }
 
-    public void update() {
+    public void update(float tpf) {
         walkDirection.set(0, 0, 0);
         if (left) {
-            rotator.fromAngleAxis(FastMath.HALF_PI / 12f, Vector3f.UNIT_Y);
+            rotator.fromAngleAxis(tpf, Vector3f.UNIT_Y);
             viewDirection = rotator.mult(viewDirection);
         }
         if (right) {
-            rotator.fromAngleAxis(-FastMath.HALF_PI / 12f, Vector3f.UNIT_Y);
+            rotator.fromAngleAxis(-tpf, Vector3f.UNIT_Y);
             viewDirection = rotator.mult(viewDirection);
         }
         if (forward) {

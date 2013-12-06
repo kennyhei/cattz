@@ -9,6 +9,7 @@ import game.Main;
 import game.managers.LevelManager;
 import java.util.SortedMap;
 import tonegod.gui.controls.buttons.ButtonAdapter;
+import tonegod.gui.controls.text.Label;
 import tonegod.gui.controls.windows.Window;
 import tonegod.gui.core.Screen;
 
@@ -47,6 +48,11 @@ public class LevelMenu {
 
         screen.addElement(win);
 
+        Label info = new Label(screen, new Vector2f(15, 30), new Vector2f(320, 30));
+        info.setText("You are entering a world, where\nyou need to collect colorful blocks!");
+        info.setTextAlign(Align.Center);
+        win.addChild(info);
+
         final LevelManager levelManager = app.getLevelManager();
 
         SortedMap<Integer, String> levels = levelManager.getLevelOrdering();
@@ -56,11 +62,11 @@ public class LevelMenu {
         for (final Integer levelIndex : levels.keySet()) {
             System.out.println("Creating button for level index: " + levelIndex + " (" + levels.get(levelIndex) + ")");
 
-            Vector2f buttonPosition = new Vector2f(15, 55 + buttonNum * 40);
+            Vector2f buttonPosition = new Vector2f(15, 80 + buttonNum * 40);
             Vector2f buttonSize = new Vector2f(320, 30);
 
-
             ButtonAdapter levelButton = new ButtonAdapter(screen, "Btn" + levelIndex, buttonPosition, buttonSize) {
+
                 @Override
                 public void onButtonMouseLeftUp(MouseButtonEvent evt, boolean toggled) {
                     if (!levelManager.isEnabled(levelIndex)) {

@@ -8,7 +8,7 @@ Game project for the course *Introduction to Game Programming*, Autumn 2013
 
 
 Game
-====SPACE - jump
+====
 
 You play a cat wandering through a maze, collecting blocks to play with. When you've found them all, you get to play around with them. You have to put the blocks in the right places in order to complete the level and move on to another level.
 

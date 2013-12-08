@@ -217,27 +217,18 @@ public class GameScreenState extends AbstractAppState implements PhysicsCollisio
         // Register blocks
         CubesTestAssets.registerBlocks();
 
-//        CubesTestAssets.getSettings(this.app).getBlockMaterial().getAdditionalRenderState().setFaceCullMode(RenderState.FaceCullMode.FrontAndBack);
-//
-//        CubesTestAssets.getSettings(this.app).getBlockMaterial().getAdditionalRenderState().setDepthTest(true); // .setFaceCullMode(RenderState.FaceCullMode.FrontAndBack);
-
-
         // disabled due to laptop hw issues..
 //        CubesTestAssets.initializeEnvironment(this.app);
 //        CubesTestAssets.initializeWater(this.app);
 
         BlockTerrainControl blockTerrain = new BlockTerrainControl(CubesTestAssets.getSettings(this.app), new Vector3Int(14, 1, 14));
-        blockTerrain.setBlocksFromHeightmap(new Vector3Int(0, 1, -5), current.getLevelHeightMap(), 3, Block_Grass.class);
-//        Material blockMaterial = blockTerrain.getSettings().getBlockMaterial();
-//        blockMaterial.getAdditionalRenderState().setFaceCullMode(RenderState.FaceCullMode.Back);
-//        blockMaterial.getAdditionalRenderState().setDepthTest(true); // .setFaceCullMode(RenderState.FaceCullMode.FrontAndBack);
+        blockTerrain.setBlocksFromHeightmap(new Vector3Int(0, 1, -5), current.getLevelHeightMap(), 7, Block_Grass.class);
 
         this.terrainNode = new Node();
         terrainNode.addControl(blockTerrain);
         terrainNode.setShadowMode(RenderQueue.ShadowMode.CastAndReceive);
 
         System.out.println("Updating spatial");
-//        blockTerrain.updateSpatial();
         System.out.println("done..");
 
         // Make blocks solid

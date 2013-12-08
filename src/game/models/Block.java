@@ -20,13 +20,13 @@ import game.controllers.BlockControl;
 public class Block {
 
     public static final float BLOCK_SIDE_WIDTH = 1.5f;
-    public static float[][] locations = {{57, 13, 104}, {21, 13, 101}, {84, 13, 148},
-        {174, 13, 116}, {252, 13, 128}, {238, 13, 19},
-        {251, 13, 81}, {280, 13, 127}, {276, 13, 185},
-        {281, 13, 228}, {259, 13, 219}, {242, 13, 257},
-        {201, 13, 363}, {258, 13, 263}, {179, 13, 218},
-        {102, 13, 362}, {36, 13, 264}, {128, 13, 249},
-        {47, 13, 308}, {267, 13, 243}};
+    public static float[][] locations = {{57, 18, 104}, {21, 18, 101}, {84, 18, 148},
+        {174, 18, 116}, {252, 18, 128}, {238, 18, 19},
+        {251, 18, 81}, {280, 18, 127}, {276, 18, 185},
+        {281, 18, 228}, {259, 18, 219}, {242, 18, 257},
+        {201, 18, 363}, {258, 18, 263}, {179, 18, 218},
+        {102, 18, 362}, {36, 18, 264}, {128, 18, 249},
+        {47, 18, 308}, {267, 18, 243}};
     private Node pivot;
     private Box box;
     private Geometry blockGeometry;
@@ -53,8 +53,8 @@ public class Block {
         this.blockMaterial = new Material(assetManager, "Common/MatDefs/Misc/Unshaded.j3md");
         this.blockMaterial.setColor("Color", color);
         this.blockGeometry.setMaterial(blockMaterial);
-        this.blockGeometry.setQueueBucket(Bucket.Transparent); 
-        
+        this.blockGeometry.setQueueBucket(Bucket.Transparent);
+
         this.blockMaterial.getAdditionalRenderState().setBlendMode(BlendMode.Alpha);
 
         this.physics = new GhostControl(new BoxCollisionShape(new Vector3f(size[0], size[1], size[2])));
@@ -69,7 +69,7 @@ public class Block {
         this.blockGeometry.setLocalTranslation(0f, 0f, BLOCK_SIDE_WIDTH);
 
         this.color = color;
-        
+
         this.activeColor = new ColorRGBA(color);
         this.activeColor.set(color.getRed(), color.getGreen(), color.getBlue(), 0.5f);
     }
@@ -115,7 +115,7 @@ public class Block {
         System.out.println(pivot.getLocalTranslation());
         System.out.println(pivot.getLocalRotation());
     }
-    
+
     public void setRotation(Quaternion rot) {
         pivot.setLocalRotation(rot);
     }

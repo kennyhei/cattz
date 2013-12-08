@@ -95,7 +95,7 @@ public class KubusScreenState extends AbstractAppState {
         cam.setLocation(new Vector3f(1.6f, 2.5f, 11f)); // Default: 0f, 0f, 10f
         cam.lookAt(new Vector3f(1.6f, 2.5f, -1f), Vector3f.UNIT_Y); // Default: 0f, 0f, -1f
 
-        flyCam.setMoveSpeed(10);
+        flyCam.setMoveSpeed(20);
 
 
         setUpLight();
@@ -202,8 +202,8 @@ public class KubusScreenState extends AbstractAppState {
 
 //        localRootNode.setLocalScale(0.2f);
         localRootNode.attachChild(terrainNode);
-        
-        
+
+
         cam.setLocation(new Vector3f(-30f, 30f, 75f));
         cam.lookAt(new Vector3f(0, 0, 0), Vector3f.UNIT_Y);
     }

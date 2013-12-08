@@ -4,10 +4,8 @@ import com.jme3.app.SimpleApplication;
 import com.jme3.app.state.AbstractAppState;
 import com.jme3.bullet.BulletAppState;
 import com.jme3.input.KeyInput;
-
 import com.jme3.input.controls.ActionListener;
 import com.jme3.input.controls.KeyTrigger;
-
 import com.jme3.system.AppSettings;
 import game.GUI.LevelMenu;
 import game.appstates.GameScreenState;
@@ -17,7 +15,6 @@ import game.appstates.StartScreenState;
 import game.managers.LevelManager;
 
 public class Main extends SimpleApplication {
-
 
     /* States */
     private GameScreenState gameRunningState;
@@ -40,10 +37,10 @@ public class Main extends SimpleApplication {
         if(getApp().levelMenu == null) {
             getApp().levelMenu = new LevelMenu();
         }
-        
+
         return getApp().levelMenu;
     }
-    
+
     public static void main(String[] args) {
         Main app = new Main();
 
@@ -60,12 +57,11 @@ public class Main extends SimpleApplication {
     @Override
     public void simpleInitApp() {
         APPLICATION = this;
-        
+
         BulletAppState bulletAppState = new BulletAppState();
         stateManager.attach(bulletAppState);
 
         flyCam.setEnabled(false);
-
 
         // Create level manager
         levelManager = new LevelManager();
@@ -91,6 +87,7 @@ public class Main extends SimpleApplication {
     public void setNextState(Class<? extends AbstractAppState> nextGameState) {
         this.nextState = nextGameState;
     }
+
     private ActionListener actionListener = new ActionListener() {
         public void onAction(String name, boolean isPressed, float tpf) {
 
@@ -100,7 +97,7 @@ public class Main extends SimpleApplication {
                 if (currentState != null) {
                     stateManager.detach(currentState);
                 }
-                
+
                 stateManager.attach(startScreenState);
                 currentState = startScreenState;
             }
@@ -120,21 +117,13 @@ public class Main extends SimpleApplication {
                 currentState = gameRunningState;
             }
 
-//            if (name.equals("Start") && !isPressed && !isRunning) {
-//                stateManager.detach(startScreenState);
-//                stateManager.attach(gameRunningState);
-//                gameRunningState.setEnabled(true);
-//                isRunning = true;
-//                System.out.println("Starting game...");
-//            }
-
             if (name.equals("Continue") && !isPressed && nextState != null && nextState.equals(KubusScreenState.class) && !stateManager.hasState(kubusScreenState)) {
 
                 kubusScreenState = new KubusScreenState();
                 if (currentState != null) {
                     stateManager.detach(currentState);
                 }
-                
+
                 stateManager.attach(kubusScreenState);
                 System.out.println("Switching to kubus world...");
 
@@ -167,7 +156,7 @@ public class Main extends SimpleApplication {
             System.out.println("Thank you!");
             System.exit(0);
         }
-        
+
         getLevelManager().setActiveLevel(levelIndex);
         actionListener.onAction("level", true, 5);
     }

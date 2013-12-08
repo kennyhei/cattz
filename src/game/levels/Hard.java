@@ -36,7 +36,7 @@ public class Hard extends Level {
 
         puzzlePieces.add(new Block(ColorRGBA.Red,
                 corner.clone().add(3f, 0f, 0f)));
-        
+
         puzzlePieces.add(new Block(ColorRGBA.Green,
                 corner.clone().add(3f, 0f, -3f)));
     }
@@ -46,10 +46,10 @@ public class Hard extends Level {
 
         Block one = new Block(ColorRGBA.Pink, new Vector3f(4.5f, 4.5f, 19.5f));
         one.setRotation(new Quaternion(0.0f, -0.9999999f, 0.0f, 0.0f));
-        
+
         Block two = new Block(ColorRGBA.Red, new Vector3f(13.5f, 10.5f, 4.5f));
         two.setRotation(new Quaternion(0.7071067f, 0.0f, 0.0f, 0.7071067f));
-        
+
         Block three = new Block(ColorRGBA.Green, new Vector3f(16.5f, 7.5f, 16.5f));
         three.setRotation(new Quaternion(-0.49999994f, 0.49999994f, -0.49999994f, -0.49999994f));
 
@@ -75,40 +75,37 @@ public class Hard extends Level {
 
     @Override
     public void addTerrainBlocks(BlockTerrainControl control) {
-        // create floor
+        // Create floor
         for (int x = 0; x < 6; x++) {
             for (int z = 0; z < 7; z++) {
                 control.setBlock(x, 0, z, BlockRegular.class);
             }
         }
 
-        // create wall
+        // Create wall
         for (int x = 0; x < 6; x++) {
             for (int y = 0; y < 7; y++) {
                 control.setBlock(x, y, 0, BlockRegular.class);
             }
         }
-        
-        
-        // create another wall
+
+        // Create another wall
         for (int z = 0; z < 7; z++) {
             for (int y = 0; y < 7; y++) {
                 control.setBlock(6, y, z, BlockRegular.class);
             }
         }
-        
-        
+
         for (int i = 0; i < 3; i++) {
             control.setBlock(i, 0, 5, BlockSolution.class);
-            control.setBlock(i, 0, 6, BlockSolution.class);            
+            control.setBlock(i, 0, 6, BlockSolution.class);
         }
-        
-        
+
         for (int i = 0; i < 3; i++) {
             control.setBlock(3 + i, 2, 0, BlockSolution.class);
-            control.setBlock(3 + i, 3, 0, BlockSolution.class);            
+            control.setBlock(3 + i, 3, 0, BlockSolution.class);
         }
-        
+
         control.setBlock(6, 1, 4, BlockSolution.class);
         control.setBlock(6, 1, 5, BlockSolution.class);
         control.setBlock(6, 1, 6, BlockSolution.class);
@@ -116,6 +113,5 @@ public class Hard extends Level {
         control.setBlock(6, 2, 4, BlockSolution.class);
         control.setBlock(6, 2, 5, BlockSolution.class);
         control.setBlock(6, 2, 6, BlockSolution.class);
-
     }
 }

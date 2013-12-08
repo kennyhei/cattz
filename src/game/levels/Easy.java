@@ -3,9 +3,7 @@ package game.levels;
 import com.cubes.BlockTerrainControl;
 import com.jme3.math.ColorRGBA;
 import com.jme3.math.Vector3f;
-import game.Main;
 import game.models.Block;
-import static game.models.Block.BLOCK_SIDE_WIDTH;
 import game.models.blockclasses.BlockRegular;
 import game.models.blockclasses.BlockSolution;
 import java.util.ArrayList;
@@ -62,7 +60,7 @@ public class Easy extends Level {
 
     @Override
     public void addTerrainBlocks(BlockTerrainControl control) {
-        // create floor
+        // Create floor
         for (int x = 0; x < 6; x++) {
             for (int z = 0; z < 7; z++) {
                 control.setBlock(x, 0, z, BlockRegular.class);

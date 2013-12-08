@@ -59,14 +59,10 @@ public class KubusScreenState extends AbstractAppState {
     private Node localRootNode = new Node("Kubus Screen RootNode");
     private Node localGuiNode = new Node("Kubus Screen GuiNode");
 
-    /* Physics */
-    private BulletAppState bulletAppState;
-
     /* Block handler */
     List<Block> puzzlePieces;
     // Currently controlled piece and its highlighting
     Block currentPiece;
-//    Geometry highlight;
     // Index of currently controlled piece
     int currentIndex;
     boolean finished = false;
@@ -83,8 +79,6 @@ public class KubusScreenState extends AbstractAppState {
     @Override
     public void initialize(AppStateManager stateManager, Application app) {
         super.initialize(stateManager, app);
-
-        this.bulletAppState = this.app.getStateManager().getState(BulletAppState.class);
 
         // Camera settings
         flyCam.setEnabled(true);

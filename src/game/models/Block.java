@@ -4,11 +4,11 @@ import com.jme3.asset.AssetManager;
 import com.jme3.bounding.BoundingVolume;
 import com.jme3.bullet.collision.shapes.BoxCollisionShape;
 import com.jme3.bullet.control.GhostControl;
-import com.jme3.effect.ParticleEmitter;
-import com.jme3.effect.ParticleMesh;
 import com.jme3.material.Material;
+import com.jme3.material.RenderState.BlendMode;
 import com.jme3.math.ColorRGBA;
 import com.jme3.math.Vector3f;
+import com.jme3.renderer.queue.RenderQueue.Bucket;
 import com.jme3.scene.Geometry;
 import com.jme3.scene.Node;
 import com.jme3.scene.shape.Box;
@@ -20,11 +20,11 @@ public class Block {
 
     public static final float BLOCK_SIDE_WIDTH = 1.5f;
     public static float[][] locations = {{57, 13, 104}, {21, 13, 101}, {84, 13, 148},
-        {174, 13, 116}, {252, 13, 128}, {338, 13, 19},
-        {351, 13, 81}, {380, 13, 127}, {376, 13, 185},
-        {381, 13, 228}, {359, 13, 519}, {342, 13, 257},
-        {301, 13, 363}, {258, 13, 363}, {179, 13, 318},
-        {102, 13, 362}, {36, 13, 364}, {128, 13, 349},
+        {174, 13, 116}, {252, 13, 128}, {238, 13, 19},
+        {251, 13, 81}, {280, 13, 127}, {276, 13, 185},
+        {281, 13, 228}, {259, 13, 219}, {242, 13, 257},
+        {201, 13, 363}, {258, 13, 263}, {179, 13, 218},
+        {102, 13, 362}, {36, 13, 264}, {128, 13, 249},
         {47, 13, 308}, {267, 13, 243}};
     private Node pivot;
     private Box box;
@@ -32,6 +32,7 @@ public class Block {
     private Material blockMaterial;
     private GhostControl physics;
     private ColorRGBA color;
+    private ColorRGBA activeColor;
 
     public Block(ColorRGBA color, Vector3f location) {
         this(Main.getApp().getAssetManager(),
@@ -51,6 +52,9 @@ public class Block {
         this.blockMaterial = new Material(assetManager, "Common/MatDefs/Misc/Unshaded.j3md");
         this.blockMaterial.setColor("Color", color);
         this.blockGeometry.setMaterial(blockMaterial);
+        this.blockGeometry.setQueueBucket(Bucket.Transparent); 
+        
+        this.blockMaterial.getAdditionalRenderState().setBlendMode(BlendMode.Alpha);
 
         this.physics = new GhostControl(new BoxCollisionShape(new Vector3f(size[0], size[1], size[2])));
         this.blockGeometry.addControl(physics);
@@ -62,7 +66,11 @@ public class Block {
         this.pivot.attachChild(blockGeometry);
 
         this.blockGeometry.setLocalTranslation(0f, 0f, BLOCK_SIDE_WIDTH);
+
         this.color = color;
+        
+        this.activeColor = new ColorRGBA(color);
+        this.activeColor.set(color.getRed(), color.getGreen(), color.getBlue(), 0.5f);
     }
 
     public ColorRGBA getColor() {
@@ -70,7 +78,11 @@ public class Block {
     }
 
     public void setActive(boolean active) {
-        this.blockGeometry.getMaterial().getAdditionalRenderState().setWireframe(active);
+        if (active) {
+            blockGeometry.getMaterial().setColor("Color", activeColor);
+        } else {
+            blockGeometry.getMaterial().setColor("Color", color);
+        }
     }
 
     public Node getPivot() {

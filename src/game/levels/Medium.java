@@ -31,6 +31,9 @@ public class Medium extends Level {
         // 3x2 puzzle piece
         puzzlePieces.add(new Block(ColorRGBA.Pink,
                 corner.clone()));
+        
+        puzzlePieces.add(new Block(ColorRGBA.Red,
+                corner.clone().setX(9.5f)));
     }
 
     private void createCheckPieces() {
@@ -40,6 +43,10 @@ public class Medium extends Level {
 
         // 3x2 puzzle piece
         checkPieces.add(new Block(ColorRGBA.Pink,
+                corner.clone()));
+        
+        
+        checkPieces.add(new Block(ColorRGBA.Red,
                 corner.clone()));
     }
 
@@ -77,6 +84,12 @@ public class Medium extends Level {
         for (int i = 0; i < 3; i++) {
             control.setBlock(i, 0, 5, BlockSolution.class);
             control.setBlock(i, 0, 6, BlockSolution.class);            
+        }
+        
+        
+        for (int i = 0; i < 3; i++) {
+            control.setBlock(3 + i, 2, 0, BlockSolution.class);
+            control.setBlock(3 + i, 3, 0, BlockSolution.class);            
         }
     }
 }

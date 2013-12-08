@@ -222,7 +222,7 @@ public class GameScreenState extends AbstractAppState implements PhysicsCollisio
 //        CubesTestAssets.initializeWater(this.app);
 
         BlockTerrainControl blockTerrain = new BlockTerrainControl(CubesTestAssets.getSettings(this.app), new Vector3Int(14, 1, 14));
-        blockTerrain.setBlocksFromHeightmap(new Vector3Int(0, 1, -5), current.getLevelHeightMap(), 7, Block_Grass.class);
+        blockTerrain.setBlocksFromHeightmap(new Vector3Int(0, -2, -5), current.getLevelHeightMap(), 8, Block_Grass.class);
 
         this.terrainNode = new Node();
         terrainNode.addControl(blockTerrain);

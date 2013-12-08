@@ -18,7 +18,6 @@ public class LevelMenu {
 
     private Screen screen;
     private Node guiNode;
-    private int winCount = 0;
     private Window win;
     boolean buttonPressed;
 
@@ -26,15 +25,6 @@ public class LevelMenu {
         this.guiNode = Main.getApp().getGuiNode();
         this.buttonPressed = false;
     }
-
-//    public final void createNewWindow(String someWindowTitle) {
-//        Window nWin = new Window(screen, "Window" + winCount, new Vector2f(
-//                (screen.getWidth() / 2) - 175, (screen.getHeight() / 2) - 100));
-//
-//        nWin.setWindowTitle(someWindowTitle);
-//        screen.addElement(nWin);
-//        winCount++;
-//    }
 
     public void drawGui(Application app) {
 

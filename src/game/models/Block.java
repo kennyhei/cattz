@@ -7,6 +7,7 @@ import com.jme3.bullet.control.GhostControl;
 import com.jme3.material.Material;
 import com.jme3.material.RenderState.BlendMode;
 import com.jme3.math.ColorRGBA;
+import com.jme3.math.Quaternion;
 import com.jme3.math.Vector3f;
 import com.jme3.renderer.queue.RenderQueue.Bucket;
 import com.jme3.scene.Geometry;
@@ -111,6 +112,12 @@ public class Block {
 
     public void move(float[] move) {
         pivot.move(move[0], move[1], move[2]);
+        System.out.println(pivot.getLocalTranslation());
+        System.out.println(pivot.getLocalRotation());
+    }
+    
+    public void setRotation(Quaternion rot) {
+        pivot.setLocalRotation(rot);
     }
 
     public void negateMove(float[] move) {

@@ -34,7 +34,7 @@ public class StartScreenState extends AbstractAppState {
     public void initialize(AppStateManager stateManager, Application app) {
         super.initialize(stateManager, app);
         viewPort.setBackgroundColor(backgroundColor);
-        levelMenu.drawGui();
+        levelMenu.drawGui(app);
     }
 
     @Override

@@ -102,7 +102,6 @@ public class KubusScreenState extends AbstractAppState {
 
         initWorld();
         initPuzzlePieces();
-        updateHighlight();
 
         // Custom keybindings for switching camera views
         initCameraKeys();
@@ -201,31 +200,16 @@ public class KubusScreenState extends AbstractAppState {
         Level level = this.app.getLevelManager().getCurrentLevel();
         this.terrainNode = level.getTerrain();
 
-        localRootNode.setLocalScale(0.2f);
+//        localRootNode.setLocalScale(0.2f);
         localRootNode.attachChild(terrainNode);
-    }
-
-    private void updateHighlight() {
-//        if (highlight != null) {
-//            localRootNode.detachChild(highlight);
-//        }
-//
-//        WireBox wbox = new WireBox(currentPiece.getBox().xExtent, currentPiece.getBox().yExtent, currentPiece.getBox().zExtent); // .getBox().xExtent, currentPiece.getBox().yExtent, currentPiece.getBox().zExtent);
-//        wbox.setLineWidth(6f);
-//
-//        this.highlight = new Geometry("Wirebox", wbox);
-//        Material mat = new Material(assetManager, "Common/MatDefs/Misc/Unshaded.j3md");
-//        mat.getAdditionalRenderState().setWireframe(true);
-//        mat.setColor("Color", ColorRGBA.Green);
-//        this.highlight.setMaterial(mat);
-//        localRootNode.attachChild(this.highlight);
-//
-//        highlight.setLocalTranslation(currentPiece.getBlockGeometry().getLocalTranslation());
-//        highlight.setLocalRotation(currentPiece.getBlockGeometry().getLocalRotation());
+        
+        
+        cam.setLocation(new Vector3f(30f, 30f, 75f));
+        cam.lookAt(new Vector3f(0, 0, 0), Vector3f.UNIT_Y);
     }
 
     private void initPuzzlePieces() {
-        this.puzzlePieces = this.app.getLevelManager().getCurrentLevel().getSolution(); // .getPuzzlePieces();
+        this.puzzlePieces = this.app.getLevelManager().getCurrentLevel().getBlocks(); // .getPuzzlePieces();
 
         currentPiece = puzzlePieces.get(0);
         currentPiece.setActive(true);
@@ -237,7 +221,6 @@ public class KubusScreenState extends AbstractAppState {
                 localRootNode.attachChild(block.getPivot());
             } else {
                 localRootNode.attachChild(block.getBlockGeometry());
-
             }
         }
     }
@@ -257,19 +240,13 @@ public class KubusScreenState extends AbstractAppState {
                 changePiece();
             }
 
-            updateHighlight();
-//            highlight.setLocalTranslation(currentPiece.getLocalTranslation());
-
-            if (app.getLevelManager().getCurrentLevel().checkBlocks() && !finished) {
-                System.out.println("Congrats, you've cleared this level!");
-
+            if (app.getLevelManager().getCurrentLevel().isFinished() && !finished) {
                 finished = true;
                 Main.getApp().getLevelManager().currentLevelCleared();
 
                 localGuiNode.attachChild(text);
                 Main.getApp().setNextState(StartScreenState.class);
             }
-
         }
 
         private void handleCamera(String name, boolean keyPressed) {

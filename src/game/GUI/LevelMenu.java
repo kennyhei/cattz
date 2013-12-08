@@ -1,5 +1,6 @@
 package game.GUI;
 
+import com.jme3.app.Application;
 import com.jme3.font.BitmapFont.Align;
 import com.jme3.input.event.MouseButtonEvent;
 import com.jme3.math.ColorRGBA;
@@ -35,8 +36,8 @@ public class LevelMenu {
         winCount++;
     }
 
-    public void drawGui() {
-        this.screen = new Screen(Main.getApp());
+    public void drawGui(Application app) {
+        this.screen = new Screen(app);
         guiNode.addControl(screen);
 
         win = new Window(screen, "win", new Vector2f(15, 15));

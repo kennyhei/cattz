@@ -7,6 +7,8 @@ import com.cubes.BlockTerrainControl;
 import com.cubes.CubesSettings;
 import com.cubes.Vector3Int;
 import com.cubes.test.CubesTestAssets;
+import com.jme3.bounding.BoundingBox;
+import com.jme3.bounding.BoundingVolume;
 import com.jme3.bullet.BulletAppState;
 import com.jme3.bullet.PhysicsSpace;
 import com.jme3.bullet.control.RigidBodyControl;
@@ -16,7 +18,9 @@ import game.Main;
 import game.models.Block;
 import game.models.blockclasses.BlockRegular;
 import game.models.blockclasses.BlockSolution;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public abstract class Level {
 
@@ -88,31 +92,49 @@ public abstract class Level {
         return getBlocks();
     }
 
-    public boolean checkBlocks() {
-        List<Block> checkPieces = getSolution();
-        List<Block> puzzlePieces = getPuzzlePieces();
+    public boolean isFinished() {
+        Map<Block, Boolean> piecesCovered = new HashMap<Block, Boolean>();
 
-        // lets not assume same order, but same color
-        for (Block puzzlePiece : puzzlePieces) {
-            for (Block solutionPiece : checkPieces) {
-                if (!puzzlePiece.getColor().equals(solutionPiece.getColor())) {
+        for (Block solutionPiece : getSolution()) {
+//            System.out.println("checking next piece..");
+            solutionPiece.getPivot().updateGeometricState();
+            solutionPiece.getPivot().updateModelBound();
+
+            for (Block puzzlePiece : getPuzzlePieces()) {
+                puzzlePiece.getPivot().updateGeometricState();
+                puzzlePiece.getPivot().updateModelBound();
+                
+                BoundingBox solutionBox = (BoundingBox) solutionPiece.getWorldBound();
+                BoundingBox puzzleBox = (BoundingBox) puzzlePiece.getWorldBound();
+                
+                if(solutionBox.getCenter().distance(puzzleBox.getCenter()) > 1f) {
                     continue;
                 }
-
-                if (!checkBlockPosition(puzzlePiece, solutionPiece)) {
-                    return false;
+                
+                if(Math.abs(solutionBox.getXExtent() - puzzleBox.getXExtent()) > 0.01) {
+                    continue;
                 }
-
-                if (!checkBlockRotation(puzzlePiece, solutionPiece)) {
-                    return false;
+                
+                if(Math.abs(solutionBox.getYExtent() - puzzleBox.getYExtent()) > 0.01) {
+                    continue;
                 }
+                
+                if(Math.abs(solutionBox.getZExtent() - puzzleBox.getZExtent()) > 0.01) {
+                    continue;
+                }                
+                
+                piecesCovered.put(solutionPiece, Boolean.TRUE);
             }
         }
-
-        return true;
+        
+//        System.out.println("total pieces covered: " + piecesCovered.size());
+        
+//        return false;
+        return piecesCovered.size() >= getSolution().size();
     }
 
-    public boolean checkBlockPosition(Block toCheck, Block correct) {
+    private boolean checkBlockPosition(Block toCheck, Block correct) {
+        
 //        System.out.println(toCheck.getBlockGeometry().getLocalTranslation());
         if (Math.round(toCheck.getPivot().getLocalTranslation().x * 10)
                 != Math.round(correct.getPivot().getLocalTranslation().x * 10)
@@ -128,13 +150,12 @@ public abstract class Level {
     }
 
     private boolean checkBlockRotation(Block toCheck, Block correct) {
-        if(true) {
-            return true;
-        }
-
         // TODO: this matrix needs to have only positive values of either 0.0 or 1.0
         // (right now float-type inaccuracies and negative values crop up)
         Matrix3f matrixToCheck = toCheck.getPivot().getLocalRotation().toRotationMatrix();
+        System.out.println("comparing" + matrixToCheck);
+        System.out.println("to " + correct.getPivot().getLocalRotation().toRotationMatrix());
+        
 //        System.out.println(matrixToCheck);
         if (matrixToCheck.equals(correct.getPivot().getLocalRotation().toRotationMatrix())) {
             System.out.println("Block rotation correct!");

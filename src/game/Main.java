@@ -78,7 +78,7 @@ public class Main extends SimpleApplication {
 
 //        new CoordinateHelper().attachCoordinates(Vector3f.ZERO, rootNode);
         // invoke start
-        actionListener.onAction("level", true, 1.0f);
+        actionListener.onAction("start", true, 1.0f);
     }
 
     public void setNextState(Class<? extends AbstractAppState> nextGameState) {

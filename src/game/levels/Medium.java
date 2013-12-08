@@ -2,6 +2,7 @@ package game.levels;
 
 import com.cubes.BlockTerrainControl;
 import com.jme3.math.ColorRGBA;
+import com.jme3.math.Quaternion;
 import com.jme3.math.Vector3f;
 import game.models.Block;
 import game.models.blockclasses.BlockRegular;
@@ -29,25 +30,25 @@ public class Medium extends Level {
         Vector3f corner = new Vector3f(4.5f, 4.5f, 16.5f);
 
         // 3x2 puzzle piece
+        
         puzzlePieces.add(new Block(ColorRGBA.Pink,
                 corner.clone()));
         
         puzzlePieces.add(new Block(ColorRGBA.Red,
-                corner.clone().setX(9.5f)));
+                corner.clone().add(3f, 0f, 0f)));
     }
 
     private void createCheckPieces() {
         checkPieces = new ArrayList<Block>();
 
-        Vector3f corner = new Vector3f(4.5f, 4.5f, 10.5f);
-
-        // 3x2 puzzle piece
-        checkPieces.add(new Block(ColorRGBA.Pink,
-                corner.clone()));
+        Block one = new Block(ColorRGBA.Pink, new Vector3f(4.5f, 4.5f, 19.5f));
+        one.setRotation(new Quaternion(0.0f, -0.9999999f, 0.0f, 0.0f));
         
+        Block two = new Block(ColorRGBA.Red, new Vector3f(13.5f, 10.5f, 4.5f));
+        two.setRotation(new Quaternion(0.7071067f, 0.0f, 0.0f, 0.7071067f));
         
-        checkPieces.add(new Block(ColorRGBA.Red,
-                corner.clone()));
+        checkPieces.add(one);
+        checkPieces.add(two);
     }
 
     @Override

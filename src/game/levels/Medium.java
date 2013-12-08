@@ -61,7 +61,7 @@ public class Medium extends Level {
 
     @Override
     public String getLevelHeightMap() {
-        return "Textures/maze-easy.png";
+        return "Textures/maze-medium.png";
     }
 
     @Override

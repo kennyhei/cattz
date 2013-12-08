@@ -34,7 +34,7 @@ public class Main extends SimpleApplication {
     }
 
     public static LevelMenu getLevelMenu() {
-        if(getApp().levelMenu == null) {
+        if (getApp().levelMenu == null) {
             getApp().levelMenu = new LevelMenu();
         }
 
@@ -66,8 +66,6 @@ public class Main extends SimpleApplication {
         // Create level manager
         levelManager = new LevelManager();
 
-        inputManager.clearRawInputListeners();
-
         // inputManager.addMapping("Start", new KeyTrigger(KeyInput.KEY_RETURN));
         inputManager.addMapping("Continue", new KeyTrigger(KeyInput.KEY_RETURN));
         inputManager.addMapping("Pause", new KeyTrigger(KeyInput.KEY_P));
@@ -89,6 +87,8 @@ public class Main extends SimpleApplication {
     }
 
     private ActionListener actionListener = new ActionListener() {
+
+        @Override
         public void onAction(String name, boolean isPressed, float tpf) {
 
             if (name.equals("start") || (nextState != null && nextState.equals(StartScreenState.class) && !stateManager.hasState(startScreenState))) {
@@ -152,7 +152,7 @@ public class Main extends SimpleApplication {
     }
 
     public void setActiveLevel(int levelIndex) {
-        if(levelIndex > getLevelManager().getLevelOrdering().size()) {
+        if (levelIndex > getLevelManager().getLevelOrdering().size()) {
             System.out.println("Thank you!");
             System.exit(0);
         }

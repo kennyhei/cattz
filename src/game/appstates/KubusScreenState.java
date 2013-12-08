@@ -127,7 +127,7 @@ public class KubusScreenState extends AbstractAppState {
         BitmapFont guiFont = assetManager.loadFont("Interface/Fonts/Default.fnt");
         text = new BitmapText(guiFont, false);
         text.setSize(25.5f);
-        text.setText("Kapow! You did it! Press enter to continue.");
+        text.setText("Kapow! You did it! Press Enter to continue.");
         text.setLocalTranslation(settings.getWidth() / 2 - text.getLineWidth() / 2,
                 settings.getHeight() / 2 + text.getLineHeight(), 0);
     }

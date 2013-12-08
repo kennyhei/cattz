@@ -120,9 +120,6 @@ public class GameScreenState extends AbstractAppState implements PhysicsCollisio
 
         initInput();
 
-        // Don't trigger built-in listeners (Space)
-        inputManager.clearRawInputListeners();
-
         bulletAppState.getPhysicsSpace().addCollisionListener(this);
 
         localRootNode.attachChild(player.getPlayerNode());

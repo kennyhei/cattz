@@ -27,17 +27,18 @@ public class LevelMenu {
         this.buttonPressed = false;
     }
 
-    public final void createNewWindow(String someWindowTitle) {
-        Window nWin = new Window(screen, "Window" + winCount, new Vector2f(
-                (screen.getWidth() / 2) - 175, (screen.getHeight() / 2) - 100));
-
-        nWin.setWindowTitle(someWindowTitle);
-        screen.addElement(nWin);
-        winCount++;
-    }
+//    public final void createNewWindow(String someWindowTitle) {
+//        Window nWin = new Window(screen, "Window" + winCount, new Vector2f(
+//                (screen.getWidth() / 2) - 175, (screen.getHeight() / 2) - 100));
+//
+//        nWin.setWindowTitle(someWindowTitle);
+//        screen.addElement(nWin);
+//        winCount++;
+//    }
 
     public void drawGui(Application app) {
-        if(this.screen == null) {
+
+        if (this.screen == null) {
             this.screen = new Screen(app);
         }
 
@@ -68,6 +69,7 @@ public class LevelMenu {
             Vector2f buttonSize = new Vector2f(320, 30);
 
             ButtonAdapter levelButton = new ButtonAdapter(screen, "Btn" + levelIndex, buttonPosition, buttonSize) {
+
                 @Override
                 public void onButtonMouseLeftUp(MouseButtonEvent evt, boolean toggled) {
                     if (!levelManager.isEnabled(levelIndex)) {
@@ -94,6 +96,7 @@ public class LevelMenu {
     }
 
     public void destroyGui() {
+        win.removeAllChildren();
         screen.removeElement(win);
     }
 

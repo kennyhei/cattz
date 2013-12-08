@@ -11,7 +11,6 @@ import com.jme3.bounding.BoundingBox;
 import com.jme3.bullet.BulletAppState;
 import com.jme3.bullet.PhysicsSpace;
 import com.jme3.bullet.control.RigidBodyControl;
-import com.jme3.math.Matrix3f;
 import com.jme3.scene.Node;
 import game.Main;
 import game.models.Block;
@@ -95,7 +94,6 @@ public abstract class Level {
         Map<Block, Boolean> piecesCovered = new HashMap<Block, Boolean>();
 
         for (Block solutionPiece : getSolution()) {
-//            System.out.println("checking next piece..");
             solutionPiece.getPivot().updateGeometricState();
             solutionPiece.getPivot().updateModelBound();
 
@@ -126,41 +124,6 @@ public abstract class Level {
             }
         }
 
-//        System.out.println("total pieces covered: " + piecesCovered.size());
-
-//        return false;
         return piecesCovered.size() >= getSolution().size();
-    }
-
-    private boolean checkBlockPosition(Block toCheck, Block correct) {
-
-//        System.out.println(toCheck.getBlockGeometry().getLocalTranslation());
-        if (Math.round(toCheck.getPivot().getLocalTranslation().x * 10)
-                != Math.round(correct.getPivot().getLocalTranslation().x * 10)
-                || Math.round(toCheck.getPivot().getLocalTranslation().y * 10)
-                != Math.round(correct.getPivot().getLocalTranslation().y * 10)
-                || Math.round(toCheck.getPivot().getLocalTranslation().z * 10)
-                != Math.round(correct.getPivot().getLocalTranslation().z * 10)) {
-            return false;
-        } else {
-            System.out.println("Block position correct!");
-            return true;
-        }
-    }
-
-    private boolean checkBlockRotation(Block toCheck, Block correct) {
-        // TODO: this matrix needs to have only positive values of either 0.0 or 1.0
-        // (right now float-type inaccuracies and negative values crop up)
-        Matrix3f matrixToCheck = toCheck.getPivot().getLocalRotation().toRotationMatrix();
-        System.out.println("comparing" + matrixToCheck);
-        System.out.println("to " + correct.getPivot().getLocalRotation().toRotationMatrix());
-
-//        System.out.println(matrixToCheck);
-        if (matrixToCheck.equals(correct.getPivot().getLocalRotation().toRotationMatrix())) {
-            System.out.println("Block rotation correct!");
-            return true;
-        } else {
-            return false;
-        }
     }
 }

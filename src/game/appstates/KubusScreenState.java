@@ -89,8 +89,8 @@ public class KubusScreenState extends AbstractAppState {
         // Camera settings
         flyCam.setEnabled(true);
         flyCam.setDragToRotate(true);
-        cam.setLocation(new Vector3f(1.6f, 2.5f, 11f)); // Default: 0f, 0f, 10f
-        cam.lookAt(new Vector3f(1.6f, 2.5f, -1f), Vector3f.UNIT_Y); // Default: 0f, 0f, -1f
+        cam.setLocation(new Vector3f(8.6f, 20f, 61f)); // Default: 0f, 0f, 10f
+        cam.lookAt(new Vector3f(8.6f, 0f, 0), Vector3f.UNIT_Y); // Default: 0f, 0f, -1f
 
         flyCam.setMoveSpeed(20);
 
@@ -107,7 +107,6 @@ public class KubusScreenState extends AbstractAppState {
 
         initTime();
         initText();
-//        System.out.println(CubesTestAssets.getSettings(app).getBlockMaterial());
     }
 
     private void initTime() {
@@ -194,11 +193,7 @@ public class KubusScreenState extends AbstractAppState {
         Level level = this.app.getLevelManager().getCurrentLevel();
         this.terrainNode = level.getTerrain();
 
-//        localRootNode.setLocalScale(0.2f);
         localRootNode.attachChild(terrainNode);
-
-        cam.setLocation(new Vector3f(-30f, 30f, 75f));
-        cam.lookAt(new Vector3f(0, 0, 0), Vector3f.UNIT_Y);
     }
 
     private void initPuzzlePieces() {
@@ -230,7 +225,6 @@ public class KubusScreenState extends AbstractAppState {
             handleMovement(name, keyPressed);
 
             // Change controlled block
-            // TODO: Refactor control change to own util class?
             if (name.equals("Change") && !keyPressed) {
                 changePiece();
             }

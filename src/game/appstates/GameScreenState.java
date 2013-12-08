@@ -277,7 +277,7 @@ public class GameScreenState extends AbstractAppState implements PhysicsCollisio
         List<Block> levelBlocks = currentLevel.getBlocks();
         int idx = 0;
         for (Block tmpBlock : levelBlocks) {
-            // do not change tmpBlock as they are used in the kubus game
+            // Do not change tmpBlock as they are used in the kubus game
 
             Block kubusBlock = new Block(assetManager,
                     tmpBlock.getColor(),

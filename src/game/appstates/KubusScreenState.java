@@ -1,7 +1,5 @@
 package game.appstates;
 
-import com.cubes.CubesSettings;
-import com.cubes.test.CubesTestAssets;
 import com.jme3.app.Application;
 import com.jme3.app.state.AbstractAppState;
 import com.jme3.app.state.AppStateManager;
@@ -86,7 +84,6 @@ public class KubusScreenState extends AbstractAppState {
     public void initialize(AppStateManager stateManager, Application app) {
         super.initialize(stateManager, app);
 
-
         this.bulletAppState = this.app.getStateManager().getState(BulletAppState.class);
 
         // Camera settings
@@ -96,7 +93,6 @@ public class KubusScreenState extends AbstractAppState {
         cam.lookAt(new Vector3f(1.6f, 2.5f, -1f), Vector3f.UNIT_Y); // Default: 0f, 0f, -1f
 
         flyCam.setMoveSpeed(20);
-
 
         setUpLight();
 
@@ -109,10 +105,8 @@ public class KubusScreenState extends AbstractAppState {
         // Custom keybindings for controlling puzzle pieces
         initPuzzlePieceKeys();
 
-
         initTime();
         initText();
-
 //        System.out.println(CubesTestAssets.getSettings(app).getBlockMaterial());
     }
 
@@ -203,7 +197,6 @@ public class KubusScreenState extends AbstractAppState {
 //        localRootNode.setLocalScale(0.2f);
         localRootNode.attachChild(terrainNode);
 
-
         cam.setLocation(new Vector3f(-30f, 30f, 75f));
         cam.lookAt(new Vector3f(0, 0, 0), Vector3f.UNIT_Y);
     }
@@ -224,7 +217,9 @@ public class KubusScreenState extends AbstractAppState {
             }
         }
     }
+
     private ActionListener actionListener = new ActionListener() {
+
         @Override
         public void onAction(String name, boolean keyPressed, float tpf) {
             if (finished) {
@@ -255,21 +250,18 @@ public class KubusScreenState extends AbstractAppState {
             }
 
             if (name.equals("1st camera")) {
-
                 // Switch to 1st camera view
                 cam.setLocation(new Vector3f(0f, 0f, 10f));
                 cam.lookAt(new Vector3f(0f, 0f, -1f), Vector3f.UNIT_Y);
             }
 
             if (name.equals("2nd camera")) {
-
                 // Switch to 2nd camera view
                 cam.setLocation(new Vector3f(0f, 0f, -10f));
                 cam.lookAt(new Vector3f(0f, 0f, -1f), Vector3f.UNIT_Y);
             }
 
             if (name.equals("3rd camera")) {
-
                 // Switch to 3rd camera view
                 cam.setLocation(new Vector3f(0f, 10f, 0f));
                 cam.lookAt(new Vector3f(0f, 0f, -1f), Vector3f.UNIT_Y);
@@ -281,7 +273,6 @@ public class KubusScreenState extends AbstractAppState {
             rotatePiece(eventName, keyPressed);
             System.out.println("");
             System.out.println("");
-
         }
 
         private void movePiece(String eventName, boolean keyPressed) {
@@ -351,7 +342,6 @@ public class KubusScreenState extends AbstractAppState {
         private boolean currentPieceInBounds() {
             BoundingBox terrainBox = (BoundingBox) terrainNode.getWorldBound();
             BoundingBox pieceBox = (BoundingBox) currentPiece.getWorldBound();
-
 
             for (Block block : puzzlePieces) {
                 if (block == currentPiece) {

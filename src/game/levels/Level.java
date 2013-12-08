@@ -8,7 +8,6 @@ import com.cubes.CubesSettings;
 import com.cubes.Vector3Int;
 import com.cubes.test.CubesTestAssets;
 import com.jme3.bounding.BoundingBox;
-import com.jme3.bounding.BoundingVolume;
 import com.jme3.bullet.BulletAppState;
 import com.jme3.bullet.PhysicsSpace;
 import com.jme3.bullet.control.RigidBodyControl;
@@ -103,38 +102,38 @@ public abstract class Level {
             for (Block puzzlePiece : getPuzzlePieces()) {
                 puzzlePiece.getPivot().updateGeometricState();
                 puzzlePiece.getPivot().updateModelBound();
-                
+
                 BoundingBox solutionBox = (BoundingBox) solutionPiece.getWorldBound();
                 BoundingBox puzzleBox = (BoundingBox) puzzlePiece.getWorldBound();
-                
-                if(solutionBox.getCenter().distance(puzzleBox.getCenter()) > 1f) {
+
+                if (solutionBox.getCenter().distance(puzzleBox.getCenter()) > 1f) {
                     continue;
                 }
-                
-                if(Math.abs(solutionBox.getXExtent() - puzzleBox.getXExtent()) > 0.01) {
+
+                if (Math.abs(solutionBox.getXExtent() - puzzleBox.getXExtent()) > 0.01) {
                     continue;
                 }
-                
-                if(Math.abs(solutionBox.getYExtent() - puzzleBox.getYExtent()) > 0.01) {
+
+                if (Math.abs(solutionBox.getYExtent() - puzzleBox.getYExtent()) > 0.01) {
                     continue;
                 }
-                
-                if(Math.abs(solutionBox.getZExtent() - puzzleBox.getZExtent()) > 0.01) {
+
+                if (Math.abs(solutionBox.getZExtent() - puzzleBox.getZExtent()) > 0.01) {
                     continue;
-                }                
-                
+                }
+
                 piecesCovered.put(solutionPiece, Boolean.TRUE);
             }
         }
-        
+
 //        System.out.println("total pieces covered: " + piecesCovered.size());
-        
+
 //        return false;
         return piecesCovered.size() >= getSolution().size();
     }
 
     private boolean checkBlockPosition(Block toCheck, Block correct) {
-        
+
 //        System.out.println(toCheck.getBlockGeometry().getLocalTranslation());
         if (Math.round(toCheck.getPivot().getLocalTranslation().x * 10)
                 != Math.round(correct.getPivot().getLocalTranslation().x * 10)
@@ -155,7 +154,7 @@ public abstract class Level {
         Matrix3f matrixToCheck = toCheck.getPivot().getLocalRotation().toRotationMatrix();
         System.out.println("comparing" + matrixToCheck);
         System.out.println("to " + correct.getPivot().getLocalRotation().toRotationMatrix());
-        
+
 //        System.out.println(matrixToCheck);
         if (matrixToCheck.equals(correct.getPivot().getLocalRotation().toRotationMatrix())) {
             System.out.println("Block rotation correct!");

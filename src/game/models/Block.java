@@ -27,6 +27,7 @@ public class Block {
         {201, 10, 363}, {258, 10, 263}, {179, 10, 218},
         {102, 10, 362}, {36, 10, 264}, {128, 10, 249},
         {47, 10, 308}, {267, 10, 243}};
+    
     private Node pivot;
     private Box box;
     private Geometry blockGeometry;

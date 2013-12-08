@@ -1,21 +1,20 @@
 package game.levels;
 
 import com.cubes.BlockTerrainControl;
-import com.cubes.test.blocks.Block_Brick;
 import com.jme3.math.ColorRGBA;
-import com.jme3.math.Matrix3f;
 import com.jme3.math.Vector3f;
 import game.models.Block;
 import game.models.blockclasses.BlockRegular;
+import game.models.blockclasses.BlockSolution;
 import java.util.ArrayList;
 import java.util.List;
 
-public class LevelOne extends Level {
+public class Easy extends Level {
 
     private List<Block> puzzlePieces;
     private List<Block> checkPieces;
 
-    public LevelOne() {
+    public Easy() {
         init();
     }
 
@@ -32,28 +31,16 @@ public class LevelOne extends Level {
         // 3x2 puzzle piece
         puzzlePieces.add(new Block(ColorRGBA.Pink,
                 corner.clone()));
-
-        puzzlePieces.add(new Block(ColorRGBA.Red,
-                corner.clone()));
     }
 
     private void createCheckPieces() {
         checkPieces = new ArrayList<Block>();
 
-        Block checkPiece = new Block(
-                ColorRGBA.randomColor(),
-                new Vector3f(10.5f, 13.6f, 15f));
-        checkPiece.getBlockGeometry().setLocalRotation(new Matrix3f(0f, 1f, 0f,
-                0f, 0f, 1f,
-                1f, 0f, 0f));
-        checkPieces.add(checkPiece);
+        Vector3f corner = new Vector3f(4.5f, 4.5f, 10.5f);
 
-        checkPiece = new Block(ColorRGBA.randomColor(),
-                new Vector3f(4f, 9f, 22f));
-        checkPiece.getBlockGeometry().setLocalRotation(new Matrix3f(1f, 0f, 0f,
-                0f, 1f, 0f,
-                0f, 0f, 1f));
-        checkPieces.add(checkPiece);
+        // 3x2 puzzle piece
+        checkPieces.add(new Block(ColorRGBA.Pink,
+                corner.clone()));
     }
 
     @Override
@@ -79,12 +66,10 @@ public class LevelOne extends Level {
                 control.setBlock(x, 0, z, BlockRegular.class);
             }
         }
-
-        // create wall
-        for (int x = 0; x < 6; x++) {
-            for (int y = 0; y < 7; y++) {
-                control.setBlock(x, y, 0, BlockRegular.class);
-            }
+        
+        for (int i = 0; i < 3; i++) {
+            control.setBlock(i, 0, 5, BlockSolution.class);
+            control.setBlock(i, 0, 6, BlockSolution.class);            
         }
     }
 }

@@ -9,12 +9,12 @@ import game.models.blockclasses.BlockSolution;
 import java.util.ArrayList;
 import java.util.List;
 
-public class EasyStart extends Level {
+public class Hard extends Level {
 
     private List<Block> puzzlePieces;
     private List<Block> checkPieces;
 
-    public EasyStart() {
+    public Hard() {
         init();
     }
 
@@ -64,6 +64,21 @@ public class EasyStart extends Level {
         for (int x = 0; x < 6; x++) {
             for (int z = 0; z < 7; z++) {
                 control.setBlock(x, 0, z, BlockRegular.class);
+            }
+        }
+
+        // create wall
+        for (int x = 0; x < 6; x++) {
+            for (int y = 0; y < 7; y++) {
+                control.setBlock(x, y, 0, BlockRegular.class);
+            }
+        }
+        
+        
+        // create another wall
+        for (int z = 0; z < 7; z++) {
+            for (int y = 0; y < 7; y++) {
+                control.setBlock(6, y, z, BlockRegular.class);
             }
         }
         

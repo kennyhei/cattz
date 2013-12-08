@@ -128,6 +128,9 @@ public abstract class Level {
     }
 
     private boolean checkBlockRotation(Block toCheck, Block correct) {
+        if(true) {
+            return true;
+        }
 
         // TODO: this matrix needs to have only positive values of either 0.0 or 1.0
         // (right now float-type inaccuracies and negative values crop up)

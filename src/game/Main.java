@@ -50,6 +50,9 @@ public class Main extends SimpleApplication {
         app.showSettings = false;
         app.setSettings(settings);
 
+        app.setDisplayFps(false);
+        app.setShowSettings(false);
+        app.setDisplayStatView(false);
         app.start();
     }
 

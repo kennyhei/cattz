@@ -27,18 +27,23 @@ public class Main extends SimpleApplication {
 
     /* Level manager */
     private LevelManager levelManager;
+    private LevelMenu levelMenu;
     private static Main APPLICATION;
     private AbstractAppState currentState;
     private Class<? extends AbstractAppState> nextState;
-
-    private Main() {
-        APPLICATION = this;
-    }
 
     public static Main getApp() {
         return APPLICATION;
     }
 
+    public static LevelMenu getLevelMenu() {
+        if(getApp().levelMenu == null) {
+            getApp().levelMenu = new LevelMenu();
+        }
+        
+        return getApp().levelMenu;
+    }
+    
     public static void main(String[] args) {
         Main app = new Main();
 
@@ -54,6 +59,8 @@ public class Main extends SimpleApplication {
     // Initialize the game here
     @Override
     public void simpleInitApp() {
+        APPLICATION = this;
+        
         BulletAppState bulletAppState = new BulletAppState();
         stateManager.attach(bulletAppState);
 
@@ -156,6 +163,11 @@ public class Main extends SimpleApplication {
     }
 
     public void setActiveLevel(int levelIndex) {
+        if(levelIndex > getLevelManager().getLevelOrdering().size()) {
+            System.out.println("Thank you!");
+            System.exit(0);
+        }
+        
         getLevelManager().setActiveLevel(levelIndex);
         actionListener.onAction("level", true, 5);
     }

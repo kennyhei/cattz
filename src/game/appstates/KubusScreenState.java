@@ -204,7 +204,7 @@ public class KubusScreenState extends AbstractAppState {
         localRootNode.attachChild(terrainNode);
         
         
-        cam.setLocation(new Vector3f(30f, 30f, 75f));
+        cam.setLocation(new Vector3f(-30f, 30f, 75f));
         cam.lookAt(new Vector3f(0, 0, 0), Vector3f.UNIT_Y);
     }
 

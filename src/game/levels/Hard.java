@@ -36,6 +36,9 @@ public class Hard extends Level {
 
         puzzlePieces.add(new Block(ColorRGBA.Red,
                 corner.clone().add(3f, 0f, 0f)));
+        
+        puzzlePieces.add(new Block(ColorRGBA.Green,
+                corner.clone().add(3f, 0f, -3f)));
     }
 
     private void createCheckPieces() {
@@ -47,8 +50,12 @@ public class Hard extends Level {
         Block two = new Block(ColorRGBA.Red, new Vector3f(13.5f, 10.5f, 4.5f));
         two.setRotation(new Quaternion(0.7071067f, 0.0f, 0.0f, 0.7071067f));
         
+        Block three = new Block(ColorRGBA.Green, new Vector3f(16.5f, 7.5f, 16.5f));
+        three.setRotation(new Quaternion(-0.49999994f, 0.49999994f, -0.49999994f, -0.49999994f));
+
         checkPieces.add(one);
         checkPieces.add(two);
+        checkPieces.add(three);
     }
 
     @Override
@@ -101,5 +108,14 @@ public class Hard extends Level {
             control.setBlock(3 + i, 2, 0, BlockSolution.class);
             control.setBlock(3 + i, 3, 0, BlockSolution.class);            
         }
+        
+        control.setBlock(6, 1, 4, BlockSolution.class);
+        control.setBlock(6, 1, 5, BlockSolution.class);
+        control.setBlock(6, 1, 6, BlockSolution.class);
+
+        control.setBlock(6, 2, 4, BlockSolution.class);
+        control.setBlock(6, 2, 5, BlockSolution.class);
+        control.setBlock(6, 2, 6, BlockSolution.class);
+
     }
 }

@@ -37,7 +37,10 @@ public class LevelMenu {
     }
 
     public void drawGui(Application app) {
-        this.screen = new Screen(app);
+        if(this.screen == null) {
+            this.screen = new Screen(app);
+        }
+        
         guiNode.addControl(screen);
 
         win = new Window(screen, "win", new Vector2f(15, 15));

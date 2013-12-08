@@ -25,7 +25,7 @@ public class LevelManager {
         addLevel(2, "Didn't see this one coming!", new Medium(), false);
         addLevel(3, "Oh no, more levels!", new Hard(), false);
 
-        this.currentLevelOrder = 3;
+        this.currentLevelOrder = 1;
     }
 
     public Level getCurrentLevel() {

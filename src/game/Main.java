@@ -134,9 +134,9 @@ public class Main extends SimpleApplication {
             }
 
             if (name.equals("Pause") && !isPressed) {
-                pauseScreenState = new PauseScreenState();
 
                 if (stateManager.hasState(gameRunningState) && gameRunningState.isEnabled()) {
+                    pauseScreenState = new PauseScreenState();
                     gameRunningState.setEnabled(paused);
                     stateManager.attach(pauseScreenState);
                     System.out.println("Pausing game...");

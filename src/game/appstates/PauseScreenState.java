@@ -70,6 +70,7 @@ public class PauseScreenState extends AbstractAppState {
 
     @Override
     public void stateDetached(AppStateManager stateManager) {
+        viewPort.setBackgroundColor(ColorRGBA.Black);
         rootNode.detachChild(localRootNode);
         guiNode.detachChild(localGuiNode);
     }

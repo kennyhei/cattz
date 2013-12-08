@@ -53,12 +53,12 @@ public class Player implements ActionListener {
         walkDirection.set(0, 0, 0);
 
         if (left) {
-            rotator.fromAngleAxis(tpf, Vector3f.UNIT_Y);
+            rotator.fromAngleAxis(tpf * 2, Vector3f.UNIT_Y);
             viewDirection = rotator.mult(viewDirection);
         }
 
         if (right) {
-            rotator.fromAngleAxis(-tpf, Vector3f.UNIT_Y);
+            rotator.fromAngleAxis(-tpf * 2, Vector3f.UNIT_Y);
             viewDirection = rotator.mult(viewDirection);
         }
 
